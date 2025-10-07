@@ -1,9 +1,9 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { auth } from '@/lib/firebase/config';
-import { 
+import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -11,23 +11,38 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 
+interface UserData {
+  _id: string;
+  firebaseUid: string;
+  email: string;
+  role: 'employer' | 'jobseeker' | 'admin';
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    // Add other profile fields as needed
+  };
+  // Add other top-level user data fields as needed
+}
+
 interface AuthContextType {
   user: FirebaseUser | null;
-  userData: any | null;
+  userData: UserData | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, userData: any) => Promise<void>;
+  register: (email: string, password: string, userData: UserData) => Promise<void>;
   logout: () => Promise<void>;
-  updateProfile: (data: any) => Promise<void>;
+  updateProfile: (data: Partial<UserData>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [userData, setUserData] = useState<any | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -60,11 +75,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Redirect based on user role
         if (data.role === 'employer') {
-          router.push('/employer/dashboard');
+          router.push(`/${lang}/employer/dashboard`);
         } else if (data.role === 'jobseeker') {
-          router.push('/jobseeker/dashboard');
+          router.push(`/${lang}/jobseeker/dashboard`);
         } else if (data.role === 'admin') {
-          router.push('/admin/dashboard');
+          router.push(`/${lang}/admin/dashboard`);
         }
       }
     } catch (error) {
@@ -73,12 +88,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (email: string, password: string, userData: any) => {
+  const register = async (email: string, password: string, userData: Omit<UserData, '_id' | 'firebaseUid' | 'email'>) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
       // Save user data to MongoDB
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
-        router.push('/onboarding');
+        router.push(`/${lang}/onboarding`);
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -104,14 +119,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signOut(auth);
       setUser(null);
       setUserData(null);
-      router.push('/');
+      router.push(`/${lang}`);
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
     }
   };
 
-  const updateProfile = async (data: any) => {
+  const updateProfile = async (data: Partial<UserData>) => {
     try {
       const response = await fetch(`/api/users/${user?.uid}`, {
         method: 'PUT',

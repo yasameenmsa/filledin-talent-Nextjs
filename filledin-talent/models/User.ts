@@ -2,12 +2,13 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
+  firebaseUid: string;
   email: string;
-  password: string;
+  password?: string; // Make password optional
   role: 'jobseeker' | 'employer' | 'admin';
   profile: {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     phone?: string;
     company?: string;
     position?: string;
@@ -45,6 +46,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema = new Schema<IUser>({
+  firebaseUid: { type: String, required: true, unique: true },
   email: {
     type: String,
     required: true,
@@ -54,7 +56,7 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: true,
+    required: false, // Make password not required
     minlength: 6,
   },
   role: {
@@ -63,8 +65,8 @@ const UserSchema = new Schema<IUser>({
     default: 'jobseeker',
   },
   profile: {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    firstName: { type: String, required: false },
+    lastName: { type: String, required: false },
     phone: String,
     company: String,
     position: String,
@@ -100,17 +102,11 @@ const UserSchema = new Schema<IUser>({
   timestamps: true,
 });
 
-// Hash password before saving
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
 
-// Compare password method
+
+// Compare password method (only if password exists)
 UserSchema.methods.comparePassword = async function(candidatePassword: string) {
+  if (!this.password) return false; // If no password, cannot compare
   return await bcrypt.compare(candidatePassword, this.password);
 };
 

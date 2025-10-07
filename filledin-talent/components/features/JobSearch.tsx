@@ -1,8 +1,22 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Briefcase, Clock, Filter } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useTranslation } from '@/lib/i18n/useTranslation';
+import { formatDate, formatCurrency } from '@/lib/utils/formatters';
+
+interface Job {
+  _id: string;
+  title: string;
+  company: { name: string };
+  location: { city: string; country: string };
+  workingType: string;
+  category: string;
+  description: string;
+  salary: { min: number; max: number; currency: string };
+  createdAt: string;
+}
 
 interface JobFilters {
   keywords: string;
@@ -23,36 +37,36 @@ export default function JobSearch() {
     sector: '',
   });
   
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   
   const debouncedKeywords = useDebounce(filters.keywords, 500);
+  const { locale } = useTranslation();
 
   useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams({
+          ...(filters.keywords && { keywords: filters.keywords }),
+          ...(filters.location && { location: filters.location }),
+          ...(filters.category && { category: filters.category }),
+          ...(filters.workingType && { workingType: filters.workingType }),
+          ...(filters.sector && { sector: filters.sector }),
+        });
+
+        const response = await fetch(`/api/jobs?${queryParams}`);
+        const data = await response.json();
+        setJobs(data);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchJobs();
-  }, [debouncedKeywords, filters.location, filters.category, filters.workingType, filters.sector]);
-
-  const fetchJobs = async () => {
-    setLoading(true);
-    try {
-      const queryParams = new URLSearchParams({
-        ...(filters.keywords && { keywords: filters.keywords }),
-        ...(filters.location && { location: filters.location }),
-        ...(filters.category && { category: filters.category }),
-        ...(filters.workingType && { workingType: filters.workingType }),
-        ...(filters.sector && { sector: filters.sector }),
-      });
-
-      const response = await fetch(`/api/jobs?${queryParams}`);
-      const data = await response.json();
-      setJobs(data);
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [debouncedKeywords, filters.location, filters.category, filters.workingType, filters.sector, filters.keywords, filters.sector]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -176,16 +190,19 @@ export default function JobSearch() {
         {loading ? (
           <p>Loading jobs...</p>
         ) : jobs.length > 0 ? (
-          jobs.map((job: any) => (
+          jobs.map((job: Job) => (
             <div key={job._id} className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">{job.title}</h3>
               <p className="text-gray-600 mb-1">{job.company.name} - {job.location.city}, {job.location.country}</p>
               <p className="text-gray-500 text-sm mb-4">{job.workingType} - {job.category}</p>
               <p className="text-gray-700 text-base line-clamp-3">{job.description}</p>
               <div className="mt-4 flex justify-between items-center">
-                <span className="text-blue-600 font-semibold">${job.salary.min} - ${job.salary.max} {job.salary.currency}</span>
+                <span className="text-blue-600 font-semibold">
+                  {formatCurrency(job.salary.min, locale, job.salary.currency)} - {formatCurrency(job.salary.max, locale, job.salary.currency)}
+                </span>
                 <a href={`/jobs/${job._id}`} className="text-blue-600 hover:underline">View Details</a>
               </div>
+              <p className="text-gray-500 text-sm mt-2">Posted: {formatDate(new Date(job.createdAt), locale)}</p>
             </div>
           ))
         ) : (

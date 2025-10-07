@@ -119,4 +119,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  [dir="rtl"] ::placeholder {
+    text-align: right;
+  }
 }

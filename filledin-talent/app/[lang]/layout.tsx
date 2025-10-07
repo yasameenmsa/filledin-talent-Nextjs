@@ -1,22 +1,36 @@
-'use client';
+import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
+import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher';
+import { rtlLanguages } from '@/lib/i18n/config';
+import { Geist, Geist_Mono } from "next/font/google";
 
-import { Inter } from 'next/font/google';
-import Header from '@/components/layout/Header';
-import { AuthProvider } from '@/contexts/AuthContext';
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-const inter = Inter({ subsets: ['latin'] });
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: {
+  params,
+}: Readonly<{
   children: React.ReactNode;
-}) {
+  params: Promise<{ lang: string }>;
+}>) {
+  const { lang } = await params;
+  const dir = rtlLanguages.includes(lang as 'en' | 'ar' | 'fr') ? 'rtl' : 'ltr';
+
   return (
-    <AuthProvider>
-      <div className={`${inter.className} min-h-screen bg-gray-50`}>
-        <Header />
-        <main className="pt-16">{children}</main>
-      </div>
-    </AuthProvider>
+    <html lang={lang} dir={dir}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ClientLayoutWrapper currentLanguage={lang} dir={dir}>
+          {/* <LocaleSwitcher /> */}
+          {children}
+        </ClientLayoutWrapper>
+      </body>
+    </html>
   );
 }

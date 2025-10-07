@@ -33,7 +33,7 @@ const JobSearchSection = ({ currentLanguage = 'en' }) => {
         search: 'بحث'
       }
     };
-    return translations[currentLanguage as keyof typeof translations];
+    return translations[currentLanguage as keyof typeof translations] || translations.en;
   };
 
   const text = getText(currentLanguage);
@@ -66,7 +66,7 @@ const JobSearchSection = ({ currentLanguage = 'en' }) => {
           
           {/* Search Form - 2x2 Grid */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-6 max-w-3xl mx-auto mb-8">
-            <div className="text-left">
+            <div className={currentLanguage === 'ar' ? "text-right" : "text-left"}>
               <label htmlFor="keywords" className="block text-sm font-semibold text-gray-900 mb-2">
                 {text.keywords}
               </label>
@@ -77,7 +77,7 @@ const JobSearchSection = ({ currentLanguage = 'en' }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div className="text-left">
+            <div className={currentLanguage === 'ar' ? "text-right" : "text-left"}>
               <label htmlFor="category" className="block text-sm font-semibold text-gray-900 mb-2">
                 {text.category}
               </label>
@@ -88,7 +88,7 @@ const JobSearchSection = ({ currentLanguage = 'en' }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div className="text-left">
+            <div className={currentLanguage === 'ar' ? "text-right" : "text-left"}>
               <label htmlFor="workingType" className="block text-sm font-semibold text-gray-900 mb-2">
                 {text.workingType}
               </label>
@@ -99,7 +99,7 @@ const JobSearchSection = ({ currentLanguage = 'en' }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div className="text-left">
+            <div className={currentLanguage === 'ar' ? "text-right" : "text-left"}>
               <label htmlFor="location" className="block text-sm font-semibold text-gray-900 mb-2">
                 {text.location}
               </label>

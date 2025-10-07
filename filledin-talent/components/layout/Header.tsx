@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+
 import { Menu, X, ChevronDown, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -92,24 +92,15 @@ const getUIText = (currentLanguage: string) => {
   }
 };
 
-export default function Header() {
+export default function Header({ currentLanguage }: { currentLanguage: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
-  const pathname = usePathname();
   const { user, userData, logout } = useAuth();
 
   // Get current language from pathname
-  const currentLanguage = pathname?.split('/')[1] || 'en';
+  // const currentLanguage = pathname?.split('/')[1] || 'en';
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navigationText = getNavigationText(currentLanguage);
   const uiText = getUIText(currentLanguage);
