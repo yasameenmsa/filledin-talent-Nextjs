@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -28,6 +29,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
   const router = useRouter();
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation(lang);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -71,13 +73,13 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
   const getRoleDisplayName = () => {
     switch (user.role) {
       case 'employer':
-        return 'Employer';
+        return t('employerRole');
       case 'jobseeker':
-        return 'Job Seeker';
+        return t('jobseekerRole');
       case 'admin':
-        return 'Administrator';
+        return t('dashboard.admin.title');
       default:
-        return 'User';
+        return t('user');
     }
   };
 
@@ -103,7 +105,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                 </div>
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t('dashboard.actions.search')}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
@@ -128,10 +130,10 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                   <div className="py-1">
                     <div className="px-4 py-2 text-sm font-medium text-gray-900 border-b border-gray-200">
-                      Notifications
+                      {t('dashboard.notifications')}
                     </div>
                     <div className="px-4 py-3 text-sm text-gray-500">
-                      No new notifications
+                      {t('dashboard.status.noData')}
                     </div>
                   </div>
                 </div>
@@ -166,7 +168,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                       onClick={() => setProfileDropdownOpen(false)}
                     >
                       <User className="mr-3 h-4 w-4" />
-                      Profile
+                      {t('dashboard.profile')}
                     </Link>
                     <Link
                       href={getSettingsUrl()}
@@ -174,7 +176,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                       onClick={() => setProfileDropdownOpen(false)}
                     >
                       <Settings className="mr-3 h-4 w-4" />
-                      Settings
+                      {t('dashboard.settings')}
                     </Link>
                     <hr className="my-1" />
                     <button
@@ -182,7 +184,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <LogOut className="mr-3 h-4 w-4" />
-                      Sign out
+                      {t('dashboard.logout')}
                     </button>
                   </div>
                 </div>

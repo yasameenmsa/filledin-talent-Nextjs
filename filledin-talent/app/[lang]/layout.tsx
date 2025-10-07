@@ -1,5 +1,5 @@
 import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
-import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher';
+// import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher';
 import { rtlLanguages } from '@/lib/i18n/config';
 import { Geist, Geist_Mono } from "next/font/google";
 

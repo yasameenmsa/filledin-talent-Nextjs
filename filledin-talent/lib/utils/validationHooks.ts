@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { useTranslation } from '@/lib/i18n/useTranslation';
 import { 
   FormValidator, 
   EmailValidator, 
@@ -10,6 +9,51 @@ import {
   RoleValidator,
   ValidationOptions 
 } from './validation';
+
+// Form data interfaces
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+}
+
+export interface ProfileFormData {
+  email: string;
+  profile: {
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    location?: string;
+    bio?: string;
+    company?: string;
+    position?: string;
+    website?: string;
+    skills?: string[];
+    experience?: Array<{
+      company: string;
+      position: string;
+      duration: string;
+      description: string;
+    }>;
+    education?: Array<{
+      institution: string;
+      degree: string;
+      field: string;
+      year: string;
+    }>;
+  };
+}
+
+// Generic form data type for flexibility
+export type FormData = LoginFormData | RegisterFormData | ProfileFormData | Record<string, unknown>;
 
 // Types for form validation hooks
 export interface UseFormValidationOptions {
@@ -30,8 +74,8 @@ export interface ValidationHookResult {
   errors: FormErrors;
   touched: FormTouched;
   isValid: boolean;
-  validateField: (fieldName: string, value: any) => void;
-  validateForm: (formData: any) => boolean;
+  validateField: (fieldName: string, value: unknown) => void;
+  validateForm: (formData: FormData) => boolean;
   setFieldTouched: (fieldName: string, isTouched?: boolean) => void;
   clearErrors: () => void;
   clearFieldError: (fieldName: string) => void;
@@ -39,10 +83,10 @@ export interface ValidationHookResult {
 
 // Generic form validation hook
 function useFormValidation(
-  validationSchema: (data: any, options: ValidationOptions) => { isValid: boolean; errors: FormErrors },
+  validationSchema: (data: FormData, options: ValidationOptions) => { isValid: boolean; errors: FormErrors },
   options: UseFormValidationOptions = {}
 ): ValidationHookResult {
-  const { validateOnChange = true, validateOnBlur = true, locale } = options;
+  const { locale } = options;
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<FormTouched>({});
 
@@ -50,7 +94,7 @@ function useFormValidation(
     locale: locale || 'en'
   }), [locale]);
 
-  const validateField = useCallback((fieldName: string, value: any, formData?: any) => {
+  const validateField = useCallback((fieldName: string, value: unknown, formData?: FormData) => {
     // For single field validation, we need the full form data
     // This is a simplified approach - in practice, you might want to pass the full form data
     const singleFieldData = { [fieldName]: value };
@@ -64,7 +108,7 @@ function useFormValidation(
     return !result.errors[fieldName];
   }, [validationSchema, validationOptions]);
 
-  const validateForm = useCallback((formData: any) => {
+  const validateForm = useCallback((formData: FormData) => {
     const result = validationSchema(formData, validationOptions);
     setErrors(result.errors);
     return result.isValid;
@@ -107,7 +151,7 @@ function useFormValidation(
 
 // Specific hook for registration form validation
 function useRegistrationValidation(locale?: string): ValidationHookResult {
-  const validationSchema = useCallback((formData: any, options: ValidationOptions) => {
+  const validationSchema = useCallback((formData: FormData, options: ValidationOptions) => {
     return FormValidator.validateRegistrationForm(formData, options);
   }, []);
 
@@ -116,43 +160,33 @@ function useRegistrationValidation(locale?: string): ValidationHookResult {
 
 // Specific hook for login form validation
 function useLoginValidation(locale?: string): ValidationHookResult {
-  const validationSchema = useCallback((formData: any, options: ValidationOptions) => {
+  const validationSchema = useCallback((formData: FormData, options: ValidationOptions) => {
     return FormValidator.validateLoginForm(formData, options);
   }, []);
 
   return useFormValidation(validationSchema, { locale });
 }
 
-
-
 // Individual field validation hooks
 function useEmailValidation(locale?: string) {
-  const { t } = useTranslation();
-  
   return useCallback((email: string) => {
     return EmailValidator.validate(email, { locale });
   }, [locale]);
 }
 
 function usePasswordValidation(locale?: string) {
-  const { t } = useTranslation();
-  
   return useCallback((password: string) => {
     return PasswordValidator.validate(password, { locale });
   }, [locale]);
 }
 
 function usePasswordConfirmationValidation(locale?: string) {
-  const { t } = useTranslation();
-  
   return useCallback((password: string, confirmPassword: string) => {
     return PasswordValidator.validateConfirmation(password, confirmPassword, { locale });
   }, [locale]);
 }
 
 function useNameValidation(locale?: string) {
-  const { t } = useTranslation();
-  
   return useCallback((name: string, isFirstName: boolean = true) => {
     if (isFirstName) {
       return NameValidator.validateFirstName(name, { locale });
@@ -163,8 +197,6 @@ function useNameValidation(locale?: string) {
 }
 
 function useRoleValidation(locale?: string) {
-  const { t } = useTranslation();
-  
   return useCallback((role: string) => {
     return RoleValidator.validate(role, { locale });
   }, [locale]);
@@ -172,26 +204,26 @@ function useRoleValidation(locale?: string) {
 
 // Real-time validation hook for input fields
 function useFieldValidation(
-  validator: (value: any) => { isValid: boolean; error?: string },
+  validator: (value: unknown) => { isValid: boolean; error?: string },
   options: { validateOnChange?: boolean; validateOnBlur?: boolean } = {}
 ) {
   const { validateOnChange = true, validateOnBlur = true } = options;
   const [error, setError] = useState<string>('');
   const [touched, setTouched] = useState<boolean>(false);
 
-  const validate = useCallback((value: any) => {
+  const validate = useCallback((value: unknown) => {
     const result = validator(value);
     setError(result.error || '');
     return result.isValid;
   }, [validator]);
 
-  const handleChange = useCallback((value: any) => {
+  const handleChange = useCallback((value: unknown) => {
     if (validateOnChange && touched) {
       validate(value);
     }
   }, [validate, validateOnChange, touched]);
 
-  const handleBlur = useCallback((value: any) => {
+  const handleBlur = useCallback((value: unknown) => {
     setTouched(true);
     if (validateOnBlur) {
       validate(value);
@@ -215,14 +247,14 @@ function useFieldValidation(
 
 // Debounced validation hook for better performance
 function useDebouncedValidation(
-  validator: (value: any) => { isValid: boolean; error?: string },
+  validator: (value: unknown) => { isValid: boolean; error?: string },
   delay: number = 300
 ) {
   const [error, setError] = useState<string>('');
   const [isValidating, setIsValidating] = useState<boolean>(false);
 
-  const debouncedValidate = useCallback(
-    debounce((value: any) => {
+  const debouncedValidate = useMemo(
+    () => debounce((value: unknown) => {
       setIsValidating(true);
       const result = validator(value);
       setError(result.error || '');
@@ -231,7 +263,7 @@ function useDebouncedValidation(
     [validator, delay]
   );
 
-  const validate = useCallback((value: any) => {
+  const validate = useCallback((value: unknown) => {
     debouncedValidate(value);
   }, [debouncedValidate]);
 
@@ -244,7 +276,7 @@ function useDebouncedValidation(
 }
 
 // Simple debounce utility
-function debounce<T extends (...args: any[]) => any>(
+function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
 ): (...args: Parameters<T>) => void {

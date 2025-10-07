@@ -264,18 +264,22 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                       exit={{ opacity: 0, y: -10 }}
                       className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2"
                     >
-                      <Link
-                        href={`/${userData?.role}/dashboard`}
-                        className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                      >
-                        {uiText.dashboard}
-                      </Link>
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                      >
-                        {uiText.profile}
-                      </Link>
+                      {userData?.role && (
+                        <>
+                          <Link
+                            href={`/${currentLanguage}/${userData.role}`}
+                            className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
+                          >
+                            {uiText.dashboard}
+                          </Link>
+                          <Link
+                            href={`/${currentLanguage}/${userData.role}/profile`}
+                            className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
+                          >
+                            {uiText.profile}
+                          </Link>
+                        </>
+                      )}
                       <button
                         onClick={logout}
                         className="block w-full text-left px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
@@ -289,13 +293,13 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
             ) : (
               <div className="flex items-center space-x-4">
                 <Link
-                  href="/login"
+                  href={`/${currentLanguage}/login`}
                   className="text-blue-900 hover:text-blue-600 transition-colors"
                 >
                   {uiText.login}
                 </Link>
                 <Link
-                  href="/register"
+                  href={`/${currentLanguage}/register`}
                   className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
                 >
                   {uiText.register}
@@ -431,20 +435,24 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
 
                 {user ? (
                   <div className="border-t border-gray-200 pt-2 mt-2">
-                    <Link
-                      href={`/${userData?.role}/dashboard`}
-                      className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {uiText.dashboard}
-                    </Link>
-                    <Link
-                      href="/profile"
-                      className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {uiText.profile}
-                    </Link>
+                    {userData?.role && (
+                      <>
+                        <Link
+                          href={`/${currentLanguage}/${userData.role}`}
+                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {uiText.dashboard}
+                        </Link>
+                        <Link
+                          href={`/${currentLanguage}/${userData.role}/profile`}
+                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {uiText.profile}
+                        </Link>
+                      </>
+                    )}
                     <button
                       onClick={() => {
                         logout();
@@ -458,14 +466,14 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                 ) : (
                   <div className="border-t border-gray-200 pt-2 mt-2">
                     <Link
-                      href="/login"
+                      href={`/${currentLanguage}/login`}
                       className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
                       onClick={() => setIsOpen(false)}
                     >
                       {uiText.login}
                     </Link>
                     <Link
-                      href="/register"
+                      href={`/${currentLanguage}/register`}
                       className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md"
                       onClick={() => setIsOpen(false)}
                     >

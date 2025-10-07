@@ -1,4 +1,4 @@
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { getServerTranslation } from '@/lib/i18n/serverTranslation';
 
 // Types for validation results
 export interface ValidationResult {
@@ -58,7 +58,7 @@ export class EmailValidator {
   
   static validate(email: string, options: ValidationOptions = {}): ValidationResult {
     const { locale = 'en' } = options;
-    const { t } = useTranslation(locale);
+    const { t } = getServerTranslation(locale);
     
     if (!email) {
       return {
@@ -124,7 +124,7 @@ export class PasswordValidator {
   
   static validate(password: string, options: ValidationOptions = {}): ValidationResult {
     const { locale = 'en' } = options;
-    const { t } = useTranslation(locale);
+    const { t } = getServerTranslation(locale);
     
     if (!password) {
       return {
@@ -179,7 +179,7 @@ export class PasswordValidator {
 
   static validateConfirmation(password: string, confirmPassword: string, options: ValidationOptions = {}): ValidationResult {
     const { locale = 'en' } = options;
-    const { t } = useTranslation(locale);
+    const { t } = getServerTranslation(locale);
     
     if (!confirmPassword) {
       return {
@@ -210,7 +210,7 @@ export class NameValidator {
   
   static validateFirstName(firstName: string, options: ValidationOptions = {}): ValidationResult {
     const { locale = 'en' } = options;
-    const { t } = useTranslation(locale);
+    const { t } = getServerTranslation(locale);
     
     if (!firstName) {
       return {
@@ -224,7 +224,7 @@ export class NameValidator {
 
   static validateLastName(lastName: string, options: ValidationOptions = {}): ValidationResult {
     const { locale = 'en' } = options;
-    const { t } = useTranslation(locale);
+    const { t } = getServerTranslation(locale);
     
     if (!lastName) {
       return {
@@ -274,7 +274,7 @@ export class RoleValidator {
   
   static validate(role: string, options: ValidationOptions = {}): ValidationResult {
     const { locale = 'en' } = options;
-    const { t } = useTranslation(locale);
+    const { t } = getServerTranslation(locale);
     
     if (!role) {
       return {
@@ -367,7 +367,7 @@ export class FormValidator {
     // Basic password presence check for login
     if (!formData.password) {
       const { locale = 'en' } = options;
-      const { t } = useTranslation(locale);
+      const { t } = getServerTranslation(locale);
       errors.password = t('auth.errors.passwordRequired');
     }
 
@@ -379,13 +379,3 @@ export class FormValidator {
 
 
 }
-
-// Export all validators for easy access
-export {
-  EmailValidator,
-  PasswordValidator,
-  NameValidator,
-  RoleValidator,
-  FormValidator,
-  CharacterEncodingUtils
-};

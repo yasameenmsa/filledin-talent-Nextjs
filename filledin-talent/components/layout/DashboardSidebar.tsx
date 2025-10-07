@@ -16,6 +16,7 @@ import {
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface DashboardSidebarProps {
   isOpen: boolean;
@@ -26,32 +27,33 @@ interface DashboardSidebarProps {
 
 export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const { t } = useTranslation(lang);
 
   const employerNavigation = [
-    { name: 'Dashboard', href: `/${lang}/employer`, icon: Home },
-    { name: 'My Jobs', href: `/${lang}/employer/jobs`, icon: Briefcase },
-    { name: 'Candidates', href: `/${lang}/employer/candidates`, icon: Users },
-    { name: 'Analytics', href: `/${lang}/employer/analytics`, icon: BarChart3 },
-    { name: 'Profile', href: `/${lang}/employer/profile`, icon: User },
-    { name: 'Settings', href: `/${lang}/employer/settings`, icon: Settings },
+    { name: t('dashboard.nav.dashboard'), href: `/${lang}/employer`, icon: Home },
+    { name: t('dashboard.employer.myJobs'), href: `/${lang}/employer/jobs`, icon: Briefcase },
+    { name: t('dashboard.nav.candidates'), href: `/${lang}/employer/candidates`, icon: Users },
+    { name: t('dashboard.nav.analytics'), href: `/${lang}/employer/analytics`, icon: BarChart3 },
+    { name: t('dashboard.nav.profile'), href: `/${lang}/employer/profile`, icon: User },
+    { name: t('dashboard.nav.settings'), href: `/${lang}/employer/settings`, icon: Settings },
   ];
 
   const jobseekerNavigation = [
-    { name: 'Dashboard', href: `/${lang}/jobseeker`, icon: Home },
-    { name: 'Job Search', href: `/${lang}/jobs`, icon: Search },
-    { name: 'My Applications', href: `/${lang}/jobseeker/applications`, icon: FileText },
-    { name: 'Saved Jobs', href: `/${lang}/jobseeker/saved-jobs`, icon: BookmarkPlus },
-    { name: 'Profile', href: `/${lang}/jobseeker/profile`, icon: User },
-    { name: 'Settings', href: `/${lang}/jobseeker/settings`, icon: Settings },
+    { name: t('dashboard.nav.dashboard'), href: `/${lang}/jobseeker`, icon: Home },
+    { name: t('dashboard.jobseeker.jobSearch'), href: `/${lang}/jobs`, icon: Search },
+    { name: t('dashboard.jobseeker.myApplications'), href: `/${lang}/jobseeker/applications`, icon: FileText },
+    { name: t('dashboard.nav.savedJobs'), href: `/${lang}/jobseeker/saved-jobs`, icon: BookmarkPlus },
+    { name: t('dashboard.nav.profile'), href: `/${lang}/jobseeker/profile`, icon: User },
+    { name: t('dashboard.nav.settings'), href: `/${lang}/jobseeker/settings`, icon: Settings },
   ];
 
   const adminNavigation = [
-    { name: 'Dashboard', href: `/${lang}/admin`, icon: Home },
-    { name: 'Users', href: `/${lang}/admin/users`, icon: Users },
-    { name: 'Jobs', href: `/${lang}/admin/jobs`, icon: Briefcase },
-    { name: 'Applications', href: `/${lang}/admin/applications`, icon: FileText },
-    { name: 'Analytics', href: `/${lang}/admin/analytics`, icon: BarChart3 },
-    { name: 'Settings', href: `/${lang}/admin/settings`, icon: Settings },
+    { name: t('dashboard.nav.dashboard'), href: `/${lang}/admin`, icon: Home },
+    { name: t('dashboard.nav.users'), href: `/${lang}/admin/users`, icon: Users },
+    { name: t('dashboard.nav.jobs'), href: `/${lang}/admin/jobs`, icon: Briefcase },
+    { name: t('dashboard.nav.applications'), href: `/${lang}/admin/applications`, icon: FileText },
+    { name: t('dashboard.nav.analytics'), href: `/${lang}/admin/analytics`, icon: BarChart3 },
+    { name: t('dashboard.nav.settings'), href: `/${lang}/admin/settings`, icon: Settings },
   ];
 
   const getNavigation = () => {

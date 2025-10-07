@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n/client';
 import { 
   Plus, 
   Search, 
@@ -42,8 +43,9 @@ interface Job {
   applicationDeadline?: string;
 }
 
-export default async function EmployerJobsPage({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
+export default function EmployerJobsPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = React.use(params);
+  const { t } = useTranslation(lang);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -88,7 +90,7 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
   };
 
   const handleDeleteJob = async (jobId: string) => {
-    if (!confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
+    if (!confirm(t('jobs.deleteConfirmation'))) {
       return;
     }
 
@@ -100,11 +102,11 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
       if (response.ok) {
         fetchJobs(); // Refresh the list
       } else {
-        alert('Failed to delete job');
+        alert(t('jobs.deleteFailed'));
       }
     } catch (error) {
       console.error('Error deleting job:', error);
-      alert('Failed to delete job');
+      alert(t('jobs.deleteFailed'));
     }
   };
 
@@ -123,20 +125,20 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
       if (response.ok) {
         fetchJobs(); // Refresh the list
       } else {
-        alert('Failed to update job status');
+        alert(t('jobs.updateStatusFailed'));
       }
     } catch (error) {
       console.error('Error updating job status:', error);
-      alert('Failed to update job status');
+      alert(t('jobs.updateStatusFailed'));
     }
   };
 
   const formatSalary = (min?: number, max?: number, currency = 'USD') => {
-    if (!min && !max) return 'Not specified';
+    if (!min && !max) return t('jobs.salaryNotSpecified');
     if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-    if (min) return `From $${min.toLocaleString()}`;
-    if (max) return `Up to $${max.toLocaleString()}`;
-    return 'Not specified';
+    if (min) return t('jobs.salaryFrom', { amount: `$${min.toLocaleString()}` });
+    if (max) return t('jobs.salaryUpTo', { amount: `$${max.toLocaleString()}` });
+    return t('jobs.salaryNotSpecified');
   };
 
   const formatDate = (dateString: string) => {
@@ -179,38 +181,38 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Jobs</h1>
-          <p className="text-gray-600 mt-1">Manage your job postings and track applications</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('jobs.myJobs')}</h1>
+          <p className="text-gray-600 mt-1">{t('jobs.manageDescription')}</p>
         </div>
         <Link
           href={`/${lang}/employer/jobs/create`}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Post New Job
+          {t('jobs.postNew')}
         </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Total Jobs</p>
+          <p className="text-sm font-medium text-gray-600">{t('jobs.totalJobs')}</p>
           <p className="text-2xl font-bold text-gray-900">{stats.totalJobs}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Active</p>
+          <p className="text-sm font-medium text-gray-600">{t('dashboard.status.active')}</p>
           <p className="text-2xl font-bold text-green-600">{stats.activeJobs}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Inactive</p>
+          <p className="text-sm font-medium text-gray-600">{t('dashboard.status.inactive')}</p>
           <p className="text-2xl font-bold text-gray-600">{stats.inactiveJobs}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Applications</p>
+          <p className="text-sm font-medium text-gray-600">{t('dashboard.applications')}</p>
           <p className="text-2xl font-bold text-blue-600">{stats.totalApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Total Views</p>
+          <p className="text-sm font-medium text-gray-600">{t('analytics.totalViews')}</p>
           <p className="text-2xl font-bold text-purple-600">{stats.totalViews}</p>
         </div>
       </div>
@@ -223,7 +225,7 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search jobs..."
+                placeholder={t('jobs.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -236,9 +238,9 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="all">{t('jobs.allStatus')}</option>
+              <option value="active">{t('dashboard.status.active')}</option>
+              <option value="inactive">{t('dashboard.status.inactive')}</option>
             </select>
           </div>
         </div>
@@ -275,11 +277,11 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
                           ? 'text-green-600 bg-green-100' 
                           : 'text-gray-600 bg-gray-100'
                       }`}>
-                        {job.isActive ? 'Active' : 'Inactive'}
+                        {job.isActive ? t('dashboard.status.active') : t('dashboard.status.inactive')}
                       </span>
                       {job.applicationDeadline && isDeadlinePassed(job.applicationDeadline) && (
                         <span className="px-2 py-1 text-xs font-medium rounded-full text-red-600 bg-red-100">
-                          Deadline Passed
+                          {t('jobs.deadlinePassed')}
                         </span>
                       )}
                     </div>
@@ -289,18 +291,18 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
                     <div className="flex items-center space-x-6 text-sm text-gray-500">
                       <div className="flex items-center">
                         <Users className="h-4 w-4 mr-1" />
-                        {job.applicationCount} applications
+                        {t('jobs.applicationsCount', { count: job.applicationCount })}
                       </div>
                       <div className="flex items-center">
                         <Eye className="h-4 w-4 mr-1" />
-                        {job.viewCount} views
+                        {t('jobs.viewsCount', { count: job.viewCount })}
                       </div>
                       <div>
-                        Posted {formatDate(job.createdAt)}
+                        {t('jobs.posted')} {formatDate(job.createdAt)}
                       </div>
                       {job.applicationDeadline && (
                         <div>
-                          Deadline: {formatDate(job.applicationDeadline)}
+                          {t('jobs.deadline')}: {formatDate(job.applicationDeadline)}
                         </div>
                       )}
                     </div>
@@ -311,14 +313,14 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
                         className="inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        View
+                        {t('view')}
                       </Link>
                       <Link
                         href={`/${lang}/employer/jobs/${job._id}/edit`}
                         className="inline-flex items-center px-3 py-1 text-sm text-gray-600 hover:text-gray-700"
                       >
                         <Edit className="h-4 w-4 mr-1" />
-                        Edit
+                        {t('edit')}
                       </Link>
                       <button
                         onClick={() => toggleJobStatus(job._id, job.isActive)}
@@ -328,14 +330,14 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
                             : 'text-green-600 hover:text-green-700'
                         }`}
                       >
-                        {job.isActive ? 'Deactivate' : 'Activate'}
+                        {job.isActive ? t('jobs.deactivate') : t('jobs.activate')}
                       </button>
                       <button
                         onClick={() => handleDeleteJob(job._id)}
                         className="inline-flex items-center px-3 py-1 text-sm text-red-600 hover:text-red-700"
                       >
                         <Trash2 className="h-4 w-4 mr-1" />
-                        Delete
+                        {t('delete')}
                       </button>
                     </div>
                   </div>
@@ -349,16 +351,16 @@ export default async function EmployerJobsPage({ params }: { params: Promise<{ l
               <div className="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Plus className="h-6 w-6 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs posted yet</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('jobs.noJobsPosted')}</h3>
               <p className="text-gray-500 mb-6">
-                Start by posting your first job to attract talented candidates.
+                {t('jobs.noJobsDescription')}
               </p>
               <Link
                 href={`/${lang}/employer/jobs/create`}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Post Your First Job
+                {t('jobs.postFirstJob')}
               </Link>
             </div>
           </div>

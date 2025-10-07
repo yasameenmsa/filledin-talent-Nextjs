@@ -1,0 +1,22 @@
+export const common = {
+  filledinTalent: 'FilledIn Talent',
+  tagline: 'La Solution Alternative',
+  globalPartner: 'Partenaire Mondial des Talents Énergétiques',
+  search: 'Rechercher',
+  apply: 'Postuler',
+  submit: 'Soumettre',
+  cancel: 'Annuler',
+  viewMore: 'Voir plus',
+  loading: 'Chargement...',
+  error: 'Erreur',
+  success: 'Succès',
+  save: 'Enregistrer',
+  export: 'Exporter',
+  refresh: 'Actualiser',
+  user: 'Utilisateur',
+  role: 'Rôle',
+  actions: 'Actions',
+  previous: 'Précédent',
+  next: 'Suivant',
+  sortBy: 'Trier par'
+};

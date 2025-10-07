@@ -42,7 +42,7 @@ const JobSearchSection = ({ currentLanguage = 'en' }) => {
     <section 
       className="relative py-16 min-h-[400px] flex items-center"
       style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&q=80)',
+        backgroundImage: 'url(https://res.cloudinary.com/dtpl6x0sk/image/upload/v1759850669/s_1_f86nnk_wgfpmc.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}

@@ -1,185 +1,44 @@
-export const fr = {
-  common: {
-    filledinTalent: 'FilledIn Talent',
-    tagline: 'La Solution Alternative',
-    globalPartner: 'Partenaire Mondial des Talents Énergétiques',
-    search: 'Rechercher',
-    apply: 'Postuler',
-    submit: 'Soumettre',
-    cancel: 'Annuler',
-    viewMore: 'Voir plus',
-    loading: 'Chargement...',
-    error: 'Erreur',
-    success: 'Succès'
-  },
-  nav: {
-    businesses: 'Entreprises',
-    trends: 'Tendances',
-    expertise: 'Expertise',
-    engagement: 'Engagement',
-    jobSeekers: 'Chercheurs d\'emploi',
-    jobSearch: 'Recherche d\'emploi',
-    interviewTips: 'Conseils d\'entretien',
-    dropCV: 'Déposer CV',
-    aboutFINT: 'À propos de FINT',
-    languages: 'Langues'
-  },
-  hero: {
-    title: 'La Solution Alternative',
-    subtitle: 'Partenaire Mondial des Talents Énergétiques',
-    description: 'Connecter l\'expertise du réservoir à la raffinerie ou de la source au réseau',
-    forBusinesses: 'Pour les Entreprises',
-    forJobSeekers: 'Pour les Chercheurs d\'Emploi',
-    searchPlaceholder: 'Mots-clés, Titre du poste',
-    categoryPlaceholder: 'Catégorie',
-    workingTypePlaceholder: 'Type de travail',
-    locationPlaceholder: 'Lieu'
-  },
-  businesses: {
-    title: 'Pour les entreprises',
-    subtitle: 'Recrutez vos futurs talents aujourd\'hui',
-    ourExpertise: 'Notre expertise à votre service',
-    commitment: 'FilledIn Talent s\'engage à vous fournir un recrutement prêt pour l\'avenir pour la main-d\'œuvre énergétique de demain',
-    deepSourcing: 'Recherche Spécialisée Approfondie, Pas Seulement une Recherche',
-    precisionRecruitment: 'Recrutement de Précision pour les Experts en Énergie',
-    dataDrivern: 'Recrutement Basé sur les Données. Résultats Garantis',
-    noFeeGuarantee: 'Pas de Deuxième Entretien, Pas de Frais',
-    globalSourcing: 'Recherche Mondiale',
-    keyMetrics: 'Indicateurs Clés de Recrutement',
-    readyToHire: 'Prêt à Recruter avec Confiance?',
-    contactToday: 'Contactez-nous Aujourd\'hui'
-  },
-  jobSeekers: {
-    title: 'Pour les Chercheurs d\'Emploi',
-    readyForNext: 'Prêt pour votre prochaine évolution de carrière?',
-    interviewTips: 'Nos meilleurs conseils pour réussir votre prochain entretien!',
-    howToSucceed: 'Comment réussir aux entretiens?',
-    starMethod: 'LA MÉTHODE STAR',
-    knowCompany: 'Connaître l\'Entreprise',
-    reflectRole: 'Réfléchir au Rôle',
-    prepareStories: 'Préparez vos "Histoires"',
-    masterTechniques: 'Maîtriser les Techniques Éprouvées'
-  },
-  trends: {
-    industryTrends: 'Tendances de l\'Industrie',
-    hrTrends: 'Tendances RH',
-    aiRecruitment: 'IA & Acquisition de Talents',
-    oilGas: 'Pétrole et Gaz',
-    renewable: 'Énergie renouvelable',
-    leverageKnowledge: 'Tirez parti de vos connaissances avec les tendances mondiales FilledIn',
-    emergingSolutions: 'Les solutions émergentes comme l\'IA générative ont le potentiel de transformer les opérations RH'
-  },
-  expertise: {
-    technical: 'Technique',
-    hse: 'HSE',
-    corporateFunctions: 'Fonctions d\'entreprise',
-    executiveSearch: 'Recherche de cadres',
-    operations: 'Opérations',
-    generalManager: 'Directeur général',
-    electricalEngineer: 'Ingénieur électricien',
-    petroleumEngineer: 'Ingénieur pétrolier',
-    projectManager: 'Chef de projet',
-    mechanicalEngineer: 'Ingénieur mécanicien',
-    icEngineer: 'Ingénieur I&C',
-    finance: 'Finance',
-    cfo: 'Directeur financier',
-    operationManager: 'Directeur des opérations',
-    humanResources: 'Ressources humaines',
-    marketing: 'Marketing',
-    managingDirector: 'Directeur général'
-  },
-  footer: {
-    followUs: 'Suivez-nous',
-    getInTouch: 'Contactez-nous',
-    instagram: 'Instagram',
-    linkedin: 'LinkedIn',
-    youtube: 'YouTube'
-  },
-  auth: {
-    signIn: 'Se connecter',
-    signUp: 'S\'inscrire',
-    signOut: 'Se déconnecter',
-    email: 'Email',
-    password: 'Mot de passe',
-    confirmPassword: 'Confirmer le mot de passe',
-    firstName: 'Prénom',
-    lastName: 'Nom de famille',
-    role: 'Rôle',
-    business: 'Entreprise',
-    jobSeeker: 'Chercheur d\'emploi',
+import { common } from './fr/common';
+import { nav } from './fr/nav';
+import { hero } from './fr/hero';
+import { businesses } from './fr/businesses';
+import { jobSeekers } from './fr/jobSeekers';
+import { trends } from './fr/trends';
+import { expertise } from './fr/expertise';
+import { footer } from './fr/footer';
+import { ui } from './fr/ui';
+import { auth } from './fr/auth';
+import { login } from './fr/login';
+import { register } from './fr/register';
+import { dashboard } from './fr/dashboard';
+import { savedJobs } from './fr/savedJobs';
+import { settings } from './fr/settings';
+import { actions } from './fr/actions';
+import { analytics } from './fr/analytics';
+import { candidates } from './fr/candidates';
+import { status } from './fr/status';
+import { admin } from './fr/admin';
 
-    rememberMe: 'Se souvenir de moi',
-    alreadyHaveAccount: 'Vous avez déjà un compte ?',
-    dontHaveAccount: 'Vous n\'avez pas de compte ?',
-    createAccount: 'Créer un compte',
-    backToLogin: 'Retour à la connexion',
-    resetPassword: 'Réinitialiser le mot de passe',
-    sendResetEmail: 'Envoyer l\'email de réinitialisation',
-    checkEmail: 'Vérifiez votre email',
-    emailSent: 'Email envoyé',
-    verifyEmail: 'Vérifier l\'email',
-    emailVerified: 'Email vérifié',
-    resendVerification: 'Renvoyer la vérification',
-    accountCreated: 'Compte créé avec succès',
-    welcomeBack: 'Bon retour',
-    profileUpdated: 'Profil mis à jour',
-    passwordChanged: 'Mot de passe modifié',
-    errors: {
-      invalidEmail: 'Adresse email invalide',
-      emailRequired: 'L\'email est requis',
-      passwordRequired: 'Le mot de passe est requis',
-      passwordTooShort: 'Le mot de passe doit contenir au moins 8 caractères',
-      passwordMismatch: 'Les mots de passe ne correspondent pas',
-      firstNameRequired: 'Le prénom est requis',
-      lastNameRequired: 'Le nom de famille est requis',
-      roleRequired: 'Le rôle est requis',
-      userNotFound: 'Utilisateur non trouvé',
-      wrongPassword: 'Mot de passe incorrect',
-      emailAlreadyExists: 'Cet email existe déjà',
-      weakPassword: 'Le mot de passe est trop faible',
-      tooManyRequests: 'Trop de tentatives. Veuillez réessayer plus tard',
-      networkError: 'Erreur de réseau. Vérifiez votre connexion',
-      unknownError: 'Une erreur inattendue s\'est produite',
-      invalidCredentials: 'Identifiants invalides',
-      accountDisabled: 'Ce compte a été désactivé',
-      emailNotVerified: 'Veuillez vérifier votre email avant de continuer',
-      tokenExpired: 'Le lien a expiré. Veuillez en demander un nouveau',
-      invalidToken: 'Lien invalide ou expiré'
-    }
-  },
-  login: {
-    title: 'Connexion à votre compte',
-    subtitle: 'Bienvenue ! Veuillez entrer vos informations',
-    loginButton: 'Se connecter',
-    signingIn: 'Connexion en cours...',
-    loginSuccess: 'Connexion réussie ! Redirection...',
-    loginFailed: 'Échec de la connexion',
-    invalidCredentials: 'Email ou mot de passe incorrect',
-    accountLocked: 'Compte verrouillé en raison de trop de tentatives',
-    socialLogin: 'Ou connectez-vous avec',
-    continueWithGoogle: 'Continuer avec Google',
-    continueWithFacebook: 'Continuer avec Facebook',
-    continueWithLinkedIn: 'Continuer avec LinkedIn'
-  },
-  register: {
-    title: 'Créer votre compte',
-    subtitle: 'Commencez votre parcours avec nous',
-    registerButton: 'Créer un compte',
-    registering: 'Création du compte...',
-    registerSuccess: 'Compte créé avec succès ! Vérifiez votre email',
-    registerFailed: 'Échec de la création du compte',
-    emailExists: 'Un compte avec cet email existe déjà',
-    termsAndConditions: 'En créant un compte, vous acceptez nos',
-    termsLink: 'Conditions d\'utilisation',
-    andText: 'et',
-    privacyLink: 'Politique de confidentialité',
-    agreeToTerms: 'Vous devez accepter les conditions d\'utilisation',
-    selectRole: 'Sélectionnez votre rôle',
-    businessDescription: 'Je recherche des talents pour mon entreprise',
-    jobSeekerDescription: 'Je recherche des opportunités d\'emploi',
-    socialRegister: 'Ou inscrivez-vous avec',
-    continueWithGoogle: 'Continuer avec Google',
-    continueWithFacebook: 'Continuer avec Facebook',
-    continueWithLinkedIn: 'Continuer avec LinkedIn'
-  }
+export const fr = {
+  common,
+  nav,
+  hero,
+  businesses,
+  jobSeekers,
+  trends,
+  expertise,
+  footer,
+  ui,
+  auth,
+  login,
+  register,
+  dashboard,
+  savedJobs,
+  settings,
+  actions,
+  analytics,
+  candidates,
+  status,
+  admin
 };
+

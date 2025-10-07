@@ -15,6 +15,7 @@ import {
   Eye
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/lib/i18n/client';
 
 interface DashboardStats {
   totalApplications: number;
@@ -25,9 +26,10 @@ interface DashboardStats {
   recommendedJobs: any[];
 }
 
-export default async function JobSeekerDashboard({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
-  const { userData } = useAuth();
+export default function JobSeekerDashboard({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = React.use(params);
+  const { user } = useAuth();
+  const { t } = useTranslation(lang);
   const [stats, setStats] = useState<DashboardStats>({
     totalApplications: 0,
     pendingApplications: 0,
@@ -98,11 +100,11 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
   };
 
   const formatSalary = (min?: number, max?: number, currency = 'USD') => {
-    if (!min && !max) return 'Salary not specified';
+    if (!min && !max) return t('jobs.salaryNotSpecified');
     if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-    if (min) return `From $${min.toLocaleString()}`;
-    if (max) return `Up to $${max.toLocaleString()}`;
-    return 'Salary not specified';
+    if (min) return `${t('jobs.salaryFrom')} $${min.toLocaleString()}`;
+    if (max) return `${t('jobs.salaryUpTo')} $${max.toLocaleString()}`;
+    return t('jobs.salaryNotSpecified');
   };
 
   if (loading) {
@@ -127,10 +129,10 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {userData?.profile?.firstName || 'Job Seeker'}!
+              {t('jobseeker.welcomeBack', { name: user?.profile?.firstName || t('jobseeker.jobSeeker') })}
             </h1>
             <p className="text-gray-600 mt-1">
-              Track your applications and discover new opportunities.
+              {t('jobseeker.trackApplications')}
             </p>
           </div>
           <Link
@@ -138,7 +140,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Search className="h-4 w-4 mr-2" />
-            Find Jobs
+            {t('jobseeker.findJobs')}
           </Link>
         </div>
       </div>
@@ -151,7 +153,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
               <Send className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Applications</p>
+              <p className="text-sm font-medium text-gray-600">{t('dashboard.applications')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
             </div>
           </div>
@@ -163,7 +165,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
               <Clock className="h-6 w-6 text-yellow-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Pending</p>
+              <p className="text-sm font-medium text-gray-600">{t('applications.status.pending')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.pendingApplications}</p>
             </div>
           </div>
@@ -175,7 +177,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
               <Calendar className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Interviews</p>
+              <p className="text-sm font-medium text-gray-600">{t('jobseeker.interviews')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.interviewsScheduled}</p>
             </div>
           </div>
@@ -187,7 +189,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
               <Bookmark className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Saved Jobs</p>
+              <p className="text-sm font-medium text-gray-600">{t('jobseeker.savedJobs')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.savedJobs}</p>
             </div>
           </div>
@@ -200,12 +202,12 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Applications</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('jobseeker.recentApplications')}</h2>
               <Link
                 href={`/${lang}/jobseeker/applications`}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                View all
+                {t('viewAll')}
               </Link>
             </div>
           </div>
@@ -224,7 +226,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
                     </div>
                     <div className="text-right">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(application.status)}`}>
-                        {application.status}
+                        {t(`applications.status.${application.status.toLowerCase()}`)}
                       </span>
                       <p className="text-xs text-gray-500 mt-1">
                         {formatDate(application.createdAt)}
@@ -235,12 +237,12 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
               </div>
             ) : (
               <div className="text-center py-4">
-                <p className="text-gray-500 mb-2">No applications yet</p>
+                <p className="text-gray-500 mb-2">{t('jobseeker.noApplicationsYet')}</p>
                 <Link
                   href={`/${lang}/jobs`}
                   className="text-sm text-blue-600 hover:text-blue-700"
                 >
-                  Start applying to jobs
+                  {t('jobseeker.startApplying')}
                 </Link>
               </div>
             )}
@@ -251,12 +253,12 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recommended Jobs</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('jobseeker.recommendedJobs')}</h2>
               <Link
                 href={`/${lang}/jobs`}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                View all
+                {t('viewAll')}
               </Link>
             </div>
           </div>
@@ -295,7 +297,7 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">No recommended jobs available</p>
+              <p className="text-gray-500 text-center py-4">{t('jobseeker.noRecommendations')}</p>
             )}
           </div>
         </div>
@@ -303,38 +305,38 @@ export default async function JobSeekerDashboard({ params }: { params: Promise<{
 
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('jobseeker.quickActions')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href={`/${lang}/jobseeker/profile`}
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <FileText className="h-8 w-8 text-blue-600 mr-3" />
-            <div>
-              <h3 className="font-medium text-gray-900">Update Profile</h3>
-              <p className="text-sm text-gray-500">Keep your profile current</p>
+            <FileText className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <h3 className="font-medium text-gray-900">{t('jobseeker.updateProfile')}</h3>
+              <p className="text-sm text-gray-600">{t('jobseeker.keepProfileCurrent')}</p>
             </div>
           </Link>
 
           <Link
             href={`/${lang}/jobs`}
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <Search className="h-8 w-8 text-blue-600 mr-3" />
-            <div>
-              <h3 className="font-medium text-gray-900">Search Jobs</h3>
-              <p className="text-sm text-gray-500">Find your next opportunity</p>
+            <Search className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <h3 className="font-medium text-gray-900">{t('jobseeker.searchJobs')}</h3>
+              <p className="text-sm text-gray-600">{t('jobseeker.findOpportunity')}</p>
             </div>
           </Link>
 
           <Link
             href={`/${lang}/jobseeker/saved-jobs`}
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <Bookmark className="h-8 w-8 text-blue-600 mr-3" />
-            <div>
-              <h3 className="font-medium text-gray-900">Saved Jobs</h3>
-              <p className="text-sm text-gray-500">Review your saved positions</p>
+            <Bookmark className="h-8 w-8 text-purple-600" />
+            <div className="ml-3">
+              <h3 className="font-medium text-gray-900">{t('jobseeker.savedJobs')}</h3>
+              <p className="text-sm text-gray-600">{t('jobseeker.reviewSavedPositions')}</p>
             </div>
           </Link>
         </div>

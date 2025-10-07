@@ -1,0 +1,22 @@
+export const common = {
+  filledinTalent: 'FilledIn Talent',
+  tagline: 'The Alternative Solution',
+  globalPartner: 'Global Energy Talent Partner',
+  search: 'Search',
+  apply: 'Apply',
+  submit: 'Submit',
+  cancel: 'Cancel',
+  viewMore: 'View More',
+  loading: 'Loading...',
+  error: 'Error',
+  success: 'Success',
+  save: 'Save',
+  export: 'Export',
+  refresh: 'Refresh',
+  user: 'User',
+  role: 'Role',
+  actions: 'Actions',
+  previous: 'Previous',
+  next: 'Next',
+  sortBy: 'Sort By'
+};

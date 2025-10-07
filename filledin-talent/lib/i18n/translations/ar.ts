@@ -1,185 +1,46 @@
-export const ar = {
-  common: {
-    filledinTalent: 'FilledIn Talent',
-    tagline: 'الحل البديل',
-    globalPartner: 'شريك المواهب العالمي للطاقة',
-    search: 'بحث',
-    apply: 'تقديم',
-    submit: 'إرسال',
-    cancel: 'إلغاء',
-    viewMore: 'عرض المزيد',
-    loading: 'جاري التحميل...',
-    error: 'خطأ',
-    success: 'نجاح'
-  },
-  nav: {
-    businesses: 'للشركات',
-    trends: 'الاتجاهات',
-    expertise: 'خبرتنا',
-    engagement: 'المشاركة',
-    jobSeekers: 'الباحثون عن عمل',
-    jobSearch: 'البحث عن وظيفة',
-    interviewTips: 'نصائح المقابلة',
-    dropCV: 'إرسال السيرة الذاتية',
-    aboutFINT: 'حول FINT',
-    languages: 'اللغات'
-  },
-  hero: {
-    title: 'الحل البديل',
-    subtitle: 'شريك المواهب العالمي للطاقة',
-    description: 'ربط الخبرات من الخزان إلى المصفاة أو من المصدر إلى الشبكة',
-    forBusinesses: 'للشركات',
-    forJobSeekers: 'للباحثين عن عمل',
-    searchPlaceholder: 'كلمات مفتاحية، المسمى الوظيفي',
-    categoryPlaceholder: 'الفئة',
-    workingTypePlaceholder: 'نوع العمل',
-    locationPlaceholder: 'الموقع'
-  },
-  businesses: {
-    title: 'للشركات',
-    subtitle: 'وظف مواهب المستقبل اليوم',
-    ourExpertise: 'خبرتنا في خدمتك',
-    commitment: 'FilledIn Talent ملتزمة بتقديم التوظيف الجاهز للمستقبل لقوة العمل في قطاع الطاقة',
-    deepSourcing: 'البحث المتخصص العميق، وليس مجرد البحث',
-    precisionRecruitment: 'التوظيف الدقيق لخبراء الطاقة',
-    dataDrivern: 'التوظيف القائم على البيانات. نتائج مضمونة',
-    noFeeGuarantee: 'لا رسوم بدون مقابلة ثانية',
-    globalSourcing: 'البحث العالمي',
-    keyMetrics: 'مؤشرات التوظيف الرئيسية',
-    readyToHire: 'مستعد للتوظيف بثقة؟',
-    contactToday: 'اتصل بنا اليوم'
-  },
-  jobSeekers: {
-    title: 'للباحثين عن عمل',
-    readyForNext: 'مستعد لخطوتك المهنية التالية؟',
-    interviewTips: 'أفضل نصائحنا لتتميز في مقابلتك القادمة!',
-    howToSucceed: 'كيف تنجح في المقابلات؟',
-    starMethod: 'طريقة STAR',
-    knowCompany: 'اعرف الشركة',
-    reflectRole: 'فكر في الدور',
-    prepareStories: 'حضر "قصصك"',
-    masterTechniques: 'أتقن التقنيات المثبتة'
-  },
-  trends: {
-    industryTrends: 'اتجاهات الصناعة',
-    hrTrends: 'اتجاهات الموارد البشرية',
-    aiRecruitment: 'الذكاء الاصطناعي والتوظيف',
-    oilGas: 'النفط والغاز',
-    renewable: 'الطاقة المتجددة',
-    leverageKnowledge: 'استفد من معرفتك مع اتجاهات FilledIn العالمية',
-    emergingSolutions: 'الحلول الناشئة مثل الذكاء الاصطناعي التوليدي لديها القدرة على تحويل عمليات الموارد البشرية'
-  },
-  expertise: {
-    technical: 'تقني',
-    hse: 'الصحة والسلامة والبيئة',
-    corporateFunctions: 'الوظائف المؤسسية',
-    executiveSearch: 'البحث التنفيذي',
-    operations: 'العمليات',
-    generalManager: 'المدير العام',
-    electricalEngineer: 'مهندس كهربائي',
-    petroleumEngineer: 'مهندس بترول',
-    projectManager: 'مدير مشروع',
-    mechanicalEngineer: 'مهندس ميكانيكي',
-    icEngineer: 'مهندس I&C',
-    finance: 'المالية',
-    cfo: 'المدير المالي',
-    operationManager: 'مدير العمليات',
-    humanResources: 'الموارد البشرية',
-    marketing: 'التسويق',
-    managingDirector: 'المدير الإداري'
-  },
-  footer: {
-    followUs: 'تابعنا',
-    getInTouch: 'تواصل معنا',
-    instagram: 'انستغرام',
-    linkedin: 'لينكد إن',
-    youtube: 'يوتيوب'
-  },
-  auth: {
-    signIn: 'تسجيل الدخول',
-    signUp: 'إنشاء حساب',
-    signOut: 'تسجيل الخروج',
-    email: 'البريد الإلكتروني',
-    password: 'كلمة المرور',
-    confirmPassword: 'تأكيد كلمة المرور',
-    firstName: 'الاسم الأول',
-    lastName: 'اسم العائلة',
-    role: 'الدور',
-    business: 'شركة',
-    jobSeeker: 'باحث عن عمل',
+import { common } from './ar/common';
+import { nav } from './ar/nav';
+import { hero } from './ar/hero';
+import { businesses } from './ar/businesses';
+import { jobSeekers } from './ar/jobSeekers';
+import { trends } from './ar/trends';
+import { expertise } from './ar/expertise';
+import { footer } from './ar/footer';
+import { ui } from './ar/ui';
+import { auth } from './ar/auth';
+import { login } from './ar/login';
+import { register } from './ar/register';
+import { dashboard } from './ar/dashboard';
+import { savedJobs } from './ar/savedJobs';
+import { profile } from './ar/profile';
+import { settings } from './ar/settings';
+import { actions } from './ar/actions';
+import { analytics } from './ar/analytics';
+import { candidates } from './ar/candidates';
+import { status } from './ar/status';
+import { admin } from './ar/admin';
 
-    rememberMe: 'تذكرني',
-    alreadyHaveAccount: 'لديك حساب بالفعل؟',
-    dontHaveAccount: 'ليس لديك حساب؟',
-    createAccount: 'إنشاء حساب',
-    backToLogin: 'العودة لتسجيل الدخول',
-    resetPassword: 'إعادة تعيين كلمة المرور',
-    sendResetEmail: 'إرسال رابط إعادة التعيين',
-    checkEmail: 'تحقق من بريدك الإلكتروني',
-    emailSent: 'تم إرسال البريد الإلكتروني',
-    verifyEmail: 'تحقق من البريد الإلكتروني',
-    emailVerified: 'تم التحقق من البريد الإلكتروني',
-    resendVerification: 'إعادة إرسال التحقق',
-    accountCreated: 'تم إنشاء الحساب بنجاح',
-    welcomeBack: 'مرحباً بعودتك',
-    profileUpdated: 'تم تحديث الملف الشخصي',
-    passwordChanged: 'تم تغيير كلمة المرور',
-    errors: {
-      invalidEmail: 'عنوان بريد إلكتروني غير صحيح',
-      emailRequired: 'البريد الإلكتروني مطلوب',
-      passwordRequired: 'كلمة المرور مطلوبة',
-      passwordTooShort: 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل',
-      passwordMismatch: 'كلمات المرور غير متطابقة',
-      firstNameRequired: 'الاسم الأول مطلوب',
-      lastNameRequired: 'اسم العائلة مطلوب',
-      roleRequired: 'الدور مطلوب',
-      userNotFound: 'المستخدم غير موجود',
-      wrongPassword: 'كلمة مرور خاطئة',
-      emailAlreadyExists: 'هذا البريد الإلكتروني موجود بالفعل',
-      weakPassword: 'كلمة المرور ضعيفة جداً',
-      tooManyRequests: 'محاولات كثيرة جداً. حاول مرة أخرى لاحقاً',
-      networkError: 'خطأ في الشبكة. تحقق من اتصالك',
-      unknownError: 'حدث خطأ غير متوقع',
-      invalidCredentials: 'بيانات اعتماد غير صحيحة',
-      accountDisabled: 'تم تعطيل هذا الحساب',
-      emailNotVerified: 'يرجى التحقق من بريدك الإلكتروني قبل المتابعة',
-      tokenExpired: 'انتهت صلاحية الرابط. يرجى طلب رابط جديد',
-      invalidToken: 'رابط غير صحيح أو منتهي الصلاحية'
-    }
-  },
-  login: {
-    title: 'تسجيل الدخول إلى حسابك',
-    subtitle: 'مرحباً! يرجى إدخال بياناتك',
-    loginButton: 'تسجيل الدخول',
-    signingIn: 'جاري تسجيل الدخول...',
-    loginSuccess: 'تم تسجيل الدخول بنجاح! جاري التوجيه...',
-    loginFailed: 'فشل تسجيل الدخول',
-    invalidCredentials: 'بريد إلكتروني أو كلمة مرور خاطئة',
-    accountLocked: 'تم قفل الحساب بسبب محاولات كثيرة',
-    socialLogin: 'أو سجل الدخول باستخدام',
-    continueWithGoogle: 'المتابعة مع جوجل',
-    continueWithFacebook: 'المتابعة مع فيسبوك',
-    continueWithLinkedIn: 'المتابعة مع لينكد إن'
-  },
-  register: {
-    title: 'إنشاء حسابك',
-    subtitle: 'ابدأ رحلتك معنا',
-    registerButton: 'إنشاء حساب',
-    registering: 'جاري إنشاء الحساب...',
-    registerSuccess: 'تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني',
-    registerFailed: 'فشل إنشاء الحساب',
-    emailExists: 'يوجد حساب بهذا البريد الإلكتروني بالفعل',
-    termsAndConditions: 'بإنشاء حساب، فإنك توافق على',
-    termsLink: 'شروط الاستخدام',
-    andText: 'و',
-    privacyLink: 'سياسة الخصوصية',
-    agreeToTerms: 'يجب الموافقة على شروط الاستخدام',
-    selectRole: 'اختر دورك',
-    businessDescription: 'أبحث عن مواهب لشركتي',
-    jobSeekerDescription: 'أبحث عن فرص عمل',
-    socialRegister: 'أو سجل باستخدام',
-    continueWithGoogle: 'المتابعة مع جوجل',
-    continueWithFacebook: 'المتابعة مع فيسبوك',
-    continueWithLinkedIn: 'المتابعة مع لينكد إن'
-  }
+export const ar = {
+  common,
+  nav,
+  hero,
+  businesses,
+  jobSeekers,
+  trends,
+  expertise,
+  footer,
+  ui,
+  auth,
+  login,
+  register,
+  dashboard,
+  savedJobs,
+  profile,
+  settings,
+  actions,
+  analytics,
+  candidates,
+  status,
+  admin
 };
+

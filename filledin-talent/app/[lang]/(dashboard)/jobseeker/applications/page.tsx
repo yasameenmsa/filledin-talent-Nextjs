@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n/client';
 import { 
   Search, 
   Filter, 
@@ -53,8 +54,9 @@ interface Application {
   };
 }
 
-export default async function JobSeekerApplicationsPage({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
+export default function JobSeekerApplicationsPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = React.use(params);
+  const { t } = useTranslation(lang);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -98,7 +100,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
   };
 
   const handleWithdrawApplication = async (applicationId: string) => {
-    if (!confirm('Are you sure you want to withdraw this application? This action cannot be undone.')) {
+    if (!confirm(t('applications.withdrawConfirmation'))) {
       return;
     }
 
@@ -110,11 +112,11 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
       if (response.ok) {
         fetchApplications(); // Refresh the list
       } else {
-        alert('Failed to withdraw application');
+        alert(t('applications.withdrawFailed'));
       }
     } catch (error) {
       console.error('Error withdrawing application:', error);
-      alert('Failed to withdraw application');
+      alert(t('applications.withdrawFailed'));
     }
   };
 
@@ -157,11 +159,11 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
   };
 
   const formatSalary = (min?: number, max?: number, currency = 'USD') => {
-    if (!min && !max) return 'Not specified';
+    if (!min && !max) return t('jobs.salaryNotSpecified');
     if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-    if (min) return `From $${min.toLocaleString()}`;
-    if (max) return `Up to $${max.toLocaleString()}`;
-    return 'Not specified';
+    if (min) return t('jobs.salaryFrom', { amount: `$${min.toLocaleString()}` });
+    if (max) return t('jobs.salaryUpTo', { amount: `$${max.toLocaleString()}` });
+    return t('jobs.salaryNotSpecified');
   };
 
   const formatDate = (dateString: string) => {
@@ -203,34 +205,34 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Applications</h1>
-          <p className="text-gray-600 mt-1">Track the status of your job applications</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('applications.myApplications')}</h1>
+          <p className="text-gray-600 mt-1">{t('applications.trackStatus')}</p>
         </div>
         <Link
           href={`/${lang}/jobs`}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Search className="h-4 w-4 mr-2" />
-          Find More Jobs
+          {t('applications.findMoreJobs')}
         </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Total Applications</p>
+          <p className="text-sm font-medium text-gray-600">{t('applications.totalApplications')}</p>
           <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Pending</p>
+          <p className="text-sm font-medium text-gray-600">{t('applications.status.pending')}</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.pendingApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Shortlisted</p>
+          <p className="text-sm font-medium text-gray-600">{t('applications.status.shortlisted')}</p>
           <p className="text-2xl font-bold text-green-600">{stats.shortlistedApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">Rejected</p>
+          <p className="text-sm font-medium text-gray-600">{t('applications.status.rejected')}</p>
           <p className="text-2xl font-bold text-red-600">{stats.rejectedApplications}</p>
         </div>
       </div>
@@ -243,7 +245,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search applications..."
+                placeholder={t('applications.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -256,13 +258,13 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="reviewing">Reviewing</option>
-              <option value="shortlisted">Shortlisted</option>
-              <option value="interviewed">Interviewed</option>
-              <option value="offered">Offered</option>
-              <option value="rejected">Rejected</option>
+              <option value="all">{t('applications.allStatus')}</option>
+              <option value="pending">{t('applications.status.pending')}</option>
+              <option value="reviewing">{t('applications.status.reviewing')}</option>
+              <option value="shortlisted">{t('applications.status.shortlisted')}</option>
+              <option value="interviewed">{t('applications.status.interviewed')}</option>
+              <option value="offered">{t('applications.status.offered')}</option>
+              <option value="rejected">{t('applications.status.rejected')}</option>
             </select>
           </div>
         </div>
@@ -308,7 +310,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                     <div className="flex items-center space-x-2">
                       <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(application.status)}`}>
                         {getStatusIcon(application.status)}
-                        <span className="ml-1 capitalize">{application.status}</span>
+                        <span className="ml-1 capitalize">{t(`applications.status.${application.status}`)}</span>
                       </span>
                     </div>
                   </div>
@@ -318,16 +320,16 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                     <div className="bg-blue-50 p-3 rounded-lg mb-3">
                       <div className="flex items-center text-blue-800 mb-1">
                         <Calendar className="h-4 w-4 mr-1" />
-                        <span className="font-medium">Interview Scheduled</span>
+                        <span className="font-medium">{t('applications.interviewScheduled')}</span>
                       </div>
                       <div className="text-sm text-blue-700">
-                        <p>Date: {formatDateTime(application.interviewDetails.scheduledAt)}</p>
-                        <p>Type: {application.interviewDetails.type}</p>
+                        <p>{t('applications.date')}: {formatDateTime(application.interviewDetails.scheduledAt)}</p>
+                        <p>{t('applications.type')}: {application.interviewDetails.type}</p>
                         {application.interviewDetails.location && (
-                          <p>Location: {application.interviewDetails.location}</p>
+                          <p>{t('applications.location')}: {application.interviewDetails.location}</p>
                         )}
                         {application.interviewDetails.notes && (
-                          <p>Notes: {application.interviewDetails.notes}</p>
+                          <p>{t('applications.notes')}: {application.interviewDetails.notes}</p>
                         )}
                       </div>
                     </div>
@@ -338,7 +340,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                     <div className="bg-gray-50 p-3 rounded-lg mb-3">
                       <div className="flex items-center text-gray-800 mb-1">
                         <FileText className="h-4 w-4 mr-1" />
-                        <span className="font-medium">Employer Notes</span>
+                        <span className="font-medium">{t('applications.employerNotes')}</span>
                       </div>
                       <p className="text-sm text-gray-700">{application.notes}</p>
                     </div>
@@ -346,9 +348,12 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
 
                   {/* Rating */}
                   {application.rating && (
-                    <div className="mb-3">
-                      <span className="text-sm text-gray-600">Rating: </span>
-                      <div className="inline-flex">
+                    <div className="bg-yellow-50 p-3 rounded-lg mb-3">
+                      <div className="flex items-center text-yellow-800 mb-1">
+                        <FileText className="h-4 w-4 mr-1" />
+                        <span className="font-medium">{t('applications.rating')}</span>
+                      </div>
+                      <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
                           <span
                             key={i}
@@ -359,6 +364,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                             ★
                           </span>
                         ))}
+                        <span className="ml-2 text-sm text-yellow-700">{application.rating}/5</span>
                       </div>
                     </div>
                   )}
@@ -366,11 +372,11 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center space-x-6 text-sm text-gray-500">
                       <div>
-                        Applied {formatDate(application.createdAt)}
+                        {t('applications.applied')} {formatDate(application.createdAt)}
                       </div>
                       {application.updatedAt !== application.createdAt && (
                         <div>
-                          Updated {formatDate(application.updatedAt)}
+                          {t('applications.updated')} {formatDate(application.updatedAt)}
                         </div>
                       )}
                       {application.cvUrl && (
@@ -381,7 +387,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                           className="flex items-center text-blue-600 hover:text-blue-700"
                         >
                           <FileText className="h-4 w-4 mr-1" />
-                          View CV
+                          {t('applications.viewCV')}
                         </a>
                       )}
                     </div>
@@ -392,7 +398,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                         className="inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        View Job
+                        {t('applications.viewJob')}
                       </Link>
                       {application.status === 'pending' && (
                         <button
@@ -400,7 +406,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
                           className="inline-flex items-center px-3 py-1 text-sm text-red-600 hover:text-red-700"
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
-                          Withdraw
+                          {t('applications.withdraw')}
                         </button>
                       )}
                     </div>
@@ -415,16 +421,16 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
               <div className="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-6 w-6 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No applications yet</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('applications.noApplicationsYet')}</h3>
               <p className="text-gray-500 mb-6">
-                Start applying to jobs to track your applications here.
+                {t('applications.startApplying')}
               </p>
               <Link
                 href={`/${lang}/jobs`}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Search className="h-4 w-4 mr-2" />
-                Browse Jobs
+                {t('applications.browseJobs')}
               </Link>
             </div>
           </div>
@@ -435,7 +441,7 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-500">
-            Page {currentPage} of {totalPages}
+            {t('applications.pageOf', { current: currentPage, total: totalPages })}
           </div>
           <div className="flex space-x-2">
             <button
@@ -443,14 +449,14 @@ export default async function JobSeekerApplicationsPage({ params }: { params: Pr
               disabled={currentPage === 1}
               className="px-3 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Previous
+              {t('applications.previous')}
             </button>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="px-3 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Next
+              {t('applications.next')}
             </button>
           </div>
         </div>

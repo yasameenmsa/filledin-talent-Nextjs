@@ -14,6 +14,7 @@ import {
   XCircle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/lib/i18n/client';
 
 interface DashboardStats {
   totalJobs: number;
@@ -24,8 +25,9 @@ interface DashboardStats {
   recentJobs: any[];
 }
 
-export default async function EmployerDashboard({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
+export default function EmployerDashboard({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = React.use(params);
+  const { t } = useTranslation(lang);
   const { userData } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalJobs: 0,
@@ -113,10 +115,10 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {userData?.profile?.firstName || 'Employer'}!
+              {t('dashboard.employer.welcomeBack', { name: userData?.profile?.firstName || t('dashboard.employer.employer') })}
             </h1>
             <p className="text-gray-600 mt-1">
-              Here's what's happening with your job postings today.
+              {t('dashboard.employer.todayOverview')}
             </p>
           </div>
           <Link
@@ -124,7 +126,7 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Post New Job
+            {t('dashboard.employer.postNewJob')}
           </Link>
         </div>
       </div>
@@ -137,7 +139,7 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
               <Briefcase className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Jobs</p>
+              <p className="text-sm font-medium text-gray-600">{t('dashboard.employer.totalJobs')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalJobs}</p>
             </div>
           </div>
@@ -149,7 +151,7 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
               <CheckCircle className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Active Jobs</p>
+              <p className="text-sm font-medium text-gray-600">{t('dashboard.employer.activeJobs')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.activeJobs}</p>
             </div>
           </div>
@@ -161,7 +163,7 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
               <Users className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Applications</p>
+              <p className="text-sm font-medium text-gray-600">{t('dashboard.applications')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
             </div>
           </div>
@@ -173,7 +175,7 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
               <Eye className="h-6 w-6 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Views</p>
+              <p className="text-sm font-medium text-gray-600">{t('dashboard.employer.totalViews')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalViews}</p>
             </div>
           </div>
@@ -186,12 +188,12 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Applications</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('dashboard.employer.recentApplications')}</h2>
               <Link
                 href={`/${lang}/employer/candidates`}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                View all
+                {t('dashboard.admin.viewAll')}
               </Link>
             </div>
           </div>
@@ -225,7 +227,7 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">No recent applications</p>
+              <p className="text-gray-500 text-center py-4">{t('dashboard.employer.noRecentApplications')}</p>
             )}
           </div>
         </div>
@@ -234,12 +236,12 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Jobs</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('dashboard.employer.recentJobs')}</h2>
               <Link
                 href={`/${lang}/employer/jobs`}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                View all
+                {t('dashboard.admin.viewAll')}
               </Link>
             </div>
           </div>
@@ -259,11 +261,11 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                           job.isActive ? 'text-green-600 bg-green-100' : 'text-gray-600 bg-gray-100'
                         }`}>
-                          {job.isActive ? 'Active' : 'Inactive'}
+                          {job.isActive ? t('dashboard.status.active') : t('dashboard.status.inactive')}
                         </span>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        {job.applicationCount || 0} applications
+                        {t('dashboard.employer.applicationsCount', { count: job.applicationCount || 0 })}
                       </p>
                     </div>
                   </div>
@@ -271,12 +273,12 @@ export default async function EmployerDashboard({ params }: { params: Promise<{ 
               </div>
             ) : (
               <div className="text-center py-4">
-                <p className="text-gray-500 mb-2">No jobs posted yet</p>
+                <p className="text-gray-500 mb-2">{t('dashboard.employer.noJobsPosted')}</p>
                 <Link
                   href={`/${lang}/employer/jobs/create`}
                   className="text-sm text-blue-600 hover:text-blue-700"
                 >
-                  Post your first job
+                  {t('dashboard.employer.postFirstJob')}
                 </Link>
               </div>
             )}

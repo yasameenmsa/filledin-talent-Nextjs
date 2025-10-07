@@ -5,7 +5,8 @@ import TrendsSection from '@/components/sections/TrendsSection';
 import StatsSection from '@/components/sections/StatsSection';
 import CTASection from '@/components/sections/CTASection';
 
-export default async function HomePage({ params: { lang: currentLanguage } }: { params: { lang: string } }) {
+export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang: currentLanguage } = await params;
   return (
     <>
 <JobSearchSection currentLanguage={currentLanguage} />

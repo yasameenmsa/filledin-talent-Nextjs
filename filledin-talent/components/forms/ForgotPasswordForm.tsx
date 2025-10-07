@@ -49,10 +49,13 @@ export default function ForgotPasswordForm({ lang }: ForgotPasswordFormProps) {
     try {
       await sendPasswordResetEmail(auth, data.email);
       setIsSuccess(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Password reset error:', error);
       
-      switch (error.code) {
+      // Type guard to check if error has a code property
+      const firebaseError = error as { code?: string };
+      
+      switch (firebaseError.code) {
         case 'auth/user-not-found':
           setError(t('auth.errors.userNotFound'));
           break;

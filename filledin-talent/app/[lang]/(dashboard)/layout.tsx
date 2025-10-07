@@ -2,21 +2,24 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  params: Promise<{ lang: string }>;
 }
 
-export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
-  const { lang } = await params;
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const params = useParams();
+  const lang = params.lang as string;
   const { user, userData, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useTranslation(lang);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -29,7 +32,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading dashboard...</p>
+          <p className="text-gray-600">{t('dashboard.loading')}</p>
         </div>
       </div>
     );

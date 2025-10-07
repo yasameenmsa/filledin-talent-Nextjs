@@ -1,86 +1,118 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { auth } from '@/lib/firebase/config';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  User as FirebaseUser
-} from 'firebase/auth';
+import { useParams } from 'next/navigation';
 
 interface UserData {
   _id: string;
-  firebaseUid: string;
   email: string;
-  role: 'employer' | 'jobseeker' | 'admin';
-  profile?: {
+  role: 'jobseeker' | 'employer' | 'admin';
+  profile: {
     firstName?: string;
     lastName?: string;
-    // Add other profile fields as needed
+    phone?: string;
+    company?: string;
+    position?: string;
+    location?: string;
+    bio?: string;
+    skills?: string[];
+    experience?: {
+      company: string;
+      position: string;
+      duration: string;
+      description: string;
+    }[];
+    education?: {
+      institution: string;
+      degree: string;
+      field: string;
+      year: string;
+    }[];
+    cvUrl?: string;
+    profileImage?: string;
   };
-  // Add other top-level user data fields as needed
+  preferences?: {
+    jobCategories: string[];
+    locations: string[];
+    workingTypes: string[];
+    salaryExpectation?: {
+      min: number;
+      max: number;
+      currency: string;
+    };
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface AuthContextType {
-  user: FirebaseUser | null;
-  userData: UserData | null;
+  user: UserData | null;
+  userData: UserData | null; // Alias for user for backward compatibility
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, userData: UserData) => Promise<void>;
+  register: (email: string, password: string, role: string, profile: { firstName: string; lastName: string }) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<UserData>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const pathname = usePathname();
-  const lang = pathname.split('/')[1];
+  const params = useParams();
+  const lang = params?.lang as string || 'en';
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        // Fetch additional user data from MongoDB
-        const response = await fetch(`/api/users/${firebaseUser.uid}`);
-        if (response.ok) {
-          const data = await response.json();
-          setUserData(data);
+    // Check for stored JWT token on app load
+    const checkAuthStatus = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          // Verify token with backend
+          const response = await fetch('/api/auth/verify', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+          } else {
+            // Token is invalid, remove it
+            localStorage.removeItem('authToken');
+          }
         }
-      } else {
-        setUser(null);
-        setUserData(null);
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        localStorage.removeItem('authToken');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
 
-    return unsubscribe;
+    checkAuthStatus();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // Fetch user data from MongoDB
-      const response = await fetch(`/api/users/${userCredential.user.uid}`);
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
       if (response.ok) {
-        const data = await response.json();
-        setUserData(data);
-        
-        // Redirect based on user role
-        if (data.role === 'employer') {
-          router.push(`/${lang}/employer/dashboard`);
-        } else if (data.role === 'jobseeker') {
-          router.push(`/${lang}/jobseeker/dashboard`);
-        } else if (data.role === 'admin') {
-          router.push(`/${lang}/admin/dashboard`);
-        }
+        const { user: userData, token } = await response.json();
+        localStorage.setItem('authToken', token);
+        setUser(userData);
+        router.push(`/${lang}/dashboard`);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -88,25 +120,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (email: string, password: string, userData: Omit<UserData, '_id' | 'firebaseUid' | 'email'>) => {
+  const register = async (email: string, password: string, role: string, profile: { firstName: string; lastName: string }) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Map frontend role values to backend role values
+      const mappedRole = role === 'business' ? 'employer' : role === 'jobSeeker' ? 'jobseeker' : role;
       
-      // Save user data to MongoDB
+      // Register user in MongoDB
       const response = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firebaseUid: userCredential.user.uid,
           email,
-          ...userData,
+          password,
+          role: mappedRole,
+          profile: {
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+          },
         }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setUserData(data);
+        const userData = await response.json();
+        
+        // Auto-login after successful registration
+        await login(email, password);
+        
         router.push(`/${lang}/onboarding`);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -116,10 +159,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      localStorage.removeItem('authToken');
       setUser(null);
-      setUserData(null);
-      router.push(`/${lang}`);
+      router.push(`/${lang}/login`);
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
@@ -128,18 +170,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateProfile = async (data: Partial<UserData>) => {
     try {
-      const response = await fetch(`/api/users/${user?.uid}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      if (!user) throw new Error('No user logged in');
+      
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`/api/users/${user._id}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(data),
       });
 
       if (response.ok) {
         const updatedData = await response.json();
-        setUserData(updatedData);
+        setUser(updatedData);
       }
     } catch (error) {
-      console.error('Profile update error:', error);
+      console.error('Update profile error:', error);
       throw error;
     }
   };
@@ -147,7 +195,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
-      userData,
+      userData: user, // Alias for backward compatibility
       loading,
       login,
       register,

@@ -1,0 +1,20 @@
+export const profile = {
+  title: 'Profile',
+  personalInfo: 'Personal Information',
+  professionalInfo: 'Professional Information',
+  skills: 'Skills',
+  experience: 'Experience',
+  education: 'Education',
+  certifications: 'Certifications',
+  portfolio: 'Portfolio',
+  preferences: 'Preferences',
+  privacy: 'Privacy Settings',
+  notifications: 'Notification Settings',
+  account: 'Account Settings',
+  security: 'Security',
+  billing: 'Billing',
+  subscription: 'Subscription',
+  support: 'Support',
+  help: 'Help',
+  feedback: 'Feedback'
+};

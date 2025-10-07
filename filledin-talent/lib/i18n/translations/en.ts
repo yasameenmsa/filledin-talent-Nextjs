@@ -1,172 +1,45 @@
+import { common } from './en/common';
+import { nav } from './en/nav';
+import { hero } from './en/hero';
+import { businesses } from './en/businesses';
+import { jobSeekers } from './en/jobSeekers';
+import { trends } from './en/trends';
+import { expertise } from './en/expertise';
+import { footer } from './en/footer';
+import { ui } from './en/ui';
+import { auth } from './en/auth';
+import { login } from './en/login';
+import { register } from './en/register';
+import { dashboard } from './en/dashboard';
+import { savedJobs } from './en/savedJobs';
+import { profile } from './en/profile';
+import { settings } from './en/settings';
+import { actions } from './en/actions';
+import { analytics } from './en/analytics';
+import { candidates } from './en/candidates';
+import { status } from './en/status';
+import { admin } from './en/admin';
+
 export const en = {
-  common: {
-    filledinTalent: 'FilledIn Talent',
-    tagline: 'The Alternative Solution',
-    globalPartner: 'Global Energy Talent Partner',
-    search: 'Search',
-    apply: 'Apply',
-    submit: 'Submit',
-    cancel: 'Cancel',
-    viewMore: 'View More',
-    loading: 'Loading...',
-    error: 'Error',
-    success: 'Success'
-  },
-  nav: {
-    businesses: 'Businesses',
-    trends: 'Trends',
-    expertise: 'Expertise',
-    engagement: 'Engagement',
-    jobSeekers: 'Job seekers',
-    jobSearch: 'Job Search',
-    interviewTips: 'Interview tips',
-    dropCV: 'Drop CV',
-    aboutFINT: 'About FINT',
-    languages: 'Languages'
-  },
-  hero: {
-    title: 'The Alternative Solution',
-    subtitle: 'Global Energy Talent Partner',
-    description: 'Connecting expertise from the reservoir to the refinery or from the source to the grid',
-    forBusinesses: 'For Businesses',
-    forJobSeekers: 'For Job Seekers',
-    searchPlaceholder: 'Keywords, Job Title',
-    categoryPlaceholder: 'Category',
-    workingTypePlaceholder: 'Working Type',
-    locationPlaceholder: 'Location'
-  },
-  businesses: {
-    title: 'For Businesses',
-    subtitle: "Hire Tomorrow's Talent Today",
-    ourExpertise: "Our Expertise at Your Service",
-    commitment: 'FilledIn Talent is committed to delivering future-ready recruitment for the energy sector workforce.',
-    deepSourcing: 'Deep, not just broad, sourcing',
-    precisionRecruitment: 'Precision recruitment for energy experts',
-    dataDrivern: 'Data-driven recruitment. Guaranteed results',
-    noFeeGuarantee: 'No fee without a second interview',
-    globalSourcing: 'Global Sourcing',
-    keyMetrics: 'Key Recruitment Metrics',
-    readyToHire: 'Ready to hire with confidence?',
-    contactToday: 'Contact us today'
-  },
-  jobSeekers: {
-    title: 'For Job Seekers',
-    readyForNext: 'Ready for your next career move?',
-    interviewTips: 'Our top tips to ace your next interview!',
-    howToSucceed: 'How to succeed in interviews?',
-    starMethod: 'STAR Method',
-    knowCompany: 'Know the company',
-    reflectRole: 'Reflect on the role',
-    prepareStories: 'Prepare your “stories”',
-    masterTechniques: 'Master proven techniques'
-  },
-  trends: {
-    industryTrends: 'Industry Trends',
-    hrTrends: 'HR Trends',
-    aiRecruitment: 'AI & Recruitment',
-    oilGas: 'Oil & Gas',
-    renewable: 'Renewable Energy',
-    leverageKnowledge: "Leverage your knowledge with FilledIn's global trends",
-    emergingSolutions: 'Emerging solutions like generative AI have the potential to transform HR processes'
-  },
-  expertise: {
-    technical: 'Technical',
-    hse: 'HSE',
-    corporateFunctions: 'Corporate Functions',
-    executiveSearch: 'Executive Search',
-    operations: 'Operations',
-    generalManager: 'General Manager',
-    electricalEngineer: 'Electrical Engineer',
-    petroleumEngineer: 'Petroleum Engineer',
-    projectManager: 'Project Manager',
-    mechanicalEngineer: 'Mechanical engineer',
-    icEngineer: 'I&C engineer',
-    finance: 'Finance',
-    cfo: 'CFO',
-    operationManager: 'Operation Manager',
-    humanResources: 'Human Resources',
-    marketing: 'Marketing',
-    managingDirector: 'Managing Director'
-  },
-  footer: {
-    followUs: 'Follow us',
-    getInTouch: 'Get In Touch',
-    instagram: 'Instagram',
-    linkedin: 'LinkedIn',
-    youtube: 'Youtube'
-  },
-  auth: {
-    invalidCredentials: 'Invalid email or password. Please try again.',
-    userNotFound: 'No user found with this email address.',
-    tooManyRequests: 'Too many unsuccessful login attempts. Please try again later.',
-    emailAlreadyInUse: 'This email is already in use.',
-    weakPassword: 'Password should be at least 6 characters.',
-    passwordMismatch: 'Passwords do not match.',
-    genericError: 'An unexpected error occurred. Please try again.',
-    emailSent: 'Email sent successfully.',
-
-    accountCreated: 'Account created successfully.',
-    loginSuccessful: 'Login successful.',
-    logoutSuccessful: 'Logout successful.',
-
-    invalidToken: 'Invalid or expired token.',
-    sessionExpired: 'Your session has expired. Please login again.',
-    accountDisabled: 'Your account has been disabled. Please contact support.',
-
-    networkError: 'Network error. Please check your connection and try again.',
-    serverError: 'Server error. Please try again later.',
-    invalidEmailFormat: 'Please enter a valid email address.',
-    passwordTooShort: 'Password must be at least 6 characters long.',
-    passwordTooWeak: 'Password must contain at least one uppercase letter, one lowercase letter, and one number.',
-    emailRequired: 'Email address is required.',
-    passwordRequired: 'Password is required.',
-    confirmPasswordRequired: 'Please confirm your password.',
-    firstNameRequired: 'First name is required.',
-    lastNameRequired: 'Last name is required.',
-    roleRequired: 'Please select a role.',
-    termsRequired: 'You must accept the terms and conditions.'
-  },
-  login: {
-    title: 'Sign in to your account',
-    subtitle: 'Welcome back! Please enter your details.',
-    emailLabel: 'Email address',
-    emailPlaceholder: 'Enter your email',
-    passwordLabel: 'Password',
-    passwordPlaceholder: 'Enter your password',
-    signInButton: 'Sign in',
-    loading: 'Signing in...',
-
-    registerLink: "Don't have an account? Sign up",
-    rememberMe: 'Remember me',
-    orContinueWith: 'Or continue with',
-    googleSignIn: 'Continue with Google',
-    linkedinSignIn: 'Continue with LinkedIn'
-  },
-  register: {
-    title: 'Create your account',
-    subtitle: 'Join our platform and start your journey.',
-    firstNameLabel: 'First name',
-    firstNamePlaceholder: 'Enter your first name',
-    lastNameLabel: 'Last name',
-    lastNamePlaceholder: 'Enter your last name',
-    emailLabel: 'Email address',
-    emailPlaceholder: 'Enter your email',
-    passwordLabel: 'Password',
-    passwordPlaceholder: 'Create a password',
-    confirmPasswordLabel: 'Confirm password',
-    confirmPasswordPlaceholder: 'Confirm your password',
-    roleLabel: 'I am a',
-    jobseekerRole: 'Job Seeker',
-    employerRole: 'Employer',
-    signUpButton: 'Create account',
-    loading: 'Creating account...',
-    loginLink: 'Already have an account? Sign in',
-    termsText: 'I agree to the',
-    termsLink: 'Terms and Conditions',
-    privacyLink: 'Privacy Policy',
-    andText: 'and',
-    orContinueWith: 'Or continue with',
-    googleSignUp: 'Sign up with Google',
-    linkedinSignUp: 'Sign up with LinkedIn'
-  }
+  common,
+  nav,
+  hero,
+  businesses,
+  jobSeekers,
+  trends,
+  expertise,
+  footer,
+  ui,
+  auth,
+  login,
+  register,
+  dashboard,
+  savedJobs,
+  profile,
+  settings,
+  actions,
+  analytics,
+  candidates,
+  status,
+  admin
 };
