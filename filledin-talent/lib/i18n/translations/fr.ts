@@ -1,0 +1,98 @@
+export const fr = {
+  common: {
+    filledinTalent: 'FilledIn Talent',
+    tagline: 'La Solution Alternative',
+    globalPartner: 'Partenaire Mondial des Talents Énergétiques',
+    search: 'Rechercher',
+    apply: 'Postuler',
+    submit: 'Soumettre',
+    cancel: 'Annuler',
+    viewMore: 'Voir plus',
+    loading: 'Chargement...',
+    error: 'Erreur',
+    success: 'Succès'
+  },
+  nav: {
+    businesses: 'Entreprises',
+    trends: 'Tendances',
+    expertise: 'Expertise',
+    engagement: 'Engagement',
+    jobSeekers: 'Chercheurs d\'emploi',
+    jobSearch: 'Recherche d\'emploi',
+    interviewTips: 'Conseils d\'entretien',
+    dropCV: 'Déposer CV',
+    aboutFINT: 'À propos de FINT',
+    languages: 'Langues'
+  },
+  hero: {
+    title: 'La Solution Alternative',
+    subtitle: 'Partenaire Mondial des Talents Énergétiques',
+    description: 'Connecter l\'expertise du réservoir à la raffinerie ou de la source au réseau',
+    forBusinesses: 'Pour les Entreprises',
+    forJobSeekers: 'Pour les Chercheurs d\'Emploi',
+    searchPlaceholder: 'Mots-clés, Titre du poste',
+    categoryPlaceholder: 'Catégorie',
+    workingTypePlaceholder: 'Type de travail',
+    locationPlaceholder: 'Lieu'
+  },
+  businesses: {
+    title: 'Pour les entreprises',
+    subtitle: 'Recrutez vos futurs talents aujourd\'hui',
+    ourExpertise: 'Notre expertise à votre service',
+    commitment: 'FilledIn Talent s\'engage à vous fournir un recrutement prêt pour l\'avenir pour la main-d\'œuvre énergétique de demain',
+    deepSourcing: 'Recherche Spécialisée Approfondie, Pas Seulement une Recherche',
+    precisionRecruitment: 'Recrutement de Précision pour les Experts en Énergie',
+    dataDrivern: 'Recrutement Basé sur les Données. Résultats Garantis',
+    noFeeGuarantee: 'Pas de Deuxième Entretien, Pas de Frais',
+    globalSourcing: 'Recherche Mondiale',
+    keyMetrics: 'Indicateurs Clés de Recrutement',
+    readyToHire: 'Prêt à Recruter avec Confiance?',
+    contactToday: 'Contactez-nous Aujourd\'hui'
+  },
+  jobSeekers: {
+    title: 'Pour les Chercheurs d\'Emploi',
+    readyForNext: 'Prêt pour votre prochaine évolution de carrière?',
+    interviewTips: 'Nos meilleurs conseils pour réussir votre prochain entretien!',
+    howToSucceed: 'Comment réussir aux entretiens?',
+    starMethod: 'LA MÉTHODE STAR',
+    knowCompany: 'Connaître l\'Entreprise',
+    reflectRole: 'Réfléchir au Rôle',
+    prepareStories: 'Préparez vos "Histoires"',
+    masterTechniques: 'Maîtriser les Techniques Éprouvées'
+  },
+  trends: {
+    industryTrends: 'Tendances de l\'Industrie',
+    hrTrends: 'Tendances RH',
+    aiRecruitment: 'IA & Acquisition de Talents',
+    oilGas: 'Pétrole et Gaz',
+    renewable: 'Énergie renouvelable',
+    leverageKnowledge: 'Tirez parti de vos connaissances avec les tendances mondiales FilledIn',
+    emergingSolutions: 'Les solutions émergentes comme l\'IA générative ont le potentiel de transformer les opérations RH'
+  },
+  expertise: {
+    technical: 'Technique',
+    hse: 'HSE',
+    corporateFunctions: 'Fonctions d\'entreprise',
+    executiveSearch: 'Recherche de cadres',
+    operations: 'Opérations',
+    generalManager: 'Directeur général',
+    electricalEngineer: 'Ingénieur électricien',
+    petroleumEngineer: 'Ingénieur pétrolier',
+    projectManager: 'Chef de projet',
+    mechanicalEngineer: 'Ingénieur mécanicien',
+    icEngineer: 'Ingénieur I&C',
+    finance: 'Finance',
+    cfo: 'Directeur financier',
+    operationManager: 'Directeur des opérations',
+    humanResources: 'Ressources humaines',
+    marketing: 'Marketing',
+    managingDirector: 'Directeur général'
+  },
+  footer: {
+    followUs: 'Suivez-nous',
+    getInTouch: 'Contactez-nous',
+    instagram: 'Instagram',
+    linkedin: 'LinkedIn',
+    youtube: 'YouTube'
+  }
+};
