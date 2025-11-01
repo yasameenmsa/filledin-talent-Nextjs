@@ -71,7 +71,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
   });
 
   // Inline translation function
-  const getText = (key: string, params?: Record<string, any>) => {
+  const getText = (key: string, params?: Record<string, unknown>) => {
     const translations: Record<string, Record<string, string>> = {
       'applications.myApplications': {
         en: 'My Applications',
@@ -254,7 +254,8 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     
     if (params) {
       return Object.keys(params).reduce((text, param) => {
-        return text.replace(`{${param}}`, params[param]);
+        const value = params[param];
+        return text.replace(`{${param}}`, value !== null && value !== undefined ? String(value) : '');
       }, translation);
     }
     

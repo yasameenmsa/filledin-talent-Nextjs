@@ -13,7 +13,7 @@ import { register } from './fr/register';
 import { dashboard } from './fr/dashboard';
 import { savedJobs } from './fr/savedJobs';
 import { settings } from './fr/settings';
-import { actions } from './fr/actions';
+// import { actions } from './fr/actions';
 import { analytics } from './fr/analytics';
 import { candidates } from './fr/candidates';
 import { status } from './fr/status';
@@ -36,7 +36,7 @@ export const fr = {
   dashboard,
   savedJobs,
   settings,
-  actions,
+  // actions,
   analytics,
   candidates,
   status,

@@ -6,7 +6,7 @@ import {
   Bookmark, 
   BookmarkX, 
   Search, 
-  Filter,
+  // Filter,
   MapPin,
   Building,
   Clock,

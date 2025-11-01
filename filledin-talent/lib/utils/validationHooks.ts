@@ -75,7 +75,7 @@ export interface ValidationHookResult {
   touched: FormTouched;
   isValid: boolean;
   validateField: (fieldName: string, value: unknown) => void;
-  validateForm: (formData: FormData) => boolean;
+  validateForm: (formData: Record<string, string>) => boolean;
   setFieldTouched: (fieldName: string, isTouched?: boolean) => void;
   clearErrors: () => void;
   clearFieldError: (fieldName: string) => void;
@@ -83,7 +83,7 @@ export interface ValidationHookResult {
 
 // Generic form validation hook
 function useFormValidation(
-  validationSchema: (data: FormData, options: ValidationOptions) => { isValid: boolean; errors: FormErrors },
+  validationSchema: (data: Record<string, string>, options: ValidationOptions) => { isValid: boolean; errors: FormErrors },
   options: UseFormValidationOptions = {}
 ): ValidationHookResult {
   const { locale } = options;
@@ -94,10 +94,10 @@ function useFormValidation(
     locale: locale || 'en'
   }), [locale]);
 
-  const validateField = useCallback((fieldName: string, value: unknown, formData?: FormData) => {
+  const validateField = useCallback((fieldName: string, value: unknown, formData?: Record<string, string>) => {
     // For single field validation, we need the full form data
     // This is a simplified approach - in practice, you might want to pass the full form data
-    const singleFieldData = { [fieldName]: value };
+    const singleFieldData = { [fieldName]: String(value) };
     const result = validationSchema(formData || singleFieldData, validationOptions);
     
     setErrors(prev => ({
@@ -108,7 +108,7 @@ function useFormValidation(
     return !result.errors[fieldName];
   }, [validationSchema, validationOptions]);
 
-  const validateForm = useCallback((formData: FormData) => {
+  const validateForm = useCallback((formData: Record<string, string>) => {
     const result = validationSchema(formData, validationOptions);
     setErrors(result.errors);
     return result.isValid;
@@ -151,8 +151,16 @@ function useFormValidation(
 
 // Specific hook for registration form validation
 function useRegistrationValidation(locale?: string): ValidationHookResult {
-  const validationSchema = useCallback((formData: FormData, options: ValidationOptions) => {
-    return FormValidator.validateRegistrationForm(formData, options);
+  const validationSchema = useCallback((formData: Record<string, string>, options: ValidationOptions) => {
+    const typedFormData = {
+      email: formData.email || '',
+      password: formData.password || '',
+      confirmPassword: formData.confirmPassword || '',
+      firstName: formData.firstName || '',
+      lastName: formData.lastName || '',
+      role: formData.role || ''
+    };
+    return FormValidator.validateRegistrationForm(typedFormData, options);
   }, []);
 
   return useFormValidation(validationSchema, { locale });
@@ -160,8 +168,12 @@ function useRegistrationValidation(locale?: string): ValidationHookResult {
 
 // Specific hook for login form validation
 function useLoginValidation(locale?: string): ValidationHookResult {
-  const validationSchema = useCallback((formData: FormData, options: ValidationOptions) => {
-    return FormValidator.validateLoginForm(formData, options);
+  const validationSchema = useCallback((formData: Record<string, string>, options: ValidationOptions) => {
+    const typedFormData = {
+      email: formData.email || '',
+      password: formData.password || ''
+    };
+    return FormValidator.validateLoginForm(typedFormData, options);
   }, []);
 
   return useFormValidation(validationSchema, { locale });

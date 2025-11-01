@@ -55,7 +55,7 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
   const usersPerPage = 20;
 
   // Inline translation function
-  const getText = (key: string, params?: Record<string, any>) => {
+  const getText = (key: string, params?: Record<string, unknown>) => {
     const translations: Record<string, Record<string, string>> = {
       en: {
         'dashboard.admin.userManagement': 'User Management',

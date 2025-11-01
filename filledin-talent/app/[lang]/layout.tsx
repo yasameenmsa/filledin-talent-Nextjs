@@ -1,17 +1,7 @@
 import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
 // import { LocaleSwitcher } from '@/components/layout/LocaleSwitcher';
 import { rtlLanguages } from '@/lib/i18n/config';
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// import { Geist, Geist_Mono } from "next/font/google";
 
 export default async function RootLayout({
   children,

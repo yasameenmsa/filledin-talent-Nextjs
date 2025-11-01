@@ -28,7 +28,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 export default function AdminProfilePage({ params }: { params: Promise<{ lang: string }> }) {
   const { userData, updateProfile } = useAuth();
-  const resolvedParams = React.use(params);
+  // const resolvedParams = React.use(params);
   const { currentLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'system'>('profile');
   const [isEditing, setIsEditing] = useState(false);

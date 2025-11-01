@@ -19,7 +19,7 @@ import {
 
 export default function JobseekerProfilePage({ params }: { params: Promise<{ lang: string }> }) {
   const { userData } = useAuth();
-  const resolvedParams = React.use(params);
+  // const resolvedParams = React.use(params);
   const { currentLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<'profile' | 'cv'>('profile');
 
