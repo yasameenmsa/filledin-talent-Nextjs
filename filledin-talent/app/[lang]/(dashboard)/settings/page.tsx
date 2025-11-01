@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Settings, 
   User, 
@@ -46,7 +46,7 @@ interface UserSettings {
 }
 
 export default function SettingsPage() {
-  const { userData, updateUserData, logout } = useAuth();
+  const { logout } = useAuth();
   const [settings, setSettings] = useState<UserSettings>({
     notifications: {
       email: {
@@ -89,11 +89,7 @@ export default function SettingsPage() {
     confirm: false,
   });
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const response = await fetch('/api/users/settings');
       if (response.ok) {
@@ -103,7 +99,11 @@ export default function SettingsPage() {
     } catch (error) {
       console.error('Error fetching settings:', error);
     }
-  };
+  }, [settings]);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const saveSettings = async () => {
     try {
@@ -202,7 +202,7 @@ export default function SettingsPage() {
     }));
   };
 
-  const updatePrivacySetting = (setting: string, value: any) => {
+  const updatePrivacySetting = (setting: string, value: boolean | string) => {
     setSettings(prev => ({
       ...prev,
       privacy: {

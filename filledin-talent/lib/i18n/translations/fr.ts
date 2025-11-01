@@ -18,6 +18,7 @@ import { analytics } from './fr/analytics';
 import { candidates } from './fr/candidates';
 import { status } from './fr/status';
 import { admin } from './fr/admin';
+import { imageBoxes } from './fr/imageBoxes';
 
 export const fr = {
   common,
@@ -39,6 +40,7 @@ export const fr = {
   analytics,
   candidates,
   status,
-  admin
+  admin,
+  imageBoxes
 };
 

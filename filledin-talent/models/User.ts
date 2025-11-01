@@ -1,52 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+// Simple User interface for basic authentication
 export interface IUser extends Document {
-  firebaseUid?: string; // Make Firebase UID optional
   email: string;
-  password: string; // Make password required for MongoDB auth
-  role: 'jobseeker' | 'employer' | 'admin';
-  profile: {
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    company?: string;
-    position?: string;
-    location?: string;
-    bio?: string;
-    skills?: string[];
-    experience?: {
-      company: string;
-      position: string;
-      duration: string;
-      description: string;
-    }[];
-    education?: {
-      institution: string;
-      degree: string;
-      field: string;
-      year: string;
-    }[];
-    cvUrl?: string;
-    profileImage?: string;
-  };
-  preferences?: {
-    jobCategories: string[];
-    locations: string[];
-    workingTypes: string[];
-    salaryExpectation?: {
-      min: number;
-      max: number;
-      currency: string;
-    };
-  };
+  password: string;
+  name?: string;
+  role: 'job_seeker' | 'employer' | 'admin';
+  isEmailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
-  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
+// Simple User schema
 const UserSchema = new Schema<IUser>({
-  firebaseUid: { type: String, required: false, unique: true, sparse: true },
   email: {
     type: String,
     required: true,
@@ -56,47 +23,21 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: true, // Make password required for MongoDB auth
+    required: true,
     minlength: 6,
+  },
+  name: {
+    type: String,
+    trim: true,
   },
   role: {
     type: String,
-    enum: ['jobseeker', 'employer', 'admin'],
-    default: 'jobseeker',
+    enum: ['job_seeker', 'employer', 'admin'],
+    default: 'job_seeker',
   },
-  profile: {
-    firstName: { type: String, required: false },
-    lastName: { type: String, required: false },
-    phone: String,
-    company: String,
-    position: String,
-    location: String,
-    bio: String,
-    skills: [String],
-    experience: [{
-      company: String,
-      position: String,
-      duration: String,
-      description: String,
-    }],
-    education: [{
-      institution: String,
-      degree: String,
-      field: String,
-      year: String,
-    }],
-    cvUrl: String,
-    profileImage: String,
-  },
-  preferences: {
-    jobCategories: [String],
-    locations: [String],
-    workingTypes: [String],
-    salaryExpectation: {
-      min: Number,
-      max: Number,
-      currency: String,
-    },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
   },
 }, {
   timestamps: true,
@@ -115,9 +56,11 @@ UserSchema.pre('save', async function(next) {
   }
 });
 
-// Compare password method
-UserSchema.methods.comparePassword = async function(candidatePassword: string) {
-  return await bcrypt.compare(candidatePassword, this.password);
+// Method to compare password
+UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+// Create and export the model
+const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+export default User;

@@ -11,9 +11,7 @@ export const register = {
   passwordPlaceholder: 'Create a password',
   confirmPasswordLabel: 'Confirm password',
   confirmPasswordPlaceholder: 'Confirm your password',
-  roleLabel: 'I am a',
-  jobseekerRole: 'Job Seeker',
-  employerRole: 'Employer',
+
   signUpButton: 'Create account',
   loading: 'Creating account...',
   loginLink: 'Already have an account? Sign in',

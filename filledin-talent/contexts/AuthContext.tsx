@@ -1,207 +1,186 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useParams } from 'next/navigation';
+import React, { createContext, useContext } from 'react';
+import { useSession, signIn, signOut, SessionProvider } from 'next-auth/react';
+import { useRouter, useParams } from 'next/navigation';
+
+interface UserProfile {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  location?: string;
+  bio?: string;
+  company?: string;
+  position?: string;
+  website?: string;
+  cvUrl?: string;
+  profileImage?: string;
+  skills?: string[];
+  experience?: Array<{
+    position: string;
+    company: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
+  }>;
+  education?: Array<{
+    degree: string;
+    institution: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
+  }>;
+}
 
 interface UserData {
+  id: string;
   _id: string;
   email: string;
-  role: 'jobseeker' | 'employer' | 'admin';
-  profile: {
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    company?: string;
-    position?: string;
-    location?: string;
-    bio?: string;
-    skills?: string[];
-    experience?: {
-      company: string;
-      position: string;
-      duration: string;
-      description: string;
-    }[];
-    education?: {
-      institution: string;
-      degree: string;
-      field: string;
-      year: string;
-    }[];
-    cvUrl?: string;
-    profileImage?: string;
-  };
-  preferences?: {
-    jobCategories: string[];
-    locations: string[];
-    workingTypes: string[];
-    salaryExpectation?: {
-      min: number;
-      max: number;
-      currency: string;
-    };
-  };
-  createdAt: Date;
-  updatedAt: Date;
+  name?: string;
+  role: 'job_seeker' | 'employer' | 'admin';
+  isEmailVerified: boolean;
+  cv?: string;
+  profile?: UserProfile;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface AuthContextType {
   user: UserData | null;
-  userData: UserData | null; // Alias for user for backward compatibility
+  userData: UserData | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, role: string, profile: { firstName: string; lastName: string }) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (userData: { email: string; password: string; name?: string; role?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
-  updateProfile: (data: Partial<UserData>) => Promise<void>;
+  updateProfile: (updates: Partial<UserData>) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
-  const lang = params?.lang as string || 'en';
 
-  useEffect(() => {
-    // Check for stored JWT token on app load
-    const checkAuthStatus = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          // Verify token with backend
-          const response = await fetch('/api/auth/verify', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-          } else {
-            // Token is invalid, remove it
-            localStorage.removeItem('authToken');
-          }
-        }
-      } catch (error) {
-        console.error('Error checking auth status:', error);
-        localStorage.removeItem('authToken');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
+  const user: UserData | null = session?.user ? {
+    id: session.user.id,
+    _id: session.user.id,
+    email: session.user.email,
+    name: session.user.name,
+    role: session.user.role as 'job_seeker' | 'employer' | 'admin',
+    isEmailVerified: session.user.isEmailVerified,
+  } : null;
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (response.ok) {
-        const { user: userData, token } = await response.json();
-        localStorage.setItem('authToken', token);
-        setUser(userData);
-        router.push(`/${lang}/dashboard`);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+      if (result?.error) {
+        return { success: false, error: 'Invalid email or password' };
       }
+
+      return { success: true };
     } catch (error) {
       console.error('Login error:', error);
-      throw error;
+      return { success: false, error: 'Login failed' };
     }
   };
 
-  const register = async (email: string, password: string, role: string, profile: { firstName: string; lastName: string }) => {
+  const register = async (userData: {
+    email: string;
+    password: string;
+    name?: string;
+    role?: string;
+  }) => {
     try {
-      // Map frontend role values to backend role values
-      const mappedRole = role === 'business' ? 'employer' : role === 'jobSeeker' ? 'jobseeker' : role;
-      
-      // Register user in MongoDB
-      const response = await fetch('/api/auth', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          email,
-          password,
-          role: mappedRole,
-          profile: {
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-          },
+          email: userData.email,
+          password: userData.password,
+          name: userData.name,
+          role: userData.role || 'job_seeker',
         }),
       });
 
-      if (response.ok) {
-        const userData = await response.json();
-        
-        // Auto-login after successful registration
-        await login(email, password);
-        
-        router.push(`/${lang}/onboarding`);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.message || 'Registration failed' };
       }
+
+      return { success: true };
     } catch (error) {
       console.error('Registration error:', error);
-      throw error;
+      return { success: false, error: 'Registration failed' };
     }
   };
 
   const logout = async () => {
     try {
-      localStorage.removeItem('authToken');
-      setUser(null);
-      router.push(`/${lang}/login`);
+      await signOut({ redirect: false });
+      const currentLang = params?.lang || 'en';
+      router.push(`/${currentLang}`);
     } catch (error) {
       console.error('Logout error:', error);
-      throw error;
     }
   };
 
-  const updateProfile = async (data: Partial<UserData>) => {
+  const updateProfile = async (updates: Partial<UserData>) => {
     try {
-      if (!user) throw new Error('No user logged in');
-      
-      const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/users/${user._id}`, {
-        method: 'PATCH',
-        headers: { 
+      if (!user) {
+        return { success: false, error: 'User not authenticated' };
+      }
+
+      const response = await fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updates),
       });
 
-      if (response.ok) {
-        const updatedData = await response.json();
-        setUser(updatedData);
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.message || 'Profile update failed' };
       }
+
+      // Update local storage for CV if provided
+      if (updates.cv && user._id) {
+        const cvData = {
+          fileName: updates.cv,
+          uploadDate: new Date().toISOString(),
+        };
+        localStorage.setItem(`cv_${user._id}`, JSON.stringify(cvData));
+      }
+
+      return { success: true };
     } catch (error) {
-      console.error('Update profile error:', error);
-      throw error;
+      console.error('Profile update error:', error);
+      return { success: false, error: 'Profile update failed' };
     }
+  };
+
+  const value: AuthContextType = {
+    user,
+    userData: user, // userData is an alias for user for backward compatibility
+    loading: status === 'loading',
+    login,
+    register,
+    logout,
+    updateProfile,
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      userData: user, // Alias for backward compatibility
-      loading,
-      login,
-      register,
-      logout,
-      updateProfile,
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
@@ -213,4 +192,14 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+}
+
+export function AuthSessionProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <SessionProvider>
+      <AuthProvider>
+        {children}
+      </AuthProvider>
+    </SessionProvider>
+  );
 }

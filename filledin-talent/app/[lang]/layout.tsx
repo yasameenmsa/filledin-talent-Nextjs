@@ -24,13 +24,9 @@ export default async function RootLayout({
   const dir = rtlLanguages.includes(lang as 'en' | 'ar' | 'fr') ? 'rtl' : 'ltr';
 
   return (
-    <html lang={lang} dir={dir}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ClientLayoutWrapper currentLanguage={lang} dir={dir}>
-          {/* <LocaleSwitcher /> */}
-          {children}
-        </ClientLayoutWrapper>
-      </body>
-    </html>
+    <ClientLayoutWrapper currentLanguage={lang} dir={dir}>
+      {/* <LocaleSwitcher /> */}
+      {children}
+    </ClientLayoutWrapper>
   );
 }

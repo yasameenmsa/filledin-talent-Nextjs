@@ -7,10 +7,11 @@ import { z } from 'zod';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const loginSchema = z.object({
   email: z
@@ -35,7 +36,61 @@ export default function LoginForm({ lang }: LoginFormProps) {
   const [authError, setAuthError] = useState('');
   
   const { login } = useAuth();
-  const { t } = useTranslation(lang);
+  const router = useRouter();
+  const { currentLanguage } = useLanguage();
+
+  // Inline translations
+  const getText = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      'auth.signIn': {
+        en: 'Sign in',
+        ar: 'تسجيل الدخول',
+        fr: 'Se connecter'
+      },
+      'auth.welcomeBack': {
+        en: 'Welcome back! Please enter your details.',
+        ar: 'مرحباً بعودتك! يرجى إدخال بياناتك.',
+        fr: 'Bon retour ! Veuillez entrer vos informations.'
+      },
+      'auth.email': {
+        en: 'Email',
+        ar: 'البريد الإلكتروني',
+        fr: 'Email'
+      },
+      'auth.enterEmail': {
+        en: 'Enter your email',
+        ar: 'أدخل بريدك الإلكتروني',
+        fr: 'Entrez votre email'
+      },
+      'auth.password': {
+        en: 'Password',
+        ar: 'كلمة المرور',
+        fr: 'Mot de passe'
+      },
+      'auth.enterPassword': {
+        en: 'Enter your password',
+        ar: 'أدخل كلمة المرور',
+        fr: 'Entrez votre mot de passe'
+      },
+      'auth.signingIn': {
+        en: 'Signing in...',
+        ar: 'جاري تسجيل الدخول...',
+        fr: 'Connexion en cours...'
+      },
+      'auth.noAccount': {
+        en: "Don't have an account?",
+        ar: 'ليس لديك حساب؟',
+        fr: 'Vous n\'avez pas de compte ?'
+      },
+      'auth.signUp': {
+        en: 'Sign up',
+        ar: 'سجل الآن',
+        fr: 'Créer un compte'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
 
   const {
     register,
@@ -50,30 +105,16 @@ export default function LoginForm({ lang }: LoginFormProps) {
     setAuthError('');
 
     try {
-      await login(data.email, data.password);
-    } catch (error: any) {
-      console.error('Login error:', error);
+      const result = await login(data.email, data.password);
       
-      // Handle Firebase auth errors
-      switch (error.code) {
-        case 'auth/user-not-found':
-          setAuthError(t('auth.errors.userNotFound'));
-          break;
-        case 'auth/wrong-password':
-          setAuthError(t('auth.errors.wrongPassword'));
-          break;
-        case 'auth/invalid-email':
-          setAuthError(t('auth.errors.invalidEmail'));
-          break;
-        case 'auth/user-disabled':
-          setAuthError(t('auth.errors.userDisabled'));
-          break;
-        case 'auth/too-many-requests':
-          setAuthError(t('auth.errors.tooManyRequests'));
-          break;
-        default:
-          setAuthError(t('auth.errors.loginFailed'));
+      if (result.success) {
+        router.push(`/${lang}/dashboard`);
+      } else {
+        setAuthError(result.error || 'Login failed');
       }
+    } catch (error) {
+      console.error('Login error:', error);
+      setAuthError('Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -83,10 +124,10 @@ export default function LoginForm({ lang }: LoginFormProps) {
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          {t('auth.login.title')}
+          {getText('auth.signIn')}
         </h1>
         <p className="text-gray-600">
-          {t('auth.login.subtitle')}
+          {getText('auth.welcomeBack')}
         </p>
       </div>
 
@@ -98,11 +139,11 @@ export default function LoginForm({ lang }: LoginFormProps) {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email">{t('auth.fields.email')}</Label>
+          <Label htmlFor="email">{getText('auth.email')}</Label>
           <Input
             id="email"
             type="email"
-            placeholder={t('auth.placeholders.email')}
+            placeholder={getText('auth.enterEmail')}
             error={!!errors.email}
             {...register('email')}
           />
@@ -112,12 +153,12 @@ export default function LoginForm({ lang }: LoginFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">{t('auth.fields.password')}</Label>
+          <Label htmlFor="password">{getText('auth.password')}</Label>
           <div className="relative">
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
-              placeholder={t('auth.placeholders.password')}
+              placeholder={getText('auth.enterPassword')}
               error={!!errors.password}
               {...register('password')}
             />
@@ -138,15 +179,6 @@ export default function LoginForm({ lang }: LoginFormProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between">
-          <Link
-            href={`/${lang}/auth/forgot-password`}
-            className="text-sm text-blue-600 hover:text-blue-500"
-          >
-            {t('auth.login.forgotPassword')}
-          </Link>
-        </div>
-
         <Button
           type="submit"
           className="w-full"
@@ -155,20 +187,20 @@ export default function LoginForm({ lang }: LoginFormProps) {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t('auth.login.signingIn')}
+              {getText('auth.signingIn')}
             </>
           ) : (
-            t('auth.login.signIn')
+            getText('auth.signIn')
           )}
         </Button>
 
         <div className="text-center">
-          <span className="text-gray-600">{t('auth.login.noAccount')} </span>
+          <span className="text-gray-600">{getText('auth.noAccount')} </span>
           <Link
-            href={`/${lang}/auth/register`}
+            href={`/${lang}/register`}
             className="text-blue-600 hover:text-blue-500 font-medium"
           >
-            {t('auth.login.signUp')}
+            {getText('auth.signUp')}
           </Link>
         </div>
       </form>

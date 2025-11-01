@@ -1,165 +1,158 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 import { Menu, X, ChevronDown, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { LocaleSwitcher } from './LocaleSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Language-specific navigation text
-const getNavigationText = (currentLanguage: string) => {
-  switch (currentLanguage) {
-    case 'ar':
-      return {
-        businesses: 'الشركات',
-        jobSeekers: 'الباحثون عن عمل',
-        aboutFINT: 'عن فينت',
-        trends: 'الاتجاهات',
-        expertise: 'الخبرة',
-        engagement: 'المشاركة',
-        jobSearch: 'البحث عن وظيفة',
-        interviewTips: 'نصائح المقابلة',
-        dropCV: 'إسقاط السيرة الذاتية'
-      };
-    case 'fr':
-      return {
-        businesses: 'Entreprises',
-        jobSeekers: 'Chercheurs d\'emploi',
-        aboutFINT: 'À propos de FINT',
-        trends: 'Tendances',
-        expertise: 'Expertise',
-        engagement: 'Engagement',
-        jobSearch: 'Recherche d\'emploi',
-        interviewTips: 'Conseils d\'entretien',
-        dropCV: 'Déposer CV'
-      };
-    default:
-      return {
-        businesses: 'Businesses',
-        jobSeekers: 'Job seekers',
-        aboutFINT: 'About FINT',
-        trends: 'Trends',
-        expertise: 'Expertise',
-        engagement: 'Engagement',
-        jobSearch: 'Job Search',
-        interviewTips: 'Interview tips',
-        dropCV: 'Drop CV'
-      };
-  }
-};
-
-// Language-specific UI text
-const getUIText = (currentLanguage: string) => {
-  switch (currentLanguage) {
-    case 'ar':
-      return {
-        languages: 'اللغات',
-        login: 'تسجيل الدخول',
-        register: 'التسجيل',
-        dashboard: 'لوحة التحكم',
-        profile: 'الملف الشخصي',
-        logout: 'تسجيل الخروج',
-        english: 'English',
-        french: 'Français',
-        arabic: 'العربية'
-      };
-    case 'fr':
-      return {
-        languages: 'Langues',
-        login: 'Connexion',
-        register: 'Inscription',
-        dashboard: 'Tableau de bord',
-        profile: 'Profil',
-        logout: 'Déconnexion',
-        english: 'English',
-        french: 'Français',
-        arabic: 'العربية'
-      };
-    default:
-      return {
-        languages: 'Languages',
-        login: 'Login',
-        register: 'Register',
-        dashboard: 'Dashboard',
-        profile: 'Profile',
-        logout: 'Logout',
-        english: 'English',
-        french: 'Français',
-        arabic: 'العربية'
-      };
-  }
-};
-
-export default function Header({ currentLanguage }: { currentLanguage: string }) {
+export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const { user, userData, logout } = useAuth();
+  const { currentLanguage, isRTL } = useLanguage();
 
-  // Get current language from pathname
-  // const currentLanguage = pathname?.split('/')[1] || 'en';
+  const getText = (key: string) => {
+    const translations: Record<string, Record<string, string>> = {
+      'nav.businesses': {
+        en: 'Businesses',
+        ar: 'الشركات',
+        fr: 'Entreprises'
+      },
+      'nav.trends': {
+        en: 'Trends',
+        ar: 'الاتجاهات',
+        fr: 'Tendances'
+      },
+      'nav.expertise': {
+        en: 'Expertise',
+        ar: 'الخبرة',
+        fr: 'Expertise'
+      },
+      'nav.engagement': {
+        en: 'Engagement',
+        ar: 'المشاركة',
+        fr: 'Engagement'
+      },
+      'nav.jobSeekers': {
+        en: 'Job seekers',
+        ar: 'الباحثون عن عمل',
+        fr: 'Chercheurs d\'emploi'
+      },
+      'nav.jobSearch': {
+        en: 'Job Search',
+        ar: 'البحث عن وظيفة',
+        fr: 'Recherche d\'emploi'
+      },
+      'nav.interviewTips': {
+        en: 'Interview tips',
+        ar: 'نصائح المقابلة',
+        fr: 'Conseils d\'entretien'
+      },
+      'nav.dropCV': {
+        en: 'Drop CV',
+        ar: 'إسقاط السيرة الذاتية',
+        fr: 'Déposer CV'
+      },
+      'nav.aboutFINT': {
+        en: 'About FINT',
+        ar: 'عن فينت',
+        fr: 'À propos de FINT'
+      },
+      'ui.dashboard': {
+        en: 'Dashboard',
+        ar: 'لوحة التحكم',
+        fr: 'Tableau de bord'
+      },
+      'ui.profile': {
+        en: 'Profile',
+        ar: 'الملف الشخصي',
+        fr: 'Profil'
+      },
+      'ui.logout': {
+        en: 'Logout',
+        ar: 'تسجيل الخروج',
+        fr: 'Déconnexion'
+      },
+      'ui.login': {
+        en: 'Login',
+        ar: 'تسجيل الدخول',
+        fr: 'Connexion'
+      },
+      'ui.register': {
+        en: 'Register',
+        ar: 'التسجيل',
+        fr: 'S\'inscrire'
+      }
+    };
 
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
 
-
-  const navigationText = getNavigationText(currentLanguage);
-  const uiText = getUIText(currentLanguage);
+  // Logo selection based on language
+  const logoSrc = '/new-logo.png';
 
   const navigation = [
     {
-      name: navigationText.businesses,
-      href: '/businesses',
+      name: getText('nav.businesses'),
+      href: `/${currentLanguage}/businesses`,
       dropdown: [
-        { name: navigationText.trends, href: '/businesses/trends' },
-        { name: navigationText.expertise, href: '/businesses/expertise' },
-        { name: navigationText.engagement, href: '/businesses/engagement' },
+        { name: getText('nav.trends'), href: `/${currentLanguage}/businesses/trends` },
+        { name: getText('nav.expertise'), href: `/${currentLanguage}/businesses/expertise` },
+        { name: getText('nav.engagement'), href: `/${currentLanguage}/businesses/engagement` },
       ],
     },
     {
-      name: navigationText.jobSeekers,
-      href: '/job-seekers',
+      name: getText('nav.jobSeekers'),
+      href: `/${currentLanguage}/job-seekers`,
       dropdown: [
-        { name: navigationText.jobSearch, href: '/jobs' },
-        { name: navigationText.interviewTips, href: '/interview-tips' },
-        { name: navigationText.dropCV, href: '/drop-cv' },
+        { name: getText('nav.jobSearch'), href: `/${currentLanguage}/jobs` },
+        { name: getText('nav.interviewTips'), href: `/${currentLanguage}/interview-tips` },
+        { name: getText('nav.dropCV'), href: `/${currentLanguage}/drop-cv` },
       ],
     },
     {
-      name: navigationText.aboutFINT,
-      href: '/about'
+      name: getText('nav.aboutFINT'),
+      href: `/${currentLanguage}/about`
     },
   ];
 
 
   return (
     <header
-      className="fixed top-0 w-full z-50 bg-white shadow-sm"
+      className={`fixed top-0 w-full z-50 bg-white shadow-sm ${isRTL ? 'rtl' : 'ltr'}`}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href={`/${currentLanguage}`} className="flex items-center">
+          <Link href="/" className="flex items-center">
             <Image
-              src="/new-logo.png"
-              alt="FilledIn Talent Logo"
-              width={200}
-              height={80}
-              className="h-auto"
+              src={logoSrc}
+              alt="FINT Logo"
+              width={300}
+              height={150}
+              className="h-15 w-auto"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className={`hidden md:flex items-center ${isRTL ? 'space-x-reverse space-x-8' : 'space-x-8'}`}>
             {navigation.map((item) => (
               <div key={item.name} className="relative">
                 {item.dropdown ? (
                   <>
                     <button
                       onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
-                      className="flex items-center space-x-1 text-blue-900 hover:text-blue-600 transition-colors"
+                      className={`flex items-center text-blue-900 hover:text-blue-600 transition-colors ${
+                        isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'
+                      }`}
                     >
                       <span>{item.name}</span>
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
                     </button>
                     
                     <AnimatePresence>
@@ -168,13 +161,17 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-2"
+                          className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 ${
+                            isRTL ? 'right-0' : 'left-0'
+                          }`}
                         >
                           {item.dropdown.map((subItem) => (
                             <Link
                               key={subItem.name}
                               href={subItem.href}
-                              className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                              className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 transition-colors ${
+                                isRTL ? 'text-right' : 'text-left'
+                              }`}
                               onClick={() => setDropdownOpen(null)}
                             >
                               {subItem.name}
@@ -195,62 +192,17 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
               </div>
             ))}
 
-            {/* Languages */}
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(dropdownOpen === 'languages' ? null : 'languages')}
-                className="flex items-center space-x-2 text-blue-900"
-              >
-                <Image
-                  src="/globe.svg"
-                  alt={uiText.languages}
-                  width={20}
-                  height={20}
-                  className="text-blue-900"
-                />
-                <span>{uiText.languages}</span>
-              </button>
-
-              <AnimatePresence>
-                {dropdownOpen === 'languages' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl py-2"
-                  >
-                    <Link
-                      href="/en"
-                      className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                      onClick={() => setDropdownOpen(null)}
-                    >
-                      {uiText.english}
-                    </Link>
-                    <Link
-                      href="/fr"
-                      className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                      onClick={() => setDropdownOpen(null)}
-                    >
-                      {uiText.french}
-                    </Link>
-                    <Link
-                      href="/ar"
-                      className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                      onClick={() => setDropdownOpen(null)}
-                    >
-                      {uiText.arabic}
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Language Switcher */}
+            <LocaleSwitcher />
 
             {/* User Menu */}
             {user ? (
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(dropdownOpen === 'user' ? null : 'user')}
-                  className="flex items-center space-x-2 text-blue-900"
+                  className={`flex items-center text-blue-900 ${
+                    isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'
+                  }`}
                 >
                   <User className="w-5 h-5" />
                   <span>{userData?.profile?.firstName}</span>
@@ -262,48 +214,56 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2"
+                      className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 ${
+                        isRTL ? 'left-0' : 'right-0'
+                      }`}
                     >
                       {userData?.role && (
                         <>
                           <Link
-                            href={`/${currentLanguage}/${userData.role}`}
-                            className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                          >
-                            {uiText.dashboard}
-                          </Link>
-                          <Link
-                            href={`/${currentLanguage}/${userData.role}/profile`}
-                            className="block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                          >
-                            {uiText.profile}
-                          </Link>
+                             href={`/${currentLanguage}/${userData.role}`}
+                             className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${
+                               isRTL ? 'text-right' : 'text-left'
+                             }`}
+                           >
+                             {getText('ui.dashboard')}
+                           </Link>
+                           <Link
+                             href={`/${currentLanguage}/${userData.role}/profile`}
+                             className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${
+                               isRTL ? 'text-right' : 'text-left'
+                             }`}
+                           >
+                             {getText('ui.profile')}
+                           </Link>
                         </>
                       )}
                       <button
-                        onClick={logout}
-                        className="block w-full text-left px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600"
-                      >
-                        {uiText.logout}
-                      </button>
+                         onClick={logout}
+                         className={`block w-full px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${
+                           isRTL ? 'text-right' : 'text-left'
+                         }`}
+                       >
+                         {getText('ui.logout')}
+                       </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center space-x-4">
+              <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-4' : 'space-x-4'}`}>
                 <Link
-                  href={`/${currentLanguage}/login`}
-                  className="text-blue-900 hover:text-blue-600 transition-colors"
-                >
-                  {uiText.login}
-                </Link>
-                <Link
-                  href={`/${currentLanguage}/register`}
-                  className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                  {uiText.register}
-                </Link>
+                   href={`/${currentLanguage}/login`}
+                   className="text-blue-900 hover:text-blue-600 transition-colors"
+                 >
+                   {getText('ui.login')}
+                 </Link>
+                 <Link
+                   href={`/${currentLanguage}/register`}
+                   className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                 >
+                   {getText('ui.register')}
+                 </Link>
               </div>
             )}
           </div>
@@ -325,7 +285,7 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden bg-white shadow-lg rounded-b-lg py-2"
+              className={`md:hidden bg-white shadow-lg rounded-b-lg py-2 mobile-menu ${isRTL ? 'rtl' : 'ltr'}`}
             >
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 {navigation.map((item) => (
@@ -334,10 +294,12 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                       <>
                         <button
                           onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
-                          className="flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
+                          className={`flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                            isRTL ? 'text-right' : 'text-left'
+                          }`}
                         >
                           <span>{item.name}</span>
-                          <ChevronDown className="w-4 h-4" />
+                          <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
                         </button>
                         <AnimatePresence>
                           {dropdownOpen === item.name && (
@@ -346,13 +308,15 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                               animate={{ opacity: 1, height: "auto" }}
                               exit={{ opacity: 0, height: 0 }}
                               transition={{ duration: 0.2, ease: "easeInOut" }}
-                              className="pl-5 pr-2 py-1 space-y-1"
+                              className={`py-1 space-y-1 ${isRTL ? 'pr-5 pl-2' : 'pl-5 pr-2'}`}
                             >
                               {item.dropdown.map((subItem) => (
                                 <Link
                                   key={subItem.name}
                                   href={subItem.href}
-                                  className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
+                                  className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                                    isRTL ? 'text-right' : 'text-left'
+                                  }`}
                                   onClick={() => {
                                     setIsOpen(false);
                                     setDropdownOpen(null);
@@ -368,7 +332,9 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                     ) : (
                       <Link
                         href={item.href}
-                        className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
+                        className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                          isRTL ? 'text-right' : 'text-left'
+                        }`}
                         onClick={() => setIsOpen(false)}
                       >
                         {item.name}
@@ -377,108 +343,69 @@ export default function Header({ currentLanguage }: { currentLanguage: string })
                   </div>
                 ))}
 
-                {/* Mobile Languages */}
+                {/* Mobile Language Switcher */}
                 <div className="border-t border-gray-200 pt-2 mt-2">
-                  <button
-                    onClick={() => setDropdownOpen(dropdownOpen === 'languages-mobile' ? null : 'languages-mobile')}
-                    className="flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <Image src="/globe.svg" alt={uiText.languages} width={20} height={20} />
-                      <span>{uiText.languages}</span>
-                    </div>
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                  <AnimatePresence>
-                    {dropdownOpen === 'languages-mobile' && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="pl-5 pr-2 py-1 space-y-1"
-                      >
-                        <Link
-                          href="/en"
-                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                          onClick={() => {
-                            setIsOpen(false);
-                            setDropdownOpen(null);
-                          }}
-                        >
-                          {uiText.english}
-                        </Link>
-                        <Link
-                          href="/fr"
-                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                          onClick={() => {
-                            setIsOpen(false);
-                            setDropdownOpen(null);
-                          }}
-                        >
-                          {uiText.french}
-                        </Link>
-                        <Link
-                          href="/ar"
-                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                          onClick={() => {
-                            setIsOpen(false);
-                            setDropdownOpen(null);
-                          }}
-                        >
-                          {uiText.arabic}
-                        </Link>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <div className="px-3 py-2">
+                    <LocaleSwitcher />
+                  </div>
                 </div>
 
                 {user ? (
-                  <div className="border-t border-gray-200 pt-2 mt-2">
+                  <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
                     {userData?.role && (
                       <>
                         <Link
-                          href={`/${currentLanguage}/${userData.role}`}
-                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {uiText.dashboard}
-                        </Link>
-                        <Link
-                          href={`/${currentLanguage}/${userData.role}/profile`}
-                          className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {uiText.profile}
-                        </Link>
+                           href={`/${currentLanguage}/${userData.role}`}
+                           className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                             isRTL ? 'text-right' : 'text-left'
+                           }`}
+                           onClick={() => setIsOpen(false)}
+                         >
+                           {getText('ui.dashboard')}
+                         </Link>
+                         <Link
+                           href={`/${currentLanguage}/${userData.role}/profile`}
+                           className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                             isRTL ? 'text-right' : 'text-left'
+                           }`}
+                           onClick={() => setIsOpen(false)}
+                         >
+                           {getText('ui.profile')}
+                         </Link>
                       </>
                     )}
                     <button
-                      onClick={() => {
-                        logout();
-                        setIsOpen(false);
-                      }}
-                      className="block w-full text-left px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                    >
-                      {uiText.logout}
-                    </button>
+                       onClick={() => {
+                         logout();
+                         setIsOpen(false);
+                       }}
+                       className={`block w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                         isRTL ? 'text-right' : 'text-left'
+                       }`}
+                     >
+                       {getText('ui.logout')}
+                     </button>
                   </div>
                 ) : (
-                  <div className="border-t border-gray-200 pt-2 mt-2">
+                  <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
                     <Link
-                      href={`/${currentLanguage}/login`}
-                      className="block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {uiText.login}
-                    </Link>
-                    <Link
-                      href={`/${currentLanguage}/register`}
-                      className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {uiText.register}
-                    </Link>
+                       href={`/${currentLanguage}/login`}
+                       className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
+                         isRTL ? 'text-right' : 'text-left'
+                       }`}
+                       onClick={() => setIsOpen(false)}
+                     >
+                       {getText('ui.login')}
+                     </Link>
+                     <Link
+                       href={`/${currentLanguage}/register`}
+                       className={`block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md ${
+                         isRTL ? 'text-right' : 'text-left'
+                       }`}
+                       onClick={() => setIsOpen(false)}
+                     >
+                       {getText('ui.register')}
+                     </Link>
                   </div>
                 )}
               </div>

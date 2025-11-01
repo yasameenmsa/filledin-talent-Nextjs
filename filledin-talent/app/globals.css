@@ -120,7 +120,129 @@
     @apply bg-background text-foreground;
   }
 
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+
   [dir="rtl"] ::placeholder {
     text-align: right;
+  }
+
+  /* RTL Navigation and Header */
+  [dir="rtl"] .header-nav {
+    flex-direction: row-reverse;
+  }
+
+  [dir="rtl"] .nav-dropdown {
+    right: 0;
+    left: auto;
+  }
+
+  [dir="rtl"] .dropdown-menu {
+    text-align: right;
+  }
+
+  /* RTL Form Elements */
+  [dir="rtl"] input,
+  [dir="rtl"] textarea,
+  [dir="rtl"] select {
+    text-align: right;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  [dir="rtl"] .form-label {
+    text-align: right;
+  }
+
+  /* RTL Button and Link Alignment */
+  [dir="rtl"] .btn-group {
+    flex-direction: row-reverse;
+  }
+
+  [dir="rtl"] .text-left {
+    text-align: right !important;
+  }
+
+  [dir="rtl"] .text-right {
+    text-align: left !important;
+  }
+
+  /* RTL Margin and Padding Utilities */
+  [dir="rtl"] .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  [dir="rtl"] .mr-auto {
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  /* RTL Flexbox Utilities */
+  [dir="rtl"] .justify-start {
+    justify-content: flex-end;
+  }
+
+  [dir="rtl"] .justify-end {
+    justify-content: flex-start;
+  }
+
+  /* RTL Language Switcher */
+  [dir="rtl"] .language-switcher {
+    flex-direction: row-reverse;
+  }
+
+  /* RTL Mobile Menu */
+  [dir="rtl"] .mobile-menu {
+    right: 0;
+    left: auto;
+  }
+
+  /* RTL Icons and Chevrons */
+  [dir="rtl"] .chevron-right {
+    transform: rotate(180deg);
+  }
+
+  [dir="rtl"] .chevron-left {
+    transform: rotate(180deg);
+  }
+
+  /* RTL Animation Adjustments */
+  [dir="rtl"] .slide-in-right {
+    animation: slideInLeft 0.3s ease-out;
+  }
+
+  [dir="rtl"] .slide-in-left {
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  /* RTL Typography */
+  [dir="rtl"] {
+    font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+  }
+
+  /* RTL Specific Animations */
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 }

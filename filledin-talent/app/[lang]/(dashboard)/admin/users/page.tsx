@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from '@/lib/i18n/client';
+import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { formatDate } from '@/lib/utils/formatters';
 import { 
   Users, 
   Search, 
-  Filter, 
-  MoreVertical, 
-  Edit, 
   Trash2, 
   Ban, 
   CheckCircle, 
@@ -17,7 +16,6 @@ import {
   Calendar,
   Briefcase,
   UserCheck,
-  AlertTriangle,
   Download,
   RefreshCw
 } from 'lucide-react';
@@ -27,7 +25,7 @@ interface User {
   name: string;
   email: string;
   phone?: string;
-  role: 'jobseeker' | 'employer' | 'admin';
+  role: 'job_seeker' | 'employer' | 'admin';
   status: 'active' | 'inactive' | 'banned';
   location?: string;
   company?: string;
@@ -42,7 +40,7 @@ interface User {
 
 export default function AdminUsersPage({ params }: { params: Promise<{ lang: string }> }) {
   const resolvedParams = React.use(params);
-  const { t } = useTranslation(resolvedParams.lang);
+  const { currentLanguage } = useLanguage();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,17 +49,137 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
   const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [showBulkActions, setShowBulkActions] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const usersPerPage = 20;
 
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage, searchTerm, roleFilter, statusFilter, sortBy, sortOrder]);
+  // Inline translation function
+  const getText = (key: string, params?: Record<string, any>) => {
+    const translations: Record<string, Record<string, string>> = {
+      en: {
+        'dashboard.admin.userManagement': 'User Management',
+        'dashboard.admin.userManagementDesc': `Manage all users in the system (${params?.total || 0} total)`,
+        'common.export': 'Export',
+        'common.refresh': 'Refresh',
+        'common.search': 'Search',
+        'dashboard.admin.searchUsers': 'Search users by name or email...',
+        'common.role': 'Role',
+        'dashboard.admin.allRoles': 'All Roles',
+        'auth.jobSeeker': 'Job Seeker',
+        'auth.employer': 'Employer',
+        'dashboard.admin.admins': 'Admins',
+        'dashboard.status.label': 'Status',
+        'dashboard.admin.allStatus': 'All Status',
+        'dashboard.status.active': 'Active',
+        'dashboard.status.inactive': 'Inactive',
+        'dashboard.status.banned': 'Banned',
+        'common.sortBy': 'Sort By',
+        'dashboard.admin.newestFirst': 'Newest First',
+        'dashboard.admin.oldestFirst': 'Oldest First',
+        'dashboard.admin.nameAZ': 'Name A-Z',
+        'dashboard.admin.nameZA': 'Name Z-A',
+        'dashboard.admin.lastLogin': 'Last Login',
+        'dashboard.admin.usersSelected': `${params?.count || 0} users selected`,
+        'dashboard.admin.activate': 'Activate',
+        'dashboard.admin.deactivate': 'Deactivate',
+        'dashboard.admin.ban': 'Ban',
+        'dashboard.status.loading': 'Loading...',
+        'common.user': 'User',
+        'dashboard.admin.activity': 'Activity',
+        'dashboard.admin.joined': 'Joined',
+        'common.actions': 'Actions',
+        'dashboard.admin.jobs': 'Jobs',
+        'dashboard.applications': 'Applications',
+        'common.previous': 'Previous',
+        'common.next': 'Next',
+        'dashboard.admin.noUsersFound': 'No users found',
+        'dashboard.admin.adjustSearchCriteria': 'Try adjusting your search criteria'
+      },
+      ar: {
+        'dashboard.admin.userManagement': 'إدارة المستخدمين',
+        'dashboard.admin.userManagementDesc': `إدارة جميع المستخدمين في النظام (${params?.total || 0} إجمالي)`,
+        'common.export': 'تصدير',
+        'common.refresh': 'تحديث',
+        'common.search': 'بحث',
+        'dashboard.admin.searchUsers': 'البحث عن المستخدمين بالاسم أو البريد الإلكتروني...',
+        'common.role': 'الدور',
+        'dashboard.admin.allRoles': 'جميع الأدوار',
+        'auth.jobSeeker': 'باحث عن عمل',
+        'auth.employer': 'صاحب عمل',
+        'dashboard.admin.admins': 'المديرون',
+        'dashboard.status.label': 'الحالة',
+        'dashboard.admin.allStatus': 'جميع الحالات',
+        'dashboard.status.active': 'نشط',
+        'dashboard.status.inactive': 'غير نشط',
+        'dashboard.status.banned': 'محظور',
+        'common.sortBy': 'ترتيب حسب',
+        'dashboard.admin.newestFirst': 'الأحدث أولاً',
+        'dashboard.admin.oldestFirst': 'الأقدم أولاً',
+        'dashboard.admin.nameAZ': 'الاسم أ-ي',
+        'dashboard.admin.nameZA': 'الاسم ي-أ',
+        'dashboard.admin.lastLogin': 'آخر تسجيل دخول',
+        'dashboard.admin.usersSelected': `تم تحديد ${params?.count || 0} مستخدم`,
+        'dashboard.admin.activate': 'تفعيل',
+        'dashboard.admin.deactivate': 'إلغاء تفعيل',
+        'dashboard.admin.ban': 'حظر',
+        'dashboard.status.loading': 'جاري التحميل...',
+        'common.user': 'المستخدم',
+        'dashboard.admin.activity': 'النشاط',
+        'dashboard.admin.joined': 'انضم',
+        'common.actions': 'الإجراءات',
+        'dashboard.admin.jobs': 'الوظائف',
+        'dashboard.applications': 'الطلبات',
+        'common.previous': 'السابق',
+        'common.next': 'التالي',
+        'dashboard.admin.noUsersFound': 'لم يتم العثور على مستخدمين',
+        'dashboard.admin.adjustSearchCriteria': 'جرب تعديل معايير البحث'
+      },
+      fr: {
+        'dashboard.admin.userManagement': 'Gestion des Utilisateurs',
+        'dashboard.admin.userManagementDesc': `Gérer tous les utilisateurs du système (${params?.total || 0} au total)`,
+        'common.export': 'Exporter',
+        'common.refresh': 'Actualiser',
+        'common.search': 'Rechercher',
+        'dashboard.admin.searchUsers': 'Rechercher des utilisateurs par nom ou email...',
+        'common.role': 'Rôle',
+        'dashboard.admin.allRoles': 'Tous les Rôles',
+        'auth.jobSeeker': 'Chercheur d\'Emploi',
+        'auth.employer': 'Employeur',
+        'dashboard.admin.admins': 'Administrateurs',
+        'dashboard.status.label': 'Statut',
+        'dashboard.admin.allStatus': 'Tous les Statuts',
+        'dashboard.status.active': 'Actif',
+        'dashboard.status.inactive': 'Inactif',
+        'dashboard.status.banned': 'Banni',
+        'common.sortBy': 'Trier par',
+        'dashboard.admin.newestFirst': 'Plus Récent d\'Abord',
+        'dashboard.admin.oldestFirst': 'Plus Ancien d\'Abord',
+        'dashboard.admin.nameAZ': 'Nom A-Z',
+        'dashboard.admin.nameZA': 'Nom Z-A',
+        'dashboard.admin.lastLogin': 'Dernière Connexion',
+        'dashboard.admin.usersSelected': `${params?.count || 0} utilisateurs sélectionnés`,
+        'dashboard.admin.activate': 'Activer',
+        'dashboard.admin.deactivate': 'Désactiver',
+        'dashboard.admin.ban': 'Bannir',
+        'dashboard.status.loading': 'Chargement...',
+        'common.user': 'Utilisateur',
+        'dashboard.admin.activity': 'Activité',
+        'dashboard.admin.joined': 'Rejoint',
+        'common.actions': 'Actions',
+        'dashboard.admin.jobs': 'Emplois',
+        'dashboard.applications': 'Candidatures',
+        'common.previous': 'Précédent',
+        'common.next': 'Suivant',
+        'dashboard.admin.noUsersFound': 'Aucun utilisateur trouvé',
+        'dashboard.admin.adjustSearchCriteria': 'Essayez d\'ajuster vos critères de recherche'
+      }
+    };
 
-  const fetchUsers = async () => {
+    return translations[currentLanguage]?.[key] || key;
+  };
+
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -86,7 +204,11 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, roleFilter, statusFilter, sortBy, sortOrder, usersPerPage]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const updateUserStatus = async (userId: string, status: string) => {
     try {
@@ -153,7 +275,6 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
       if (response.ok) {
         fetchUsers();
         setSelectedUsers([]);
-        setShowBulkActions(false);
         alert(`Bulk action ${action} completed successfully`);
       }
     } catch (error) {
@@ -241,13 +362,7 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -258,10 +373,10 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center">
                 <Users className="w-8 h-8 mr-3 text-blue-600" />
-                {t('dashboard.admin.userManagement')}
+                {getText('dashboard.admin.userManagement')}
               </h1>
               <p className="text-gray-600 mt-2">
-                {t('dashboard.admin.userManagementDesc', { total: totalUsers })}
+                {getText('dashboard.admin.userManagementDesc', { total: totalUsers })}
               </p>
             </div>
             <div className="flex space-x-3">
@@ -270,14 +385,14 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
               >
                 <Download className="w-4 h-4 mr-2" />
-                {t('common.export')}
+                {getText('common.export')}
               </button>
               <button
                 onClick={fetchUsers}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
-                {t('common.refresh')}
+                {getText('common.refresh')}
               </button>
             </div>
           </div>
@@ -287,12 +402,12 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('common.search')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{getText('common.search')}</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder={t('dashboard.admin.searchUsers')}
+                  placeholder={getText('dashboard.admin.searchUsers')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -301,35 +416,35 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('common.role')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{getText('common.role')}</label>
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="all">{t('dashboard.admin.allRoles')}</option>
-                <option value="jobseeker">{t('auth.jobSeeker')}</option>
-                <option value="employer">{t('auth.employer')}</option>
-                <option value="admin">{t('dashboard.admin.admins')}</option>
+                <option value="all">{getText('dashboard.admin.allRoles')}</option>
+                <option value="jobseeker">{getText('auth.jobSeeker')}</option>
+                <option value="employer">{getText('auth.employer')}</option>
+                <option value="admin">{getText('dashboard.admin.admins')}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('dashboard.status.label')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{getText('dashboard.status.label')}</label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="all">{t('dashboard.admin.allStatus')}</option>
-                <option value="active">{t('dashboard.status.active')}</option>
-                <option value="inactive">{t('dashboard.status.inactive')}</option>
-                <option value="banned">{t('dashboard.status.banned')}</option>
+                <option value="all">{getText('dashboard.admin.allStatus')}</option>
+                <option value="active">{getText('dashboard.status.active')}</option>
+                <option value="inactive">{getText('dashboard.status.inactive')}</option>
+                <option value="banned">{getText('dashboard.status.banned')}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('common.sortBy')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{getText('common.sortBy')}</label>
               <select
                 value={`${sortBy}-${sortOrder}`}
                 onChange={(e) => {
@@ -339,11 +454,11 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
                 }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="createdAt-desc">{t('dashboard.admin.newestFirst')}</option>
-                <option value="createdAt-asc">{t('dashboard.admin.oldestFirst')}</option>
-                <option value="name-asc">{t('dashboard.admin.nameAZ')}</option>
-                <option value="name-desc">{t('dashboard.admin.nameZA')}</option>
-                <option value="lastLogin-desc">{t('dashboard.admin.lastLogin')}</option>
+                <option value="createdAt-desc">{getText('dashboard.admin.newestFirst')}</option>
+                <option value="createdAt-asc">{getText('dashboard.admin.oldestFirst')}</option>
+                <option value="name-asc">{getText('dashboard.admin.nameAZ')}</option>
+                <option value="name-desc">{getText('dashboard.admin.nameZA')}</option>
+                <option value="lastLogin-desc">{getText('dashboard.admin.lastLogin')}</option>
               </select>
             </div>
           </div>
@@ -354,26 +469,26 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
               <span className="text-blue-800 font-medium">
-                {t('dashboard.admin.usersSelected', { count: selectedUsers.length })}
+                {getText('dashboard.admin.usersSelected', { count: selectedUsers.length })}
               </span>
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleBulkAction('activate')}
                   className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
                 >
-                  {t('dashboard.admin.activate')}
+                  {getText('dashboard.admin.activate')}
                 </button>
                 <button
                   onClick={() => handleBulkAction('deactivate')}
                   className="px-3 py-1 bg-yellow-600 text-white rounded text-sm hover:bg-yellow-700"
                 >
-                  {t('dashboard.admin.deactivate')}
+                  {getText('dashboard.admin.deactivate')}
                 </button>
                 <button
                   onClick={() => handleBulkAction('ban')}
                   className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
                 >
-                  {t('dashboard.admin.ban')}
+                  {getText('dashboard.admin.ban')}
                 </button>
               </div>
             </div>
@@ -385,7 +500,7 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-gray-600">{t('dashboard.status.loading')}</p>
+              <p className="mt-2 text-gray-600">{getText('dashboard.status.loading')}</p>
             </div>
           ) : (
             <>
@@ -402,22 +517,22 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
                         />
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('common.user')}
+                        {getText('common.user')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('common.role')}
+                        {getText('common.role')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('dashboard.status.label')}
+                        {getText('dashboard.status.label')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('dashboard.admin.activity')}
+                        {getText('dashboard.admin.activity')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('dashboard.admin.joined')}
+                        {getText('dashboard.admin.joined')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('common.actions')}
+                        {getText('common.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -436,10 +551,12 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
                               {user.profileImage ? (
-                                <img
+                                <Image
                                   className="h-10 w-10 rounded-full object-cover"
                                   src={user.profileImage}
                                   alt={user.name}
+                                  width={40}
+                                  height={40}
                                 />
                               ) : (
                                 <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
@@ -493,21 +610,21 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
                           {user.role === 'employer' && (
-                            <div>{t('dashboard.admin.jobs')}: {user.jobsPosted || 0}</div>
+                            <div>{getText('dashboard.admin.jobs')}: {user.jobsPosted || 0}</div>
                           )}
-                          {user.role === 'jobseeker' && (
-                            <div>{t('dashboard.applications')}: {user.applicationsSubmitted || 0}</div>
+                          {user.role === 'job_seeker' && (
+                            <div>{getText('dashboard.applications')}: {user.applicationsSubmitted || 0}</div>
                           )}
                           {user.lastLogin && (
                             <div className="text-xs text-gray-500">
-                              {t('dashboard.admin.lastLogin')}: {formatDate(user.lastLogin)}
+                              {getText('dashboard.admin.lastLogin')}: {formatDate(new Date(user.lastLogin), resolvedParams.lang)}
                             </div>
                           )}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
                           <div className="flex items-center">
                             <Calendar className="w-3 h-3 mr-1" />
-                            {formatDate(user.createdAt)}
+                            {formatDate(new Date(user.createdAt), resolvedParams.lang)}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm font-medium">
@@ -555,14 +672,14 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
                         disabled={currentPage === 1}
                         className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                       >
-                        {t('common.previous')}
+                        {getText('common.previous')}
                       </button>
                       <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
                         className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                       >
-                        {t('common.next')}
+                        {getText('common.next')}
                       </button>
                     </div>
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
@@ -624,9 +741,9 @@ export default function AdminUsersPage({ params }: { params: Promise<{ lang: str
         {filteredUsers.length === 0 && !loading && (
           <div className="text-center py-12">
             <Users className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">{t('dashboard.admin.noUsersFound')}</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">{getText('dashboard.admin.noUsersFound')}</h3>
             <p className="mt-1 text-sm text-gray-500">
-              {t('dashboard.admin.adjustSearchCriteria')}
+              {getText('dashboard.admin.adjustSearchCriteria')}
             </p>
           </div>
         )}

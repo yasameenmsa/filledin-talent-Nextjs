@@ -9,11 +9,9 @@ import {
   Mail, 
   Phone, 
   MapPin, 
-  Briefcase, 
-  FileText,
+  Briefcase,
   Plus,
   Trash2,
-  Upload,
   Save,
   Loader2
 } from 'lucide-react';
@@ -35,7 +33,8 @@ const profileSchema = z.object({
     experience: z.array(z.object({
       company: z.string().min(1, 'Company name is required'),
       position: z.string().min(1, 'Position is required'),
-      duration: z.string().min(1, 'Duration is required'),
+      startDate: z.string().min(1, 'Start date is required'),
+      endDate: z.string().optional(),
       description: z.string().optional(),
     })).optional(),
     education: z.array(z.object({
@@ -54,7 +53,7 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({ onSuccess }: ProfileFormProps) {
-  const { user, userData, updateProfile } = useAuth();
+  const { userData, updateProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -67,7 +66,6 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
     formState: { errors },
     control,
     setValue,
-    watch,
     reset
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -157,9 +155,9 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
       
       setSuccess('Profile updated successfully!');
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Profile update error:', error);
-      setError(error.message || 'Failed to update profile');
+      setError(error instanceof Error ? error.message : 'Failed to update profile');
     } finally {
       setIsLoading(false);
     }
@@ -184,7 +182,8 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
     appendExperience({
       company: '',
       position: '',
-      duration: '',
+      startDate: '',
+      endDate: '',
       description: ''
     });
   };
@@ -250,7 +249,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                   <Mail className="w-4 h-4 mr-1" />
                   Email *
                 </label>
@@ -266,7 +265,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                   <Phone className="w-4 h-4 mr-1" />
                   Phone
                 </label>
@@ -282,7 +281,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                   <MapPin className="w-4 h-4 mr-1" />
                   Location
                 </label>
@@ -324,7 +323,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
           </div>
 
           {/* Professional Information */}
-          {userData?.role === 'jobseeker' && (
+          {userData?.role === 'job_seeker' && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <Briefcase className="w-5 h-5 mr-2" />
@@ -359,7 +358,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
           )}
 
           {/* Skills Section */}
-          {userData?.role === 'jobseeker' && (
+          {userData?.role === 'job_seeker' && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Skills
@@ -405,7 +404,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
           )}
 
           {/* Experience Section */}
-          {userData?.role === 'jobseeker' && (
+          {userData?.role === 'job_seeker' && (
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -470,19 +469,35 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                         )}
                       </div>
                       
-                      <div className="md:col-span-2">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Duration *
+                          Start Date *
                         </label>
                         <input
-                          {...register(`profile.experience.${index}.duration`)}
-                          type="text"
+                          {...register(`profile.experience.${index}.startDate`)}
+                          type="month"
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="e.g., Jan 2020 - Present"
                         />
-                        {errors.profile?.experience?.[index]?.duration && (
+                        {errors.profile?.experience?.[index]?.startDate && (
                           <p className="text-red-500 text-sm mt-1">
-                            {errors.profile.experience[index]?.duration?.message}
+                            {errors.profile.experience[index]?.startDate?.message}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          End Date
+                        </label>
+                        <input
+                          {...register(`profile.experience.${index}.endDate`)}
+                          type="month"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Leave empty if current"
+                        />
+                        {errors.profile?.experience?.[index]?.endDate && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.profile.experience[index]?.endDate?.message}
                           </p>
                         )}
                       </div>
@@ -506,7 +521,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
           )}
 
           {/* Education Section */}
-          {userData?.role === 'jobseeker' && (
+          {userData?.role === 'job_seeker' && (
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">

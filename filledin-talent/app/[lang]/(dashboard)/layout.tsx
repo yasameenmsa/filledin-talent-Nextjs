@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { Loader2 } from 'lucide-react';
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -16,10 +16,23 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const params = useParams();
   const lang = params.lang as string;
-  const { user, userData, loading } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { t } = useTranslation(lang);
+  const { currentLanguage } = useLanguage();
+
+  // Inline translation function
+  const getText = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      'common.loading': {
+        en: 'Loading...',
+        ar: 'جاري التحميل...',
+        fr: 'Chargement...'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -32,13 +45,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">{t('dashboard.loading')}</p>
+          <p className="text-gray-600">{getText('common.loading')}</p>
         </div>
       </div>
     );
   }
 
-  if (!user || !userData) {
+  if (!user) {
     return null;
   }
 
@@ -56,7 +69,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <DashboardSidebar 
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        userRole={userData.role}
+        userRole={user.role}
         lang={lang}
       />
 
@@ -65,7 +78,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Header */}
         <DashboardHeader 
           onMenuClick={() => setSidebarOpen(true)}
-          user={userData}
+          user={user}
           lang={lang}
         />
 

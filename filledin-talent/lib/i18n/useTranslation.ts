@@ -1,14 +1,20 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { en } from './translations/en';
-import { ar } from './translations/ar';
-import { fr } from './translations/fr';
+import { trends as enTrends } from './translations/en/trends';
+import { trends as arTrends } from './translations/ar/trends';
+import { trends as frTrends } from './translations/fr/trends';
 
 const translations = {
-  en,
-  ar,
-  fr,
+  en: {
+    trends: enTrends,
+  },
+  ar: {
+    trends: arTrends,
+  },
+  fr: {
+    trends: frTrends,
+  },
 };
 
 type TranslationParams = Record<string, string | number>;
@@ -30,7 +36,7 @@ export const useTranslation = (lang?: string) => {
 
     for (const k of keys) {
       if (result && typeof result === 'object' && k in result) {
-        result = result[k];
+        result = result[k] as TranslationValue;
       } else {
         return key; // Return the key if path doesn't exist
       }

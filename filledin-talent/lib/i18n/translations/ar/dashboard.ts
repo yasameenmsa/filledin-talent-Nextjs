@@ -2,15 +2,10 @@ export const dashboard = {
   title: "لوحة التحكم",
   welcome: "مرحباً بك",
   overview: "نظرة عامة",
-  profile: "الملف الشخصي",
   settings: "الإعدادات",
   logout: "تسجيل الخروج",
   notifications: "الإشعارات",
   loading: "جاري تحميل لوحة التحكم...",
-  
-  // Top-level sections
-  applications: "الطلبات",
-  jobs: "الوظائف",
   
   // Status labels
   status: {
@@ -46,8 +41,6 @@ export const dashboard = {
     userManagement: "إدارة المستخدمين",
     systemSettings: "إعدادات النظام",
     users: "المستخدمون",
-    jobs: "الوظائف",
-    applications: "الطلبات",
     totalUsers: "إجمالي المستخدمين",
     totalJobs: "إجمالي الوظائف",
     totalApplications: "إجمالي الطلبات",
@@ -62,7 +55,6 @@ export const dashboard = {
     growth: "النمو",
     lastMonth: "الشهر الماضي",
     totalRevenue: "إجمالي الإيرادات",
-    employers: "أصحاب العمل",
     monthlyRevenue: "الإيرادات الشهرية",
     fromLastMonth: "من الشهر الماضي",
     total: "الإجمالي",
@@ -87,32 +79,6 @@ export const dashboard = {
     loadingData: "جاري تحميل البيانات...",
     errorLoading: "خطأ في تحميل البيانات",
     refreshData: "تحديث البيانات"
-  },
-  
-  employer: {
-    title: "لوحة تحكم صاحب العمل",
-    subtitle: "إدارة إعلانات الوظائف والطلبات",
-    jobPostings: "إعلانات الوظائف",
-    applications: "الطلبات",
-    candidates: "المرشحون",
-    analytics: "التحليلات",
-    postNewJob: "نشر وظيفة جديدة",
-    viewApplications: "عرض الطلبات",
-    manageJobs: "إدارة الوظائف",
-    viewAnalytics: "عرض التحليلات",
-    totalJobs: "إجمالي الوظائف",
-    activeJobs: "الوظائف النشطة",
-    totalApplications: "إجمالي الطلبات",
-    newApplications: "طلبات جديدة",
-    thisWeek: "هذا الأسبوع",
-    thisMonth: "هذا الشهر",
-    recentApplications: "الطلبات الأخيرة",
-    topPerformingJobs: "الوظائف الأكثر أداءً",
-    applicationTrends: "اتجاهات الطلبات",
-    noJobs: "لا توجد إعلانات وظائف بعد",
-    noApplications: "لا توجد طلبات بعد",
-    createFirstJob: "أنشئ أول إعلان وظيفة",
-    jobsWillAppear: "ستظهر الطلبات هنا بمجرد أن يبدأ المرشحون في التقديم"
   },
   
   jobSeeker: {

@@ -32,20 +32,14 @@ export const auth = {
     password: 'Password',
     confirmPassword: 'Confirm Password',
     firstName: 'First Name',
-    lastName: 'Last Name',
-    role: 'Role'
+    lastName: 'Last Name'
   },
   placeholders: {
     email: 'Enter your email',
     password: 'Enter your password',
     confirmPassword: 'Confirm your password',
     firstName: 'Enter your first name',
-    lastName: 'Enter your last name',
-    selectRole: 'Select your role'
-  },
-  roles: {
-    business: 'Business',
-    jobSeeker: 'Job Seeker'
+    lastName: 'Enter your last name'
   },
   errors: {
     invalidCredentials: 'Invalid email or password. Please try again.',
@@ -72,7 +66,6 @@ export const auth = {
     confirmPasswordRequired: 'Please confirm your password.',
     firstNameRequired: 'First name is required.',
     lastNameRequired: 'Last name is required.',
-    roleRequired: 'Please select a role.',
     termsRequired: 'You must accept the terms and conditions.',
     wrongPassword: 'Incorrect password. Please try again.',
     userDisabled: 'This account has been disabled. Please contact support.',

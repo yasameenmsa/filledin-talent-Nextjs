@@ -6,30 +6,198 @@ import {
   FileText, 
   Bookmark, 
   Send, 
-  TrendingUp, 
   Search,
   Calendar,
   Clock,
-  CheckCircle,
-  XCircle,
   Eye
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from '@/lib/i18n/client';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { formatDate } from '@/lib/utils/formatters';
+
+interface Application {
+  _id: string;
+  status: 'pending' | 'reviewing' | 'shortlisted' | 'interviewed' | 'offered' | 'rejected' | 'withdrawn';
+  job: {
+    title: string;
+    company: { name: string };
+    location?: { city: string; country: string };
+  };
+  createdAt: string;
+}
+
+interface Job {
+  _id: string;
+  title: string;
+  company: { name: string; logo?: string };
+  location: { city: string; country: string; state?: string };
+  workingType: string;
+  salary: { min?: number; max?: number; currency: string };
+  createdAt: string;
+  viewCount?: number;
+}
 
 interface DashboardStats {
   totalApplications: number;
   pendingApplications: number;
   interviewsScheduled: number;
   savedJobs: number;
-  recentApplications: any[];
-  recommendedJobs: any[];
+  recentApplications: Application[];
+  recommendedJobs: Job[];
 }
 
 export default function JobSeekerDashboard({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = React.use(params);
   const { user } = useAuth();
-  const { t } = useTranslation(lang);
+  const { currentLanguage } = useLanguage();
+
+  // Inline translation function
+  const getText = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      'jobs.salaryNotSpecified': {
+        en: 'Salary not specified',
+        ar: 'الراتب غير محدد',
+        fr: 'Salaire non spécifié'
+      },
+      'jobs.salaryFrom': {
+        en: 'From',
+        ar: 'من',
+        fr: 'À partir de'
+      },
+      'jobs.salaryUpTo': {
+        en: 'Up to',
+        ar: 'حتى',
+        fr: 'Jusqu\'à'
+      },
+      'jobseeker.welcomeBack': {
+        en: 'Welcome back',
+        ar: 'مرحباً بعودتك',
+        fr: 'Bon retour'
+      },
+      'jobseeker.jobSeeker': {
+        en: 'Job Seeker',
+        ar: 'باحث عن عمل',
+        fr: 'Demandeur d\'emploi'
+      },
+      'jobseeker.trackApplications': {
+        en: 'Track Applications',
+        ar: 'تتبع الطلبات',
+        fr: 'Suivre les candidatures'
+      },
+      'jobseeker.findJobs': {
+        en: 'Find Jobs',
+        ar: 'البحث عن وظائف',
+        fr: 'Trouver des emplois'
+      },
+      'dashboard.applications': {
+        en: 'Applications',
+        ar: 'الطلبات',
+        fr: 'Candidatures'
+      },
+      'applications.status.pending': {
+        en: 'Pending',
+        ar: 'قيد الانتظار',
+        fr: 'En attente'
+      },
+      'applications.status.reviewed': {
+        en: 'Reviewed',
+        ar: 'تمت المراجعة',
+        fr: 'Examiné'
+      },
+      'applications.status.shortlisted': {
+        en: 'Shortlisted',
+        ar: 'مدرج في القائمة المختصرة',
+        fr: 'Présélectionné'
+      },
+      'applications.status.interview': {
+        en: 'Interview',
+        ar: 'مقابلة',
+        fr: 'Entretien'
+      },
+      'applications.status.rejected': {
+        en: 'Rejected',
+        ar: 'مرفوض',
+        fr: 'Rejeté'
+      },
+      'applications.status.hired': {
+        en: 'Hired',
+        ar: 'تم التوظيف',
+        fr: 'Embauché'
+      },
+      'jobseeker.interviews': {
+        en: 'Interviews',
+        ar: 'المقابلات',
+        fr: 'Entretiens'
+      },
+      'jobseeker.savedJobs': {
+        en: 'Saved Jobs',
+        ar: 'الوظائف المحفوظة',
+        fr: 'Emplois sauvegardés'
+      },
+      'jobseeker.recentApplications': {
+        en: 'Recent Applications',
+        ar: 'الطلبات الأخيرة',
+        fr: 'Candidatures récentes'
+      },
+      'viewAll': {
+        en: 'View All',
+        ar: 'عرض الكل',
+        fr: 'Voir tout'
+      },
+      'jobseeker.noApplicationsYet': {
+        en: 'No applications yet',
+        ar: 'لا توجد طلبات بعد',
+        fr: 'Aucune candidature pour le moment'
+      },
+      'jobseeker.startApplying': {
+        en: 'Start applying to jobs',
+        ar: 'ابدأ بالتقديم للوظائف',
+        fr: 'Commencer à postuler'
+      },
+      'jobseeker.recommendedJobs': {
+        en: 'Recommended Jobs',
+        ar: 'الوظائف الموصى بها',
+        fr: 'Emplois recommandés'
+      },
+      'jobseeker.noRecommendations': {
+        en: 'No recommendations available',
+        ar: 'لا توجد توصيات متاحة',
+        fr: 'Aucune recommandation disponible'
+      },
+      'jobseeker.quickActions': {
+        en: 'Quick Actions',
+        ar: 'الإجراءات السريعة',
+        fr: 'Actions rapides'
+      },
+      'jobseeker.updateProfile': {
+        en: 'Update Profile',
+        ar: 'تحديث الملف الشخصي',
+        fr: 'Mettre à jour le profil'
+      },
+      'jobseeker.keepProfileCurrent': {
+        en: 'Keep your profile up to date',
+        ar: 'حافظ على ملفك الشخصي محدثاً',
+        fr: 'Gardez votre profil à jour'
+      },
+      'jobseeker.searchJobs': {
+        en: 'Search Jobs',
+        ar: 'البحث عن وظائف',
+        fr: 'Rechercher des emplois'
+      },
+      'jobseeker.findOpportunity': {
+        en: 'Find your next opportunity',
+        ar: 'اعثر على فرصتك القادمة',
+        fr: 'Trouvez votre prochaine opportunité'
+      },
+      'jobseeker.reviewSavedPositions': {
+        en: 'Review saved positions',
+        ar: 'راجع المناصب المحفوظة',
+        fr: 'Examiner les postes sauvegardés'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
   const [stats, setStats] = useState<DashboardStats>({
     totalApplications: 0,
     pendingApplications: 0,
@@ -58,8 +226,8 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
 
       // Calculate stats from applications
       const applications = applicationsData.applications || [];
-      const pendingCount = applications.filter((app: any) => app.status === 'pending').length;
-      const interviewCount = applications.filter((app: any) => app.status === 'interviewed').length;
+      const pendingCount = applications.filter((app: Application) => app.status === 'pending').length;
+      const interviewCount = applications.filter((app: Application) => app.status === 'interviewed').length;
 
       setStats({
         totalApplications: applicationsData.stats?.totalApplications || applications.length,
@@ -95,16 +263,15 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+
 
   const formatSalary = (min?: number, max?: number, currency = 'USD') => {
-    if (!min && !max) return t('jobs.salaryNotSpecified');
-    if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-    if (min) return `${t('jobs.salaryFrom')} $${min.toLocaleString()}`;
-    if (max) return `${t('jobs.salaryUpTo')} $${max.toLocaleString()}`;
-    return t('jobs.salaryNotSpecified');
+    const currencySymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency;
+    if (!min && !max) return getText('jobs.salaryNotSpecified');
+    if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
+    if (min) return `${getText('jobs.salaryFrom')} ${currencySymbol}${min.toLocaleString()}`;
+    if (max) return `${getText('jobs.salaryUpTo')} ${currencySymbol}${max.toLocaleString()}`;
+    return getText('jobs.salaryNotSpecified');
   };
 
   if (loading) {
@@ -129,10 +296,10 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              {t('jobseeker.welcomeBack', { name: user?.profile?.firstName || t('jobseeker.jobSeeker') })}
+              {getText('jobseeker.welcomeBack')} {user?.profile?.firstName || getText('jobseeker.jobSeeker')}
             </h1>
             <p className="text-gray-600 mt-1">
-              {t('jobseeker.trackApplications')}
+              {getText('jobseeker.trackApplications')}
             </p>
           </div>
           <Link
@@ -140,7 +307,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Search className="h-4 w-4 mr-2" />
-            {t('jobseeker.findJobs')}
+            {getText('jobseeker.findJobs')}
           </Link>
         </div>
       </div>
@@ -153,7 +320,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
               <Send className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('dashboard.applications')}</p>
+              <p className="text-sm font-medium text-gray-600">{getText('dashboard.applications')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
             </div>
           </div>
@@ -165,7 +332,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
               <Clock className="h-6 w-6 text-yellow-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('applications.status.pending')}</p>
+              <p className="text-sm font-medium text-gray-600">{getText('applications.status.pending')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.pendingApplications}</p>
             </div>
           </div>
@@ -177,7 +344,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
               <Calendar className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('jobseeker.interviews')}</p>
+              <p className="text-sm font-medium text-gray-600">{getText('jobseeker.interviews')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.interviewsScheduled}</p>
             </div>
           </div>
@@ -189,7 +356,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
               <Bookmark className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('jobseeker.savedJobs')}</p>
+              <p className="text-sm font-medium text-gray-600">{getText('jobseeker.savedJobs')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.savedJobs}</p>
             </div>
           </div>
@@ -202,12 +369,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">{t('jobseeker.recentApplications')}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{getText('jobseeker.recentApplications')}</h2>
               <Link
                 href={`/${lang}/jobseeker/applications`}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                {t('viewAll')}
+                {getText('viewAll')}
               </Link>
             </div>
           </div>
@@ -226,10 +393,10 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                     </div>
                     <div className="text-right">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(application.status)}`}>
-                        {t(`applications.status.${application.status.toLowerCase()}`)}
+                        {getText(`applications.status.${application.status.toLowerCase()}`)}
                       </span>
                       <p className="text-xs text-gray-500 mt-1">
-                        {formatDate(application.createdAt)}
+                        {formatDate(new Date(application.createdAt), lang)}
                       </p>
                     </div>
                   </div>
@@ -237,12 +404,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
               </div>
             ) : (
               <div className="text-center py-4">
-                <p className="text-gray-500 mb-2">{t('jobseeker.noApplicationsYet')}</p>
+                <p className="text-gray-500 mb-2">{getText('jobseeker.noApplicationsYet')}</p>
                 <Link
                   href={`/${lang}/jobs`}
                   className="text-sm text-blue-600 hover:text-blue-700"
                 >
-                  {t('jobseeker.startApplying')}
+                  {getText('jobseeker.startApplying')}
                 </Link>
               </div>
             )}
@@ -253,12 +420,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">{t('jobseeker.recommendedJobs')}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{getText('jobseeker.recommendedJobs')}</h2>
               <Link
                 href={`/${lang}/jobs`}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                {t('viewAll')}
+                {getText('viewAll')}
               </Link>
             </div>
           </div>
@@ -283,7 +450,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                       </div>
                       <div className="text-right ml-4">
                         <span className="text-xs text-gray-500">
-                          {formatDate(job.createdAt)}
+                          {formatDate(new Date(job.createdAt), lang)}
                         </span>
                         {job.viewCount && (
                           <div className="flex items-center mt-1">
@@ -297,7 +464,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">{t('jobseeker.noRecommendations')}</p>
+              <p className="text-gray-500 text-center py-4">{getText('jobseeker.noRecommendations')}</p>
             )}
           </div>
         </div>
@@ -305,7 +472,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
 
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('jobseeker.quickActions')}</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{getText('jobseeker.quickActions')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href={`/${lang}/jobseeker/profile`}
@@ -313,8 +480,8 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
           >
             <FileText className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
-              <h3 className="font-medium text-gray-900">{t('jobseeker.updateProfile')}</h3>
-              <p className="text-sm text-gray-600">{t('jobseeker.keepProfileCurrent')}</p>
+              <h3 className="font-medium text-gray-900">{getText('jobseeker.updateProfile')}</h3>
+              <p className="text-sm text-gray-600">{getText('jobseeker.keepProfileCurrent')}</p>
             </div>
           </Link>
 
@@ -324,8 +491,8 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
           >
             <Search className="h-8 w-8 text-green-600" />
             <div className="ml-3">
-              <h3 className="font-medium text-gray-900">{t('jobseeker.searchJobs')}</h3>
-              <p className="text-sm text-gray-600">{t('jobseeker.findOpportunity')}</p>
+              <h3 className="font-medium text-gray-900">{getText('jobseeker.searchJobs')}</h3>
+              <p className="text-sm text-gray-600">{getText('jobseeker.findOpportunity')}</p>
             </div>
           </Link>
 
@@ -335,8 +502,8 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
           >
             <Bookmark className="h-8 w-8 text-purple-600" />
             <div className="ml-3">
-              <h3 className="font-medium text-gray-900">{t('jobseeker.savedJobs')}</h3>
-              <p className="text-sm text-gray-600">{t('jobseeker.reviewSavedPositions')}</p>
+              <h3 className="font-medium text-gray-900">{getText('jobseeker.savedJobs')}</h3>
+              <p className="text-sm text-gray-600">{getText('jobseeker.reviewSavedPositions')}</p>
             </div>
           </Link>
         </div>

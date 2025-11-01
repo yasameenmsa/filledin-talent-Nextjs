@@ -19,6 +19,7 @@ import { analytics } from './ar/analytics';
 import { candidates } from './ar/candidates';
 import { status } from './ar/status';
 import { admin } from './ar/admin';
+import { imageBoxes } from './ar/imageBoxes';
 
 export const ar = {
   common,
@@ -41,6 +42,7 @@ export const ar = {
   analytics,
   candidates,
   status,
-  admin
+  admin,
+  imageBoxes
 };
 

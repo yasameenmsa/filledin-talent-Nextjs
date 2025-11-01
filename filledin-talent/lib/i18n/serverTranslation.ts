@@ -9,7 +9,7 @@ const translations = {
 };
 
 export const getServerTranslation = (locale: string = 'en') => {
-  const t = (key: string, params?: Record<string, any>): string => {
+  const t = (key: string, params?: Record<string, unknown>): string => {
     if (!locale) return key; // Fallback if locale is not available
 
     const currentTranslations = translations[locale as keyof typeof translations];
@@ -17,11 +17,11 @@ export const getServerTranslation = (locale: string = 'en') => {
 
     // Handle nested keys by splitting and traversing the object
     const keys = key.split('.');
-    let result: any = currentTranslations;
+    let result: Record<string, unknown> | string = currentTranslations;
 
     for (const k of keys) {
       if (result && typeof result === 'object' && k in result) {
-        result = result[k];
+        result = result[k] as Record<string, unknown> | string;
       } else {
         return key; // Return the key if path doesn't exist
       }

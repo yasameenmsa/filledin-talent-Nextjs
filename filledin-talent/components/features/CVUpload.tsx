@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Upload, File, X, Check, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface CVUploadProps {
   onUploadSuccess?: (cvUrl: string) => void;
@@ -18,6 +19,7 @@ export default function CVUpload({
   className = '' 
 }: CVUploadProps) {
   const { user, userData, updateProfile } = useAuth();
+  const { currentLanguage } = useLanguage();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState('');
@@ -32,12 +34,58 @@ export default function CVUpload({
   ];
   const maxFileSize = 5 * 1024 * 1024; // 5MB
 
+  // Load CV from localStorage when component mounts or user changes
+  useEffect(() => {
+    if (user?._id) {
+      try {
+        const storedCV = localStorage.getItem(`cv_${user._id}`);
+        if (storedCV) {
+          const cvData = JSON.parse(storedCV);
+          // Update user context if CV exists in localStorage but not in user object
+          if (!user.cv && cvData.fileName) {
+            updateProfile({ cv: cvData.fileName });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading CV from localStorage:', error);
+      }
+    }
+  }, [user?._id]);
+
+  // Inline translation function
+  const getText = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      'cv.invalidFileType': {
+        en: 'Please upload a PDF, DOC, or DOCX file.',
+        ar: 'يرجى تحميل ملف PDF أو DOC أو DOCX.',
+        fr: 'Veuillez télécharger un fichier PDF, DOC ou DOCX.'
+      },
+      'cv.fileTooLarge': {
+        en: 'File size must be less than 5MB.',
+        ar: 'يجب أن يكون حجم الملف أقل من 5 ميجابايت.',
+        fr: 'La taille du fichier doit être inférieure à 5 Mo.'
+      },
+      'cv.uploadSuccess': {
+        en: 'CV uploaded successfully!',
+        ar: 'تم تحميل السيرة الذاتية بنجاح!',
+        fr: 'CV téléchargé avec succès!'
+      },
+      'cv.uploadFailed': {
+        en: 'Failed to upload CV. Please try again.',
+        ar: 'فشل في تحميل السيرة الذاتية. يرجى المحاولة مرة أخرى.',
+        fr: 'Échec du téléchargement du CV. Veuillez réessayer.'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
+
   const validateFile = (file: File): string | null => {
     if (!allowedTypes.includes(file.type)) {
-      return 'Please upload a PDF or Word document (.pdf, .doc, .docx)';
+      return getText('cv.invalidFileType');
     }
     if (file.size > maxFileSize) {
-      return 'File size must be less than 5MB';
+      return getText('cv.fileTooLarge');
     }
     return null;
   };
@@ -49,45 +97,45 @@ export default function CVUpload({
     setUploadProgress(0);
 
     try {
-      // Create FormData
-      const formData = new FormData();
-      formData.append('cv', file);
-
-      // Upload with progress tracking
-      const xhr = new XMLHttpRequest();
+      // Convert file to base64 for localStorage storage
+      const reader = new FileReader();
       
       return new Promise<string>((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (event) => {
+        reader.onprogress = (event) => {
           if (event.lengthComputable) {
             const progress = Math.round((event.loaded / event.total) * 100);
             setUploadProgress(progress);
           }
-        });
+        };
 
-        xhr.addEventListener('load', async () => {
-          if (xhr.status === 200) {
-            try {
-              const response = JSON.parse(xhr.responseText);
-              resolve(response.cvUrl);
-            } catch (error) {
-              reject(new Error('Invalid response from server'));
-            }
-          } else {
-            try {
-              const errorResponse = JSON.parse(xhr.responseText);
-              reject(new Error(errorResponse.error || 'Upload failed'));
-            } catch (error) {
-              reject(new Error('Upload failed'));
-            }
+        reader.onload = () => {
+          try {
+            const base64String = reader.result as string;
+            const cvData = {
+              fileName: file.name,
+              fileType: file.type,
+              fileSize: file.size,
+              data: base64String,
+              uploadDate: new Date().toISOString(),
+              userId: user?._id
+            };
+
+            // Store in localStorage
+            localStorage.setItem(`cv_${user?._id}`, JSON.stringify(cvData));
+            
+            // Return a mock URL for the stored CV
+            const cvUrl = `local://cv_${user?._id}`;
+            resolve(cvUrl);
+          } catch (error) {
+            reject(new Error('Failed to save CV. Please try again.'));
           }
-        });
+        };
 
-        xhr.addEventListener('error', () => {
-          reject(new Error('Network error during upload'));
-        });
+        reader.onerror = () => {
+          reject(new Error('Failed to read file. Please try again.'));
+        };
 
-        xhr.open('POST', `/api/users/${user?.uid}/cv`);
-        xhr.send(formData);
+        reader.readAsDataURL(file);
       });
     } catch (error) {
       throw error;
@@ -117,10 +165,10 @@ export default function CVUpload({
         await updateProfile(updatedProfile);
       }
 
-      setSuccess('CV uploaded successfully!');
+      setSuccess(getText('cv.uploadSuccess'));
       onUploadSuccess?.(cvUrl);
-    } catch (error: any) {
-      const errorMessage = error.message || 'Failed to upload CV';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : getText('cv.uploadFailed');
       setError(errorMessage);
       onUploadError?.(errorMessage);
     } finally {
@@ -167,6 +215,11 @@ export default function CVUpload({
     try {
       setIsUploading(true);
       
+      // Remove from localStorage
+      if (user?._id) {
+        localStorage.removeItem(`cv_${user._id}`);
+      }
+      
       // Update profile to remove CV URL
       const updatedProfile = {
         ...userData,
@@ -178,7 +231,7 @@ export default function CVUpload({
       
       await updateProfile(updatedProfile);
       setSuccess('CV removed successfully!');
-    } catch (error: any) {
+    } catch {
       setError('Failed to remove CV');
     } finally {
       setIsUploading(false);

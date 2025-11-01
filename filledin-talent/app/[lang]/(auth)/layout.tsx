@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-                <span>Connect with top employers</span>
+                <span>Connect with opportunities</span>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-white rounded-full mr-3"></div>

@@ -8,16 +8,14 @@ import {
   TrendingUp, 
   Activity,
   UserCheck,
-  Building,
-  Calendar,
   DollarSign,
-  AlertCircle,
   CheckCircle,
   Clock,
   Eye
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { formatDate, formatCurrency } from '@/lib/utils/formatters';
 
 interface AdminStats {
   users: {
@@ -63,10 +61,183 @@ interface RecentActivity {
 export default function AdminDashboard({ params }: { params: Promise<{ lang: string }> }) {
   const { user } = useAuth();
   const resolvedParams = React.use(params);
-  const { t } = useTranslation(resolvedParams.lang);
+  const { currentLanguage } = useLanguage();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Inline translation function
+  const getText = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      'dashboard.loading': {
+        en: 'Loading...',
+        ar: 'جاري التحميل...',
+        fr: 'Chargement...'
+      },
+      'dashboard.admin.title': {
+        en: 'Admin Dashboard',
+        ar: 'لوحة تحكم المدير',
+        fr: 'Tableau de bord administrateur'
+      },
+      'dashboard.welcome': {
+        en: 'Welcome',
+        ar: 'مرحباً',
+        fr: 'Bienvenue'
+      },
+      'dashboard.admin.subtitle': {
+        en: 'Here\'s an overview of your platform.',
+        ar: 'إليك نظرة عامة على منصتك.',
+        fr: 'Voici un aperçu de votre plateforme.'
+      },
+      'dashboard.admin.totalUsers': {
+        en: 'Total Users',
+        ar: 'إجمالي المستخدمين',
+        fr: 'Total des utilisateurs'
+      },
+      'dashboard.admin.thisMonth': {
+        en: 'this month',
+        ar: 'هذا الشهر',
+        fr: 'ce mois-ci'
+      },
+      'jobSeekers': {
+        en: 'Job Seekers',
+        ar: 'الباحثون عن عمل',
+        fr: 'Demandeurs d\'emploi'
+      },
+      'dashboard.admin.employers': {
+        en: 'Employers',
+        ar: 'أصحاب العمل',
+        fr: 'Employeurs'
+      },
+      'dashboard.jobs': {
+        en: 'Jobs',
+        ar: 'الوظائف',
+        fr: 'Emplois'
+      },
+      'dashboard.admin.thisWeek': {
+        en: 'this week',
+        ar: 'هذا الأسبوع',
+        fr: 'cette semaine'
+      },
+      'dashboard.status.active': {
+        en: 'Active',
+        ar: 'نشط',
+        fr: 'Actif'
+      },
+      'dashboard.status.pending': {
+        en: 'Pending',
+        ar: 'قيد الانتظار',
+        fr: 'En attente'
+      },
+      'dashboard.applications': {
+        en: 'Applications',
+        ar: 'الطلبات',
+        fr: 'Candidatures'
+      },
+      'dashboard.admin.today': {
+        en: 'today',
+        ar: 'اليوم',
+        fr: 'aujourd\'hui'
+      },
+      'dashboard.status.hired': {
+        en: 'Hired',
+        ar: 'تم التوظيف',
+        fr: 'Embauché'
+      },
+      'dashboard.admin.monthlyRevenue': {
+        en: 'Monthly Revenue',
+        ar: 'الإيرادات الشهرية',
+        fr: 'Revenus mensuels'
+      },
+      'dashboard.admin.fromLastMonth': {
+        en: 'from last month',
+        ar: 'من الشهر الماضي',
+        fr: 'du mois dernier'
+      },
+      'dashboard.admin.total': {
+        en: 'Total',
+        ar: 'الإجمالي',
+        fr: 'Total'
+      },
+      'dashboard.admin.recentActivity': {
+        en: 'Recent Activity',
+        ar: 'النشاط الأخير',
+        fr: 'Activité récente'
+      },
+      'dashboard.admin.noActivity': {
+        en: 'No recent activity',
+        ar: 'لا يوجد نشاط حديث',
+        fr: 'Aucune activité récente'
+      },
+      'dashboard.admin.userActivity': {
+        en: 'User Activity',
+        ar: 'نشاط المستخدمين',
+        fr: 'Activité des utilisateurs'
+      },
+      'dashboard.admin.activeToday': {
+        en: 'Active Today',
+        ar: 'نشط اليوم',
+        fr: 'Actif aujourd\'hui'
+      },
+      'dashboard.admin.newThisMonth': {
+        en: 'New This Month',
+        ar: 'جديد هذا الشهر',
+        fr: 'Nouveau ce mois-ci'
+      },
+      'dashboard.admin.jobStatus': {
+        en: 'Job Status',
+        ar: 'حالة الوظائف',
+        fr: 'Statut des emplois'
+      },
+      'dashboard.status.expired': {
+        en: 'Expired',
+        ar: 'منتهي الصلاحية',
+        fr: 'Expiré'
+      },
+      'dashboard.status.reviewing': {
+        en: 'Reviewing',
+        ar: 'قيد المراجعة',
+        fr: 'En cours d\'examen'
+      },
+      'dashboard.admin.quickActions': {
+        en: 'Quick Actions',
+        ar: 'الإجراءات السريعة',
+        fr: 'Actions rapides'
+      },
+      'dashboard.admin.manageUsers': {
+        en: 'Manage Users',
+        ar: 'إدارة المستخدمين',
+        fr: 'Gérer les utilisateurs'
+      },
+      'dashboard.admin.manageUsersDesc': {
+        en: 'View and manage user accounts',
+        ar: 'عرض وإدارة حسابات المستخدمين',
+        fr: 'Voir et gérer les comptes utilisateurs'
+      },
+      'dashboard.admin.manageJobs': {
+        en: 'Manage Jobs',
+        ar: 'إدارة الوظائف',
+        fr: 'Gérer les emplois'
+      },
+      'dashboard.admin.manageJobsDesc': {
+        en: 'Review and approve job postings',
+        ar: 'مراجعة والموافقة على إعلانات الوظائف',
+        fr: 'Examiner et approuver les offres d\'emploi'
+      },
+      'dashboard.admin.viewApplications': {
+        en: 'View Applications',
+        ar: 'عرض الطلبات',
+        fr: 'Voir les candidatures'
+      },
+      'dashboard.admin.viewApplicationsDesc': {
+        en: 'Monitor job applications',
+        ar: 'مراقبة طلبات الوظائف',
+        fr: 'Surveiller les candidatures'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
 
   useEffect(() => {
     fetchDashboardData();
@@ -96,21 +267,7 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -132,7 +289,7 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t('dashboard.loading')}</p>
+          <p className="mt-4 text-gray-600">{getText('dashboard.loading')}</p>
         </div>
       </div>
     );
@@ -143,9 +300,9 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{t('dashboard.admin.title')}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{getText('dashboard.admin.title')}</h1>
           <p className="text-gray-600 mt-2">
-            {t('dashboard.welcome')}, {user?.profile?.firstName || t('dashboard.admin.title')}! {t('dashboard.admin.subtitle')}
+            {getText('dashboard.welcome')}, {user?.profile?.firstName || getText('dashboard.admin.title')}! {getText('dashboard.admin.subtitle')}
           </p>
         </div>
 
@@ -155,10 +312,10 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('dashboard.admin.totalUsers')}</p>
+                <p className="text-sm font-medium text-gray-600">{getText('dashboard.admin.totalUsers')}</p>
                 <p className="text-3xl font-bold text-gray-900">{stats?.users?.total?.toLocaleString() || '0'}</p>
                 <p className="text-sm text-green-600 mt-1">
-                  +{stats?.users?.newThisMonth || 0} {t('dashboard.admin.thisMonth')}
+                  +{stats?.users?.newThisMonth || 0} {getText('dashboard.admin.thisMonth')}
                 </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
@@ -166,8 +323,8 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               </div>
             </div>
             <div className="mt-4 flex justify-between text-sm text-gray-600">
-              <span>{t('jobSeekers')}: {stats?.users?.jobseekers || 0}</span>
-              <span>{t('dashboard.admin.employers')}: {stats?.users?.employers || 0}</span>
+              <span>{getText('jobSeekers')}: {stats?.users?.jobseekers || 0}</span>
+              <span>{getText('dashboard.admin.employers')}: {stats?.users?.employers || 0}</span>
             </div>
           </div>
 
@@ -175,10 +332,10 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('dashboard.jobs')}</p>
+                <p className="text-sm font-medium text-gray-600">{getText('dashboard.jobs')}</p>
                 <p className="text-3xl font-bold text-gray-900">{stats?.jobs?.total?.toLocaleString() || '0'}</p>
                 <p className="text-sm text-green-600 mt-1">
-                  +{stats?.jobs?.newThisWeek || 0} {t('dashboard.admin.thisWeek')}
+                  +{stats?.jobs?.newThisWeek || 0} {getText('dashboard.admin.thisWeek')}
                 </p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">
@@ -186,8 +343,8 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               </div>
             </div>
             <div className="mt-4 flex justify-between text-sm text-gray-600">
-              <span>{t('dashboard.status.active')}: {stats?.jobs?.active || 0}</span>
-              <span>{t('dashboard.status.pending')}: {stats?.jobs?.pending || 0}</span>
+              <span>{getText('dashboard.status.active')}: {stats?.jobs?.active || 0}</span>
+              <span>{getText('dashboard.status.pending')}: {stats?.jobs?.pending || 0}</span>
             </div>
           </div>
 
@@ -195,10 +352,10 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('dashboard.applications')}</p>
+                <p className="text-sm font-medium text-gray-600">{getText('dashboard.applications')}</p>
                 <p className="text-3xl font-bold text-gray-900">{stats?.applications?.total?.toLocaleString() || '0'}</p>
                 <p className="text-sm text-green-600 mt-1">
-                  +{stats?.applications?.newToday || 0} {t('dashboard.admin.today')}
+                  +{stats?.applications?.newToday || 0} {getText('dashboard.admin.today')}
                 </p>
               </div>
               <div className="p-3 bg-orange-100 rounded-full">
@@ -206,8 +363,8 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               </div>
             </div>
             <div className="mt-4 flex justify-between text-sm text-gray-600">
-              <span>{t('dashboard.status.pending')}: {stats?.applications?.pending || 0}</span>
-              <span>{t('dashboard.status.hired')}: {stats?.applications?.hired || 0}</span>
+              <span>{getText('dashboard.status.pending')}: {stats?.applications?.pending || 0}</span>
+              <span>{getText('dashboard.status.hired')}: {stats?.applications?.hired || 0}</span>
             </div>
           </div>
 
@@ -215,12 +372,12 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('dashboard.admin.monthlyRevenue')}</p>
+                <p className="text-sm font-medium text-gray-600">{getText('dashboard.admin.monthlyRevenue')}</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {formatCurrency(stats?.revenue?.thisMonth || 0)}
+                  {formatCurrency(stats?.revenue?.thisMonth || 0, resolvedParams.lang, 'USD')}
                 </p>
                 <p className={`text-sm mt-1 ${(stats?.revenue?.growth || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {(stats?.revenue?.growth || 0) >= 0 ? '+' : ''}{(stats?.revenue?.growth || 0).toFixed(1)}% {t('dashboard.admin.fromLastMonth')}
+                  {(stats?.revenue?.growth || 0) >= 0 ? '+' : ''}{(stats?.revenue?.growth || 0).toFixed(1)}% {getText('dashboard.admin.fromLastMonth')}
                 </p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
@@ -228,7 +385,7 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               </div>
             </div>
             <div className="mt-4 text-sm text-gray-600">
-              {t('dashboard.admin.total')}: {formatCurrency(stats?.revenue?.totalRevenue || 0)}
+              {getText('dashboard.admin.total')}: {formatCurrency(stats?.revenue?.totalRevenue || 0, resolvedParams.lang, 'USD')}
             </div>
           </div>
         </div>
@@ -240,7 +397,7 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               <div className="p-6 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900 flex items-center">
                   <Activity className="w-5 h-5 mr-2" />
-                  {t('dashboard.admin.recentActivity')}
+                  {getText('dashboard.admin.recentActivity')}
                 </h2>
               </div>
               <div className="p-6">
@@ -259,14 +416,14 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
                             </p>
                           )}
                           <p className="text-xs text-gray-400 mt-1">
-                            {formatDate(activity.timestamp)}
+                            {formatDate(new Date(activity.timestamp), resolvedParams.lang)}
                           </p>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-8">{t('dashboard.admin.noActivity')}</p>
+                  <p className="text-gray-500 text-center py-8">{getText('dashboard.admin.noActivity')}</p>
                 )}
               </div>
             </div>
@@ -278,19 +435,19 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <TrendingUp className="w-5 h-5 mr-2" />
-                {t('dashboard.admin.userActivity')}
+                {getText('dashboard.admin.userActivity')}
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">{t('dashboard.admin.activeToday')}</span>
+                  <span className="text-sm text-gray-600">{getText('dashboard.admin.activeToday')}</span>
                   <span className="font-semibold text-gray-900">{stats?.users?.activeToday || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">{t('dashboard.admin.newThisMonth')}</span>
+                  <span className="text-sm text-gray-600">{getText('dashboard.admin.newThisMonth')}</span>
                   <span className="font-semibold text-gray-900">{stats?.users?.newThisMonth || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">{t('dashboard.admin.totalUsers')}</span>
+                  <span className="text-sm text-gray-600">{getText('dashboard.admin.totalUsers')}</span>
                   <span className="font-semibold text-gray-900">{stats?.users?.total || 0}</span>
                 </div>
               </div>
@@ -300,27 +457,27 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <Briefcase className="w-5 h-5 mr-2" />
-                {t('dashboard.admin.jobStatus')}
+                {getText('dashboard.admin.jobStatus')}
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                    <span className="text-sm text-gray-600">{t('dashboard.status.active')}</span>
+                    <span className="text-sm text-gray-600">{getText('dashboard.status.active')}</span>
                   </div>
                   <span className="font-semibold text-gray-900">{stats?.jobs?.active || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-                    <span className="text-sm text-gray-600">{t('dashboard.status.pending')}</span>
+                    <span className="text-sm text-gray-600">{getText('dashboard.status.pending')}</span>
                   </div>
                   <span className="font-semibold text-gray-900">{stats?.jobs?.pending || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                    <span className="text-sm text-gray-600">{t('dashboard.status.expired')}</span>
+                    <span className="text-sm text-gray-600">{getText('dashboard.status.expired')}</span>
                   </div>
                   <span className="font-semibold text-gray-900">{stats?.jobs?.expired || 0}</span>
                 </div>
@@ -331,27 +488,27 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <FileText className="w-5 h-5 mr-2" />
-                {t('dashboard.applications')}
+                {getText('dashboard.applications')}
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <Clock className="w-3 h-3 text-yellow-500 mr-2" />
-                    <span className="text-sm text-gray-600">{t('dashboard.status.pending')}</span>
+                    <span className="text-sm text-gray-600">{getText('dashboard.status.pending')}</span>
                   </div>
                   <span className="font-semibold text-gray-900">{stats?.applications?.pending || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <Eye className="w-3 h-3 text-blue-500 mr-2" />
-                    <span className="text-sm text-gray-600">{t('dashboard.status.reviewing')}</span>
+                    <span className="text-sm text-gray-600">{getText('dashboard.status.reviewing')}</span>
                   </div>
                   <span className="font-semibold text-gray-900">{stats?.applications?.reviewing || 0}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <CheckCircle className="w-3 h-3 text-green-500 mr-2" />
-                    <span className="text-sm text-gray-600">{t('dashboard.status.hired')}</span>
+                    <span className="text-sm text-gray-600">{getText('dashboard.status.hired')}</span>
                   </div>
                   <span className="font-semibold text-gray-900">{stats?.applications?.hired || 0}</span>
                 </div>
@@ -363,7 +520,7 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
         {/* Quick Actions */}
         <div className="mt-8">
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('dashboard.admin.quickActions')}</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{getText('dashboard.admin.quickActions')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <a
                 href={`/${resolvedParams.lang}/admin/users`}
@@ -371,8 +528,8 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               >
                 <Users className="w-8 h-8 text-blue-600 mr-3" />
                 <div>
-                  <h3 className="font-medium text-gray-900">{t('dashboard.admin.manageUsers')}</h3>
-                  <p className="text-sm text-gray-600">{t('dashboard.admin.manageUsersDesc')}</p>
+                  <h3 className="font-medium text-gray-900">{getText('dashboard.admin.manageUsers')}</h3>
+                  <p className="text-sm text-gray-600">{getText('dashboard.admin.manageUsersDesc')}</p>
                 </div>
               </a>
               
@@ -382,8 +539,8 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               >
                 <Briefcase className="w-8 h-8 text-green-600 mr-3" />
                 <div>
-                  <h3 className="font-medium text-gray-900">{t('dashboard.admin.manageJobs')}</h3>
-                  <p className="text-sm text-gray-600">{t('dashboard.admin.manageJobsDesc')}</p>
+                  <h3 className="font-medium text-gray-900">{getText('dashboard.admin.manageJobs')}</h3>
+                  <p className="text-sm text-gray-600">{getText('dashboard.admin.manageJobsDesc')}</p>
                 </div>
               </a>
               
@@ -393,8 +550,8 @@ export default function AdminDashboard({ params }: { params: Promise<{ lang: str
               >
                 <FileText className="w-8 h-8 text-orange-600 mr-3" />
                 <div>
-                  <h3 className="font-medium text-gray-900">{t('dashboard.admin.viewApplications')}</h3>
-                  <p className="text-sm text-gray-600">{t('dashboard.admin.viewApplicationsDesc')}</p>
+                  <h3 className="font-medium text-gray-900">{getText('dashboard.admin.viewApplications')}</h3>
+                  <p className="text-sm text-gray-600">{getText('dashboard.admin.viewApplicationsDesc')}</p>
                 </div>
               </a>
             </div>

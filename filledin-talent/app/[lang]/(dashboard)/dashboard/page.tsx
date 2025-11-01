@@ -17,11 +17,8 @@ export default function DashboardRedirect({ params }: { params: Promise<{ lang: 
       } else {
         // Redirect based on user role
         switch (user.role) {
-          case 'jobseeker':
+          case 'job_seeker':
             router.push(`/${lang}/jobseeker`);
-            break;
-          case 'employer':
-            router.push(`/${lang}/employer`);
             break;
           case 'admin':
             router.push(`/${lang}/admin`);

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useTranslation } from '@/lib/i18n/client';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { formatDate } from '@/lib/utils/formatters';
 import { 
   Search, 
-  Filter, 
   Eye, 
   Calendar,
   MapPin,
@@ -56,7 +56,7 @@ interface Application {
 
 export default function JobSeekerApplicationsPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = React.use(params);
-  const { t } = useTranslation(lang);
+  const { currentLanguage } = useLanguage();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,11 +70,198 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     rejectedApplications: 0
   });
 
-  useEffect(() => {
-    fetchApplications();
-  }, [currentPage, searchQuery, statusFilter]);
+  // Inline translation function
+  const getText = (key: string, params?: Record<string, any>) => {
+    const translations: Record<string, Record<string, string>> = {
+      'applications.myApplications': {
+        en: 'My Applications',
+        ar: 'طلباتي',
+        fr: 'Mes Candidatures'
+      },
+      'applications.trackStatus': {
+        en: 'Track the status of your job applications',
+        ar: 'تتبع حالة طلبات العمل الخاصة بك',
+        fr: 'Suivez le statut de vos candidatures'
+      },
+      'applications.findMoreJobs': {
+        en: 'Find More Jobs',
+        ar: 'العثور على المزيد من الوظائف',
+        fr: 'Trouver Plus d\'Emplois'
+      },
+      'applications.totalApplications': {
+        en: 'Total Applications',
+        ar: 'إجمالي الطلبات',
+        fr: 'Total des Candidatures'
+      },
+      'applications.status.pending': {
+        en: 'Pending',
+        ar: 'قيد الانتظار',
+        fr: 'En Attente'
+      },
+      'applications.status.shortlisted': {
+        en: 'Shortlisted',
+        ar: 'مدرج في القائمة المختصرة',
+        fr: 'Présélectionné'
+      },
+      'applications.status.rejected': {
+        en: 'Rejected',
+        ar: 'مرفوض',
+        fr: 'Rejeté'
+      },
+      'applications.status.reviewing': {
+        en: 'Reviewing',
+        ar: 'قيد المراجعة',
+        fr: 'En Révision'
+      },
+      'applications.status.interviewed': {
+        en: 'Interviewed',
+        ar: 'تمت المقابلة',
+        fr: 'Interviewé'
+      },
+      'applications.status.offered': {
+        en: 'Offered',
+        ar: 'تم العرض',
+        fr: 'Offre Reçue'
+      },
+      'applications.searchPlaceholder': {
+        en: 'Search applications...',
+        ar: 'البحث في الطلبات...',
+        fr: 'Rechercher des candidatures...'
+      },
+      'applications.allStatus': {
+        en: 'All Status',
+        ar: 'جميع الحالات',
+        fr: 'Tous les Statuts'
+      },
+      'applications.interviewScheduled': {
+        en: 'Interview Scheduled',
+        ar: 'تم جدولة المقابلة',
+        fr: 'Entretien Programmé'
+      },
+      'applications.date': {
+        en: 'Date',
+        ar: 'التاريخ',
+        fr: 'Date'
+      },
+      'applications.type': {
+        en: 'Type',
+        ar: 'النوع',
+        fr: 'Type'
+      },
+      'applications.location': {
+        en: 'Location',
+        ar: 'الموقع',
+        fr: 'Lieu'
+      },
+      'applications.notes': {
+        en: 'Notes',
+        ar: 'ملاحظات',
+        fr: 'Notes'
+      },
+      'applications.employerNotes': {
+        en: 'Employer Notes',
+        ar: 'ملاحظات صاحب العمل',
+        fr: 'Notes de l\'Employeur'
+      },
+      'applications.rating': {
+        en: 'Rating',
+        ar: 'التقييم',
+        fr: 'Évaluation'
+      },
+      'applications.applied': {
+        en: 'Applied',
+        ar: 'تم التقديم',
+        fr: 'Candidature Envoyée'
+      },
+      'applications.updated': {
+        en: 'Updated',
+        ar: 'تم التحديث',
+        fr: 'Mis à Jour'
+      },
+      'applications.viewCV': {
+        en: 'View CV',
+        ar: 'عرض السيرة الذاتية',
+        fr: 'Voir CV'
+      },
+      'applications.viewJob': {
+        en: 'View Job',
+        ar: 'عرض الوظيفة',
+        fr: 'Voir l\'Emploi'
+      },
+      'applications.withdraw': {
+        en: 'Withdraw',
+        ar: 'سحب',
+        fr: 'Retirer'
+      },
+      'applications.withdrawConfirmation': {
+        en: 'Are you sure you want to withdraw this application?',
+        ar: 'هل أنت متأكد من أنك تريد سحب هذا الطلب؟',
+        fr: 'Êtes-vous sûr de vouloir retirer cette candidature?'
+      },
+      'applications.withdrawFailed': {
+        en: 'Failed to withdraw application',
+        ar: 'فشل في سحب الطلب',
+        fr: 'Échec du retrait de la candidature'
+      },
+      'applications.noApplicationsYet': {
+        en: 'No Applications Yet',
+        ar: 'لا توجد طلبات بعد',
+        fr: 'Aucune Candidature Encore'
+      },
+      'applications.startApplying': {
+        en: 'Start applying to jobs to see your applications here.',
+        ar: 'ابدأ في التقديم للوظائف لرؤية طلباتك هنا.',
+        fr: 'Commencez à postuler pour voir vos candidatures ici.'
+      },
+      'applications.browseJobs': {
+        en: 'Browse Jobs',
+        ar: 'تصفح الوظائف',
+        fr: 'Parcourir les Emplois'
+      },
+      'applications.pageOf': {
+        en: 'Page {current} of {total}',
+        ar: 'الصفحة {current} من {total}',
+        fr: 'Page {current} sur {total}'
+      },
+      'applications.previous': {
+        en: 'Previous',
+        ar: 'السابق',
+        fr: 'Précédent'
+      },
+      'applications.next': {
+        en: 'Next',
+        ar: 'التالي',
+        fr: 'Suivant'
+      },
+      'jobs.salaryNotSpecified': {
+        en: 'Salary not specified',
+        ar: 'الراتب غير محدد',
+        fr: 'Salaire non spécifié'
+      },
+      'jobs.salaryFrom': {
+        en: 'From {amount}',
+        ar: 'من {amount}',
+        fr: 'À partir de {amount}'
+      },
+      'jobs.salaryUpTo': {
+        en: 'Up to {amount}',
+        ar: 'حتى {amount}',
+        fr: 'Jusqu\'à {amount}'
+      }
+    };
 
-  const fetchApplications = async () => {
+    const translation = translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+    
+    if (params) {
+      return Object.keys(params).reduce((text, param) => {
+        return text.replace(`{${param}}`, params[param]);
+      }, translation);
+    }
+    
+    return translation;
+  };
+
+  const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -97,10 +284,14 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchQuery, statusFilter]);
+
+  useEffect(() => {
+    fetchApplications();
+  }, [fetchApplications]);
 
   const handleWithdrawApplication = async (applicationId: string) => {
-    if (!confirm(t('applications.withdrawConfirmation'))) {
+    if (!confirm(getText('applications.withdrawConfirmation'))) {
       return;
     }
 
@@ -112,11 +303,11 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
       if (response.ok) {
         fetchApplications(); // Refresh the list
       } else {
-        alert(t('applications.withdrawFailed'));
+        alert(getText('applications.withdrawFailed'));
       }
     } catch (error) {
       console.error('Error withdrawing application:', error);
-      alert(t('applications.withdrawFailed'));
+      alert(getText('applications.withdrawFailed'));
     }
   };
 
@@ -159,16 +350,15 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
   };
 
   const formatSalary = (min?: number, max?: number, currency = 'USD') => {
-    if (!min && !max) return t('jobs.salaryNotSpecified');
-    if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-    if (min) return t('jobs.salaryFrom', { amount: `$${min.toLocaleString()}` });
-    if (max) return t('jobs.salaryUpTo', { amount: `$${max.toLocaleString()}` });
-    return t('jobs.salaryNotSpecified');
+    const currencySymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency;
+    if (!min && !max) return getText('jobs.salaryNotSpecified');
+    if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
+    if (min) return getText('jobs.salaryFrom', { amount: `${currencySymbol}${min.toLocaleString()}` });
+    if (max) return getText('jobs.salaryUpTo', { amount: `${currencySymbol}${max.toLocaleString()}` });
+    return getText('jobs.salaryNotSpecified');
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+
 
   const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString();
@@ -205,34 +395,34 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('applications.myApplications')}</h1>
-          <p className="text-gray-600 mt-1">{t('applications.trackStatus')}</p>
+          <h1 className="text-2xl font-bold text-gray-900">{getText('applications.myApplications')}</h1>
+          <p className="text-gray-600 mt-1">{getText('applications.trackStatus')}</p>
         </div>
         <Link
           href={`/${lang}/jobs`}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Search className="h-4 w-4 mr-2" />
-          {t('applications.findMoreJobs')}
+          {getText('applications.findMoreJobs')}
         </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">{t('applications.totalApplications')}</p>
+          <p className="text-sm font-medium text-gray-600">{getText('applications.totalApplications')}</p>
           <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">{t('applications.status.pending')}</p>
+          <p className="text-sm font-medium text-gray-600">{getText('applications.status.pending')}</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.pendingApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">{t('applications.status.shortlisted')}</p>
+          <p className="text-sm font-medium text-gray-600">{getText('applications.status.shortlisted')}</p>
           <p className="text-2xl font-bold text-green-600">{stats.shortlistedApplications}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <p className="text-sm font-medium text-gray-600">{t('applications.status.rejected')}</p>
+          <p className="text-sm font-medium text-gray-600">{getText('applications.status.rejected')}</p>
           <p className="text-2xl font-bold text-red-600">{stats.rejectedApplications}</p>
         </div>
       </div>
@@ -245,7 +435,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder={t('applications.searchPlaceholder')}
+                placeholder={getText('applications.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -258,13 +448,13 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">{t('applications.allStatus')}</option>
-              <option value="pending">{t('applications.status.pending')}</option>
-              <option value="reviewing">{t('applications.status.reviewing')}</option>
-              <option value="shortlisted">{t('applications.status.shortlisted')}</option>
-              <option value="interviewed">{t('applications.status.interviewed')}</option>
-              <option value="offered">{t('applications.status.offered')}</option>
-              <option value="rejected">{t('applications.status.rejected')}</option>
+              <option value="all">{getText('applications.allStatus')}</option>
+              <option value="pending">{getText('applications.status.pending')}</option>
+              <option value="reviewing">{getText('applications.status.reviewing')}</option>
+              <option value="shortlisted">{getText('applications.status.shortlisted')}</option>
+              <option value="interviewed">{getText('applications.status.interviewed')}</option>
+              <option value="offered">{getText('applications.status.offered')}</option>
+              <option value="rejected">{getText('applications.status.rejected')}</option>
             </select>
           </div>
         </div>
@@ -310,7 +500,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                     <div className="flex items-center space-x-2">
                       <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(application.status)}`}>
                         {getStatusIcon(application.status)}
-                        <span className="ml-1 capitalize">{t(`applications.status.${application.status}`)}</span>
+                        <span className="ml-1 capitalize">{getText(`applications.status.${application.status}`)}</span>
                       </span>
                     </div>
                   </div>
@@ -320,16 +510,16 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                     <div className="bg-blue-50 p-3 rounded-lg mb-3">
                       <div className="flex items-center text-blue-800 mb-1">
                         <Calendar className="h-4 w-4 mr-1" />
-                        <span className="font-medium">{t('applications.interviewScheduled')}</span>
+                        <span className="font-medium">{getText('applications.interviewScheduled')}</span>
                       </div>
                       <div className="text-sm text-blue-700">
-                        <p>{t('applications.date')}: {formatDateTime(application.interviewDetails.scheduledAt)}</p>
-                        <p>{t('applications.type')}: {application.interviewDetails.type}</p>
+                        <p>{getText('applications.date')}: {formatDateTime(application.interviewDetails.scheduledAt)}</p>
+                        <p>{getText('applications.type')}: {application.interviewDetails.type}</p>
                         {application.interviewDetails.location && (
-                          <p>{t('applications.location')}: {application.interviewDetails.location}</p>
+                          <p>{getText('applications.location')}: {application.interviewDetails.location}</p>
                         )}
                         {application.interviewDetails.notes && (
-                          <p>{t('applications.notes')}: {application.interviewDetails.notes}</p>
+                          <p>{getText('applications.notes')}: {application.interviewDetails.notes}</p>
                         )}
                       </div>
                     </div>
@@ -340,7 +530,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                     <div className="bg-gray-50 p-3 rounded-lg mb-3">
                       <div className="flex items-center text-gray-800 mb-1">
                         <FileText className="h-4 w-4 mr-1" />
-                        <span className="font-medium">{t('applications.employerNotes')}</span>
+                        <span className="font-medium">{getText('applications.employerNotes')}</span>
                       </div>
                       <p className="text-sm text-gray-700">{application.notes}</p>
                     </div>
@@ -351,7 +541,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                     <div className="bg-yellow-50 p-3 rounded-lg mb-3">
                       <div className="flex items-center text-yellow-800 mb-1">
                         <FileText className="h-4 w-4 mr-1" />
-                        <span className="font-medium">{t('applications.rating')}</span>
+                        <span className="font-medium">{getText('applications.rating')}</span>
                       </div>
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
@@ -372,11 +562,11 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center space-x-6 text-sm text-gray-500">
                       <div>
-                        {t('applications.applied')} {formatDate(application.createdAt)}
+                        {getText('applications.applied')} {formatDate(new Date(application.createdAt), lang)}
                       </div>
                       {application.updatedAt !== application.createdAt && (
                         <div>
-                          {t('applications.updated')} {formatDate(application.updatedAt)}
+                          {getText('applications.updated')} {formatDate(new Date(application.updatedAt), lang)}
                         </div>
                       )}
                       {application.cvUrl && (
@@ -387,7 +577,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                           className="flex items-center text-blue-600 hover:text-blue-700"
                         >
                           <FileText className="h-4 w-4 mr-1" />
-                          {t('applications.viewCV')}
+                          {getText('applications.viewCV')}
                         </a>
                       )}
                     </div>
@@ -398,7 +588,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                         className="inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        {t('applications.viewJob')}
+                        {getText('applications.viewJob')}
                       </Link>
                       {application.status === 'pending' && (
                         <button
@@ -406,7 +596,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                           className="inline-flex items-center px-3 py-1 text-sm text-red-600 hover:text-red-700"
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
-                          {t('applications.withdraw')}
+                          {getText('applications.withdraw')}
                         </button>
                       )}
                     </div>
@@ -421,16 +611,16 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
               <div className="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-6 w-6 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('applications.noApplicationsYet')}</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{getText('applications.noApplicationsYet')}</h3>
               <p className="text-gray-500 mb-6">
-                {t('applications.startApplying')}
+                {getText('applications.startApplying')}
               </p>
               <Link
                 href={`/${lang}/jobs`}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Search className="h-4 w-4 mr-2" />
-                {t('applications.browseJobs')}
+                {getText('applications.browseJobs')}
               </Link>
             </div>
           </div>
@@ -441,7 +631,7 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-500">
-            {t('applications.pageOf', { current: currentPage, total: totalPages })}
+            {getText('applications.pageOf', { current: currentPage, total: totalPages })}
           </div>
           <div className="flex space-x-2">
             <button
@@ -449,14 +639,14 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
               disabled={currentPage === 1}
               className="px-3 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              {t('applications.previous')}
+              {getText('applications.previous')}
             </button>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="px-3 py-2 text-sm border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              {t('applications.next')}
+              {getText('applications.next')}
             </button>
           </div>
         </div>

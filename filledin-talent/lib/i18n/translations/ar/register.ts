@@ -23,11 +23,7 @@ export const register = {
       label: "تأكيد كلمة المرور",
       placeholder: "أعد إدخال كلمة المرور"
     },
-    role: {
-      label: "نوع الحساب",
-      jobSeeker: "باحث عن عمل",
-      employer: "صاحب عمل"
-    },
+
     agreeTerms: "أوافق على الشروط والأحكام وسياسة الخصوصية",
     submit: "إنشاء حساب"
   },

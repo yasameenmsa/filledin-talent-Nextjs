@@ -48,11 +48,7 @@ export const auth = {
     company: "أدخل اسم الشركة",
     jobTitle: "أدخل مسماك الوظيفي"
   },
-  roles: {
-    jobSeeker: "باحث عن عمل",
-    employer: "صاحب عمل",
-    admin: "مدير"
-  },
+
   errors: {
     invalidEmail: "البريد الإلكتروني غير صحيح",
     passwordTooShort: "كلمة المرور قصيرة جداً",

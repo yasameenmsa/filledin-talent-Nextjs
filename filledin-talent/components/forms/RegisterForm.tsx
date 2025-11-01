@@ -7,25 +7,18 @@ import { z } from 'zod';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const registerSchema = z.object({
-  firstName: z
+  name: z
     .string()
-    .min(1, 'First name is required')
-    .min(2, 'First name must be at least 2 characters')
-    .max(50, 'First name must be less than 50 characters')
-    .regex(/^[\p{L}\p{M}\s\-'\.]+$/u, 'First name contains invalid characters'),
-  lastName: z
-    .string()
-    .min(1, 'Last name is required')
-    .min(2, 'Last name must be at least 2 characters')
-    .max(50, 'Last name must be less than 50 characters')
-    .regex(/^[\p{L}\p{M}\s\-'\.]+$/u, 'Last name contains invalid characters'),
+    .min(1, 'Name is required')
+    .min(2, 'Name must be at least 2 characters')
+    .max(100, 'Name must be less than 100 characters'),
   email: z
     .string()
     .min(1, 'Email is required')
@@ -33,15 +26,10 @@ const registerSchema = z.object({
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')
-    .max(128, 'Password must be less than 128 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+    .max(128, 'Password must be less than 128 characters'),
   confirmPassword: z
     .string()
     .min(1, 'Please confirm your password'),
-  role: z
-    .enum(['business', 'jobSeeker'], {
-      required_error: 'Please select a role',
-    }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
@@ -58,50 +46,121 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   
   const { register: registerUser } = useAuth();
-  const { t } = useTranslation(lang);
+  const router = useRouter();
+  const { currentLanguage } = useLanguage();
+
+  // Inline translations
+  const getText = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      'auth.createAccount': {
+        en: 'Create account',
+        ar: 'إنشاء حساب',
+        fr: 'Créer un compte'
+      },
+      'auth.joinToday': {
+        en: 'Join our platform and start your journey.',
+        ar: 'انضم إلى منصتنا وابدأ رحلتك.',
+        fr: 'Rejoignez notre plateforme et commencez votre parcours.'
+      },
+      'auth.fullName': {
+        en: 'Full Name',
+        ar: 'الاسم الكامل',
+        fr: 'Nom complet'
+      },
+      'auth.enterFullName': {
+        en: 'Enter your full name',
+        ar: 'أدخل اسمك الكامل',
+        fr: 'Entrez votre nom complet'
+      },
+      'auth.email': {
+        en: 'Email',
+        ar: 'البريد الإلكتروني',
+        fr: 'Email'
+      },
+      'auth.enterEmail': {
+        en: 'Enter your email',
+        ar: 'أدخل بريدك الإلكتروني',
+        fr: 'Entrez votre email'
+      },
+      'auth.password': {
+        en: 'Password',
+        ar: 'كلمة المرور',
+        fr: 'Mot de passe'
+      },
+      'auth.enterPassword': {
+        en: 'Enter your password',
+        ar: 'أدخل كلمة المرور',
+        fr: 'Entrez votre mot de passe'
+      },
+      'auth.confirmPassword': {
+        en: 'Confirm Password',
+        ar: 'تأكيد كلمة المرور',
+        fr: 'Confirmer le mot de passe'
+      },
+      'auth.confirmYourPassword': {
+        en: 'Confirm your password',
+        ar: 'أكد كلمة المرور',
+        fr: 'Confirmez votre mot de passe'
+      },
+      'auth.creatingAccount': {
+        en: 'Creating account...',
+        ar: 'جاري إنشاء الحساب...',
+        fr: 'Création du compte...'
+      },
+      'auth.alreadyHaveAccount': {
+        en: 'Already have an account?',
+        ar: 'لديك حساب بالفعل؟',
+        fr: 'Vous avez déjà un compte ?'
+      },
+      'auth.signIn': {
+        en: 'Sign in',
+        ar: 'تسجيل الدخول',
+        fr: 'Se connecter'
+      },
+      'auth.accountCreated': {
+        en: 'Account created successfully!',
+        ar: 'تم إنشاء الحساب بنجاح!',
+        fr: 'Compte créé avec succès !'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
 
-  const password = watch('password');
-
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     setAuthError('');
+    setSuccessMessage('');
 
     try {
-      await registerUser(data.email, data.password, data.role, {
-        firstName: data.firstName,
-        lastName: data.lastName,
+      const result = await registerUser({
+        email: data.email,
+        password: data.password,
+        name: data.name,
       });
-    } catch (error: any) {
-      console.error('Registration error:', error);
-      
-      // Handle Firebase auth errors
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          setAuthError(t('auth.errors.emailAlreadyInUse'));
-          break;
-        case 'auth/invalid-email':
-          setAuthError(t('auth.errors.invalidEmail'));
-          break;
-        case 'auth/operation-not-allowed':
-          setAuthError(t('auth.errors.operationNotAllowed'));
-          break;
-        case 'auth/weak-password':
-          setAuthError(t('auth.errors.weakPassword'));
-          break;
-        default:
-          setAuthError(t('auth.errors.registrationFailed'));
+
+      if (result.success) {
+        setSuccessMessage(getText('auth.accountCreated'));
+        setTimeout(() => {
+          router.push(`/${lang}/login`);
+        }, 2000);
+      } else {
+        setAuthError(result.error || 'Registration failed');
       }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setAuthError('Registration failed');
     } finally {
       setIsLoading(false);
     }
@@ -111,10 +170,10 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          {t('auth.register.title')}
+          {getText('auth.createAccount')}
         </h1>
         <p className="text-gray-600">
-          {t('auth.register.subtitle')}
+          {getText('auth.joinToday')}
         </p>
       </div>
 
@@ -125,42 +184,32 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="firstName">{t('auth.fields.firstName')}</Label>
-            <Input
-              id="firstName"
-              type="text"
-              placeholder={t('auth.placeholders.firstName')}
-              error={!!errors.firstName}
-              {...register('firstName')}
-            />
-            {errors.firstName && (
-              <p className="text-sm text-red-600">{errors.firstName.message}</p>
-            )}
+        {successMessage && (
+          <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md text-sm">
+            {successMessage}
           </div>
+        )}
 
-          <div className="space-y-2">
-            <Label htmlFor="lastName">{t('auth.fields.lastName')}</Label>
-            <Input
-              id="lastName"
-              type="text"
-              placeholder={t('auth.placeholders.lastName')}
-              error={!!errors.lastName}
-              {...register('lastName')}
-            />
-            {errors.lastName && (
-              <p className="text-sm text-red-600">{errors.lastName.message}</p>
-            )}
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="name">{getText('auth.fullName')}</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder={getText('auth.enterFullName')}
+            error={!!errors.name}
+            {...register('name')}
+          />
+          {errors.name && (
+            <p className="text-sm text-red-600">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">{t('auth.fields.email')}</Label>
+          <Label htmlFor="email">{getText('auth.email')}</Label>
           <Input
             id="email"
             type="email"
-            placeholder={t('auth.placeholders.email')}
+            placeholder={getText('auth.enterEmail')}
             error={!!errors.email}
             {...register('email')}
           />
@@ -170,28 +219,12 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="role">{t('auth.fields.role')}</Label>
-          <Select
-            id="role"
-            error={!!errors.role}
-            {...register('role')}
-          >
-            <option value="">{t('auth.placeholders.selectRole')}</option>
-            <option value="jobSeeker">{t('auth.roles.jobSeeker')}</option>
-            <option value="business">{t('auth.roles.business')}</option>
-          </Select>
-          {errors.role && (
-            <p className="text-sm text-red-600">{errors.role.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password">{t('auth.fields.password')}</Label>
+          <Label htmlFor="password">{getText('auth.password')}</Label>
           <div className="relative">
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
-              placeholder={t('auth.placeholders.password')}
+              placeholder={getText('auth.enterPassword')}
               error={!!errors.password}
               {...register('password')}
             />
@@ -210,34 +243,15 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
           {errors.password && (
             <p className="text-sm text-red-600">{errors.password.message}</p>
           )}
-          {password && (
-            <div className="text-xs text-gray-500 space-y-1">
-              <p>Password requirements:</p>
-              <ul className="list-disc list-inside space-y-1">
-                <li className={password.length >= 8 ? 'text-green-600' : 'text-gray-500'}>
-                  At least 8 characters
-                </li>
-                <li className={/[A-Z]/.test(password) ? 'text-green-600' : 'text-gray-500'}>
-                  One uppercase letter
-                </li>
-                <li className={/[a-z]/.test(password) ? 'text-green-600' : 'text-gray-500'}>
-                  One lowercase letter
-                </li>
-                <li className={/\d/.test(password) ? 'text-green-600' : 'text-gray-500'}>
-                  One number
-                </li>
-              </ul>
-            </div>
-          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">{t('auth.fields.confirmPassword')}</Label>
+          <Label htmlFor="confirmPassword">{getText('auth.confirmPassword')}</Label>
           <div className="relative">
             <Input
               id="confirmPassword"
               type={showConfirmPassword ? 'text' : 'password'}
-              placeholder={t('auth.placeholders.confirmPassword')}
+              placeholder={getText('auth.confirmYourPassword')}
               error={!!errors.confirmPassword}
               {...register('confirmPassword')}
             />
@@ -266,20 +280,20 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t('auth.register.creatingAccount')}
+              {getText('auth.creatingAccount')}
             </>
           ) : (
-            t('auth.register.createAccount')
+            getText('auth.createAccount')
           )}
         </Button>
 
         <div className="text-center">
-          <span className="text-gray-600">{t('auth.register.haveAccount')} </span>
+          <span className="text-gray-600">{getText('auth.alreadyHaveAccount')} </span>
           <Link
-            href={`/${lang}/auth/login`}
+            href={`/${lang}/login`}
             className="text-blue-600 hover:text-blue-500 font-medium"
           >
-            {t('auth.register.signIn')}
+            {getText('auth.signIn')}
           </Link>
         </div>
       </form>

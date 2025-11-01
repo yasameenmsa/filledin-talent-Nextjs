@@ -11,9 +11,7 @@ export const register = {
   andText: 'et',
   privacyLink: 'Politique de confidentialité',
   agreeToTerms: 'Vous devez accepter les conditions d\'utilisation',
-  selectRole: 'Sélectionnez votre rôle',
-  businessDescription: 'Je recherche des talents pour mon entreprise',
-  jobSeekerDescription: 'Je recherche des opportunités d\'emploi',
+
   socialRegister: 'Ou inscrivez-vous avec',
   continueWithGoogle: 'Continuer avec Google',
   continueWithFacebook: 'Continuer avec Facebook',

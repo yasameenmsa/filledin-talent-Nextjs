@@ -1,4 +1,5 @@
 export const nav = {
+  // Main navigation
   businesses: 'Businesses',
   trends: 'Trends',
   expertise: 'Expertise',
@@ -8,5 +9,27 @@ export const nav = {
   interviewTips: 'Interview tips',
   dropCV: 'Drop CV',
   aboutFINT: 'About FINT',
-  languages: 'Languages'
+  
+  // Language switcher
+  languages: 'Languages',
+  english: 'English',
+  french: 'Français',
+  arabic: 'العربية',
+  
+  // Authentication
+  login: 'Login',
+  register: 'Register',
+  dashboard: 'Dashboard',
+  profile: 'Profile',
+  logout: 'Logout',
+  
+  // UI elements
+  menu: 'Menu',
+  close: 'Close',
+  search: 'Search',
+  notifications: 'Notifications',
+  
+  // Company branding
+  logoAlt: 'FilledIn Talent Logo',
+  companyName: 'FilledIn Talent'
 };

@@ -33,14 +33,13 @@ export const auth = {
     backToLogin: 'Retour à la connexion'
   },
   
-  // Field labels
+  // Fields
   fields: {
     email: 'Email',
     password: 'Mot de passe',
     confirmPassword: 'Confirmer le mot de passe',
     firstName: 'Prénom',
-    lastName: 'Nom de famille',
-    role: 'Rôle'
+    lastName: 'Nom de famille'
   },
   
   // Placeholders
@@ -49,14 +48,7 @@ export const auth = {
     password: 'Entrez votre mot de passe',
     confirmPassword: 'Confirmez votre mot de passe',
     firstName: 'Entrez votre prénom',
-    lastName: 'Entrez votre nom de famille',
-    selectRole: 'Sélectionnez votre rôle'
-  },
-  
-  // Roles
-  roles: {
-    business: 'Entreprise',
-    jobSeeker: 'Chercheur d\'emploi'
+    lastName: 'Entrez votre nom de famille'
   },
   
   // Error messages
@@ -85,9 +77,8 @@ export const auth = {
     confirmPasswordRequired: 'Veuillez confirmer votre mot de passe.',
     firstNameRequired: 'Le prénom est requis.',
     lastNameRequired: 'Le nom de famille est requis.',
-    roleRequired: 'Veuillez sélectionner un rôle.',
     termsRequired: 'Vous devez accepter les conditions d\'utilisation.',
-    // Additional Firebase error codes
+    // Authentication error codes
     wrongPassword: 'Mot de passe incorrect. Veuillez réessayer.',
     userDisabled: 'Ce compte a été désactivé. Veuillez contacter le support.',
     loginFailed: 'Échec de la connexion. Veuillez réessayer.',

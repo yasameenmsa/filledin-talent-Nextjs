@@ -13,12 +13,23 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+interface User {
+  _id: string;
+  email: string;
+  name?: string;
+  role: 'job_seeker' | 'employer' | 'admin';
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    profileImage?: string;
+  };
+}
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
-  user: any;
+  user: User;
   lang: string;
 }
 
@@ -29,7 +40,47 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
   const router = useRouter();
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation(lang);
+  const { currentLanguage } = useLanguage();
+
+  // Inline translations
+  const getText = (key: string) => {
+    const translations: Record<string, Record<string, string>> = {
+      en: {
+        jobseekerRole: 'Job Seeker',
+        adminTitle: 'Admin Dashboard',
+        user: 'User',
+        search: 'Search',
+        notifications: 'Notifications',
+        noData: 'No notifications',
+        profile: 'Profile',
+        settings: 'Settings',
+        logout: 'Logout'
+      },
+      ar: {
+        jobseekerRole: 'باحث عن عمل',
+        adminTitle: 'لوحة تحكم المدير',
+        user: 'مستخدم',
+        search: 'بحث',
+        notifications: 'الإشعارات',
+        noData: 'لا توجد إشعارات',
+        profile: 'الملف الشخصي',
+        settings: 'الإعدادات',
+        logout: 'تسجيل الخروج'
+      },
+      fr: {
+        jobseekerRole: 'Demandeur d\'emploi',
+        adminTitle: 'Tableau de bord Admin',
+        user: 'Utilisateur',
+        search: 'Rechercher',
+        notifications: 'Notifications',
+        noData: 'Aucune notification',
+        profile: 'Profil',
+        settings: 'Paramètres',
+        logout: 'Déconnexion'
+      }
+    };
+    return translations[currentLanguage]?.[key] || translations.en[key];
+  };
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -72,14 +123,12 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
 
   const getRoleDisplayName = () => {
     switch (user.role) {
-      case 'employer':
-        return t('employerRole');
-      case 'jobseeker':
-        return t('jobseekerRole');
+      case 'job_seeker':
+        return getText('jobseekerRole');
       case 'admin':
-        return t('dashboard.admin.title');
+        return getText('adminTitle');
       default:
-        return t('user');
+        return getText('user');
     }
   };
 
@@ -105,7 +154,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                 </div>
                 <input
                   type="text"
-                  placeholder={t('dashboard.actions.search')}
+                  placeholder={getText('search')}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
@@ -130,10 +179,10 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                   <div className="py-1">
                     <div className="px-4 py-2 text-sm font-medium text-gray-900 border-b border-gray-200">
-                      {t('dashboard.notifications')}
+                      {getText('notifications')}
                     </div>
                     <div className="px-4 py-3 text-sm text-gray-500">
-                      {t('dashboard.status.noData')}
+                      {getText('noData')}
                     </div>
                   </div>
                 </div>
@@ -168,7 +217,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                       onClick={() => setProfileDropdownOpen(false)}
                     >
                       <User className="mr-3 h-4 w-4" />
-                      {t('dashboard.profile')}
+                      {getText('profile')}
                     </Link>
                     <Link
                       href={getSettingsUrl()}
@@ -176,7 +225,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                       onClick={() => setProfileDropdownOpen(false)}
                     >
                       <Settings className="mr-3 h-4 w-4" />
-                      {t('dashboard.settings')}
+                      {getText('settings')}
                     </Link>
                     <hr className="my-1" />
                     <button
@@ -184,7 +233,7 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <LogOut className="mr-3 h-4 w-4" />
-                      {t('dashboard.logout')}
+                      {getText('logout')}
                     </button>
                   </div>
                 </div>

@@ -16,51 +16,97 @@ import {
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DashboardSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  userRole: 'employer' | 'jobseeker' | 'admin';
+  userRole: 'job_seeker' | 'employer' | 'admin';
   lang: string;
 }
 
 export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { t } = useTranslation(lang);
+  const { currentLanguage } = useLanguage();
 
-  const employerNavigation = [
-    { name: t('dashboard.nav.dashboard'), href: `/${lang}/employer`, icon: Home },
-    { name: t('dashboard.employer.myJobs'), href: `/${lang}/employer/jobs`, icon: Briefcase },
-    { name: t('dashboard.nav.candidates'), href: `/${lang}/employer/candidates`, icon: Users },
-    { name: t('dashboard.nav.analytics'), href: `/${lang}/employer/analytics`, icon: BarChart3 },
-    { name: t('dashboard.nav.profile'), href: `/${lang}/employer/profile`, icon: User },
-    { name: t('dashboard.nav.settings'), href: `/${lang}/employer/settings`, icon: Settings },
-  ];
+  const getText = (key: string) => {
+    const translations: Record<string, Record<string, string>> = {
+      'dashboard.nav.dashboard': {
+        en: 'Dashboard',
+        ar: 'لوحة التحكم',
+        fr: 'Tableau de bord'
+      },
+      'dashboard.jobseeker.jobSearch': {
+        en: 'Job Search',
+        ar: 'البحث عن وظيفة',
+        fr: 'Recherche d\'emploi'
+      },
+      'dashboard.jobseeker.myApplications': {
+        en: 'My Applications',
+        ar: 'طلباتي',
+        fr: 'Mes candidatures'
+      },
+      'dashboard.nav.savedJobs': {
+        en: 'Saved Jobs',
+        ar: 'الوظائف المحفوظة',
+        fr: 'Emplois sauvegardés'
+      },
+      'dashboard.nav.profile': {
+        en: 'Profile',
+        ar: 'الملف الشخصي',
+        fr: 'Profil'
+      },
+      'dashboard.nav.settings': {
+        en: 'Settings',
+        ar: 'الإعدادات',
+        fr: 'Paramètres'
+      },
+      'dashboard.nav.users': {
+        en: 'Users',
+        ar: 'المستخدمون',
+        fr: 'Utilisateurs'
+      },
+      'dashboard.nav.jobs': {
+        en: 'Jobs',
+        ar: 'الوظائف',
+        fr: 'Emplois'
+      },
+      'dashboard.nav.applications': {
+        en: 'Applications',
+        ar: 'الطلبات',
+        fr: 'Candidatures'
+      },
+      'dashboard.nav.analytics': {
+        en: 'Analytics',
+        ar: 'التحليلات',
+        fr: 'Analyses'
+      }
+    };
+
+    return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
+  };
 
   const jobseekerNavigation = [
-    { name: t('dashboard.nav.dashboard'), href: `/${lang}/jobseeker`, icon: Home },
-    { name: t('dashboard.jobseeker.jobSearch'), href: `/${lang}/jobs`, icon: Search },
-    { name: t('dashboard.jobseeker.myApplications'), href: `/${lang}/jobseeker/applications`, icon: FileText },
-    { name: t('dashboard.nav.savedJobs'), href: `/${lang}/jobseeker/saved-jobs`, icon: BookmarkPlus },
-    { name: t('dashboard.nav.profile'), href: `/${lang}/jobseeker/profile`, icon: User },
-    { name: t('dashboard.nav.settings'), href: `/${lang}/jobseeker/settings`, icon: Settings },
+    { name: getText('dashboard.nav.dashboard'), href: `/${lang}/jobseeker`, icon: Home },
+    { name: getText('dashboard.jobseeker.jobSearch'), href: `/${lang}/jobs`, icon: Search },
+    { name: getText('dashboard.jobseeker.myApplications'), href: `/${lang}/jobseeker/applications`, icon: FileText },
+    { name: getText('dashboard.nav.savedJobs'), href: `/${lang}/jobseeker/saved-jobs`, icon: BookmarkPlus },
+    { name: getText('dashboard.nav.profile'), href: `/${lang}/jobseeker/profile`, icon: User },
+    { name: getText('dashboard.nav.settings'), href: `/${lang}/jobseeker/settings`, icon: Settings },
   ];
 
   const adminNavigation = [
-    { name: t('dashboard.nav.dashboard'), href: `/${lang}/admin`, icon: Home },
-    { name: t('dashboard.nav.users'), href: `/${lang}/admin/users`, icon: Users },
-    { name: t('dashboard.nav.jobs'), href: `/${lang}/admin/jobs`, icon: Briefcase },
-    { name: t('dashboard.nav.applications'), href: `/${lang}/admin/applications`, icon: FileText },
-    { name: t('dashboard.nav.analytics'), href: `/${lang}/admin/analytics`, icon: BarChart3 },
-    { name: t('dashboard.nav.settings'), href: `/${lang}/admin/settings`, icon: Settings },
+    { name: getText('dashboard.nav.dashboard'), href: `/${lang}/admin`, icon: Home },
+    { name: getText('dashboard.nav.users'), href: `/${lang}/admin/users`, icon: Users },
+    { name: getText('dashboard.nav.jobs'), href: `/${lang}/admin/jobs`, icon: Briefcase },
+    { name: getText('dashboard.nav.applications'), href: `/${lang}/admin/applications`, icon: FileText },
+    { name: getText('dashboard.nav.analytics'), href: `/${lang}/admin/analytics`, icon: BarChart3 },
+    { name: getText('dashboard.nav.settings'), href: `/${lang}/admin/settings`, icon: Settings },
   ];
 
   const getNavigation = () => {
     switch (userRole) {
-      case 'employer':
-        return employerNavigation;
-      case 'jobseeker':
+      case 'job_seeker':
         return jobseekerNavigation;
       case 'admin':
         return adminNavigation;

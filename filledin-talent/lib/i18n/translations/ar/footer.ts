@@ -9,7 +9,6 @@ export const footer = {
   },
   services: {
     title: "الخدمات",
-    forEmployers: "لأصحاب العمل",
     forJobSeekers: "للباحثين عن عمل",
     pricing: "الأسعار",
     features: "المميزات",
