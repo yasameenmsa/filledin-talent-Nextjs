@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: "aGCNRhYNhc0H3avDv+oYTEPfemDBD8yCZuOV1Elf48Q="
+      MONGODB_URI: "mongodb+srv://filledin-talent:filledin-talent@cluster0.j4qqmxz.mongodb.net/filledin-talent?retryWrites=true&w=majority&appName=Cluster0"
+      MONGODB_DB: "filledin-talent"
+    # Uncomment if you want hot-reload style volume mounts for dev
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
+
+  # Optional local MongoDB for development
+  # mongo:
+  #   image: mongo:6
+  #   restart: unless-stopped
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: example
+  #   volumes:
+  #     - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+    driver: local
