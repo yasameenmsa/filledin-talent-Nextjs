@@ -5,16 +5,34 @@ import { ChevronDown, Globe } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Language, languageNames } from '@/lib/i18n/config';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function LocaleSwitcher() {
   const { currentLanguage, setLanguage, isRTL } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const languages: Language[] = ['en', 'ar', 'fr'];
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
     setIsOpen(false);
+
+    // Redirect to the new language path
+    if (pathname) {
+      const segments = pathname.split('/');
+      // Assuming path starts with /lang/..., segments[1] is the language
+      if (segments.length > 1 && ['en', 'fr', 'ar'].includes(segments[1])) {
+        segments[1] = newLanguage;
+        const newPath = segments.join('/');
+        router.push(newPath);
+      } else {
+        // If path doesn't start with lang (e.g. root), prepend it or handle accordingly
+        // For now, assume root redirects to default lang or handle simple case
+        router.push(`/${newLanguage}${pathname === '/' ? '' : pathname}`);
+      }
+    }
   };
 
   return (
@@ -31,8 +49,8 @@ export function LocaleSwitcher() {
       >
         <Globe className="w-4 h-4" />
         <span>{languageNames[currentLanguage]}</span>
-        <ChevronDown 
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''} ${isRTL ? 'chevron-right' : ''}`} 
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''} ${isRTL ? 'chevron-right' : ''}`}
         />
       </button>
 

@@ -31,7 +31,7 @@ export default function Footer() {
     };
 
     return (
-        <footer className="bg-white border-t border-gray-200">
+        <footer className="bg-white border-t border-gray-200" dir="ltr">
             <div className="container mx-auto px-4 max-w-7xl">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-2">
                     {/* Logo Section */}

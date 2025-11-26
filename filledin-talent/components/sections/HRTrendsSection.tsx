@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const HRTrendsSection = () => {
   const { currentLanguage } = useLanguage();
-  
+
   // Helper function to get text based on current language
   const getText = (currentLanguage: string) => {
     const translations = {
@@ -43,7 +43,7 @@ const HRTrendsSection = () => {
   const text = getText(currentLanguage);
 
   return (
-    <div 
+    <div
       className="py-16 px-4"
       style={{
         backgroundColor: '#f6f4ee',
@@ -59,33 +59,33 @@ const HRTrendsSection = () => {
               <h2 className="text-4xl font-bold mb-8" style={{ color: '#1e3a5f' }}>
                 {text.hrTrendsTitle}
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="flex gap-3">
-                  <div className={`flex-shrink-0 mt-1 ${currentLanguage === 'ar' ? 'order-2' : ''}`}>
+                  <div className="flex-shrink-0 mt-1">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'order-1 text-right' : 'text-left'}`}>
+                  <p className="text-gray-800 leading-relaxed text-base text-start">
                     {text.hrTrend1}
                   </p>
                 </div>
-                
+
                 <div className="flex gap-3">
-                  <div className={`flex-shrink-0 mt-1 ${currentLanguage === 'ar' ? 'order-2' : ''}`}>
+                  <div className="flex-shrink-0 mt-1">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'order-1 text-right' : 'text-left'}`}>
+                  <p className="text-gray-800 leading-relaxed text-base text-start">
                     {text.hrTrend2}
                   </p>
                 </div>
               </div>
             </div>
-            
+
             {/* Right Image */}
             <div className="flex-shrink-0 lg:w-[450px]">
-              <img 
+              <img
                 src="https://res.cloudinary.com/dtpl6x0sk/image/upload/v1762016679/HRTrends1_whkqff.png"
-                alt="HR Trends" 
+                alt="HR Trends"
                 className="w-full h-auto rounded-lg shadow-lg"
                 onError={(e) => {
                   e.currentTarget.src = 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop';
@@ -100,37 +100,37 @@ const HRTrendsSection = () => {
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             {/* Left Image */}
             <div className="flex-shrink-0 lg:w-[450px] order-2 lg:order-1">
-              <img 
+              <img
                 src="https://res.cloudinary.com/dtpl6x0sk/image/upload/v1762016677/HRTrends2_uetb60.png"
-                alt="AI & Talent Acquisition" 
+                alt="AI & Talent Acquisition"
                 className="w-full h-auto rounded-lg shadow-lg"
                 onError={(e) => {
                   e.currentTarget.src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop';
                 }}
               />
             </div>
-            
+
             {/* Right Content */}
             <div className="flex-1 order-1 lg:order-2">
               <h2 className="text-4xl font-bold mb-8" style={{ color: '#1e3a5f' }}>
                 {text.aiTalentTitle}
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="flex gap-3">
-                  <div className={`flex-shrink-0 mt-1 ${currentLanguage === 'ar' ? 'order-2' : ''}`}>
+                  <div className="flex-shrink-0 mt-1">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'order-1 text-right' : 'text-left'}`}>
+                  <p className="text-gray-800 leading-relaxed text-base text-start">
                     <span className="font-bold">{text.filledInTalent}</span> {text.aiTalent1}
                   </p>
                 </div>
-                
+
                 <div className="flex gap-3">
-                  <div className={`flex-shrink-0 mt-1 ${currentLanguage === 'ar' ? 'order-2' : ''}`}>
+                  <div className="flex-shrink-0 mt-1">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'order-1 text-right' : 'text-left'}`}>
+                  <p className="text-gray-800 leading-relaxed text-base text-start">
                     {text.aiTalent2}
                   </p>
                 </div>

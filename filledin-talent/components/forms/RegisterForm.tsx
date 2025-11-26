@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,29 +13,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const registerSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Name is required')
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name must be less than 100 characters'),
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(128, 'Password must be less than 128 characters'),
-  confirmPassword: z
-    .string()
-    .min(1, 'Please confirm your password'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+type RegisterFormData = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 interface RegisterFormProps {
   lang: string;
@@ -47,10 +30,12 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  
+
   const { register: registerUser } = useAuth();
   const router = useRouter();
   const { currentLanguage } = useLanguage();
+
+  const isRTL = currentLanguage === 'ar';
 
   // Inline translations
   const getText = (key: string): string => {
@@ -124,19 +109,100 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         en: 'Account created successfully!',
         ar: 'تم إنشاء الحساب بنجاح!',
         fr: 'Compte créé avec succès !'
+      },
+      'validation.nameRequired': {
+        en: 'Name is required',
+        ar: 'الاسم مطلوب',
+        fr: 'Le nom est requis'
+      },
+      'validation.nameMinLength': {
+        en: 'Name must be at least 2 characters',
+        ar: 'يجب أن يكون الاسم حرفين على الأقل',
+        fr: 'Le nom doit contenir au moins 2 caractères'
+      },
+      'validation.nameMaxLength': {
+        en: 'Name must be less than 100 characters',
+        ar: 'يجب أن يكون الاسم أقل من 100 حرف',
+        fr: 'Le nom doit contenir moins de 100 caractères'
+      },
+      'validation.emailRequired': {
+        en: 'Email is required',
+        ar: 'البريد الإلكتروني مطلوب',
+        fr: "L'email est requis"
+      },
+      'validation.emailInvalid': {
+        en: 'Please enter a valid email address',
+        ar: 'يرجى إدخال عنوان بريد إلكتروني صالح',
+        fr: 'Veuillez entrer une adresse email valide'
+      },
+      'validation.passwordMinLength': {
+        en: 'Password must be at least 8 characters',
+        ar: 'يجب أن تكون كلمة المرور 8 أحرف على الأقل',
+        fr: 'Le mot de passe doit contenir au moins 8 caractères'
+      },
+      'validation.passwordMaxLength': {
+        en: 'Password must be less than 128 characters',
+        ar: 'يجب أن تكون كلمة المرور أقل من 128 حرف',
+        fr: 'Le mot de passe doit contenir moins de 128 caractères'
+      },
+      'validation.confirmPasswordRequired': {
+        en: 'Please confirm your password',
+        ar: 'يرجى تأكيد كلمة المرور',
+        fr: 'Veuillez confirmer votre mot de passe'
+      },
+      'validation.passwordsMismatch': {
+        en: 'Passwords do not match',
+        ar: 'كلمات المرور غير متطابقة',
+        fr: 'Les mots de passe ne correspondent pas'
+      },
+      'error.registrationFailed': {
+        en: 'Registration failed. Please try again.',
+        ar: 'فشل التسجيل. يرجى المحاولة مرة أخرى.',
+        fr: "L'inscription a échoué. Veuillez réessayer."
       }
     };
 
     return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
   };
 
+  // Create validation schema - recreate on language change
+  const registerSchema = useMemo(() =>
+    z.object({
+      name: z
+        .string()
+        .min(1, getText('validation.nameRequired'))
+        .min(2, getText('validation.nameMinLength'))
+        .max(100, getText('validation.nameMaxLength')),
+      email: z
+        .string()
+        .min(1, getText('validation.emailRequired'))
+        .email(getText('validation.emailInvalid')),
+      password: z
+        .string()
+        .min(8, getText('validation.passwordMinLength'))
+        .max(128, getText('validation.passwordMaxLength')),
+      confirmPassword: z
+        .string()
+        .min(1, getText('validation.confirmPasswordRequired')),
+    }).refine((data) => data.password === data.confirmPassword, {
+      message: getText('validation.passwordsMismatch'),
+      path: ['confirmPassword'],
+    })
+    , [currentLanguage]);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    clearErrors,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+
+  // Reset form errors when language changes to get fresh error messages
+  useEffect(() => {
+    clearErrors();
+  }, [currentLanguage, clearErrors]);
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
@@ -156,20 +222,20 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
           router.push(`/${lang}/login`);
         }, 2000);
       } else {
-        setAuthError(result.error || 'Registration failed');
+        setAuthError(result.error || getText('error.registrationFailed'));
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setAuthError('Registration failed');
+      setAuthError(getText('error.registrationFailed'));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="w-full max-w-md mx-auto" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className={` mb-8 text-left`}>
+        <h1 className={`text-2xl font-bold text-gray-900 mb-2 `}>
           {getText('auth.createAccount')}
         </h1>
         <p className="text-gray-600">
@@ -230,7 +296,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
             />
             <button
               type="button"
-              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+              className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-3 text-gray-400 hover:text-gray-600`}
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
@@ -257,7 +323,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
             />
             <button
               type="button"
-              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+              className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-3 text-gray-400 hover:text-gray-600`}
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? (
@@ -279,7 +345,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         >
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4 animate-spin`} />
               {getText('auth.creatingAccount')}
             </>
           ) : (

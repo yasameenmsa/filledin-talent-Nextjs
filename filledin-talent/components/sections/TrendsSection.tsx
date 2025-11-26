@@ -9,11 +9,14 @@ interface TrendItemProps {
   description: string;
   imagePlaceholder: string;
   isReversed?: boolean;
+  currentLanguage: string;
 }
 
-const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlaceholder, isReversed = false }) => {
+const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlaceholder, isReversed = false, currentLanguage }) => {
+  const isRTL = currentLanguage === 'ar';
+
   return (
-    <motion.div 
+    <motion.div
       className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-16 mb-16 lg:mb-24 ${isReversed ? 'lg:flex-row-reverse' : ''}`}
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -22,7 +25,7 @@ const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlacehol
     >
       {/* Image */}
       <div className="w-full lg:w-1/2">
-        <div className="aspect-[4/3] rounded-lg overflow-hidden">
+        <div className="aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
           <img
             src={imagePlaceholder}
             alt={title}
@@ -30,9 +33,9 @@ const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlacehol
           />
         </div>
       </div>
-      
+
       {/* Text Content */}
-      <div className="w-full lg:w-1/2 space-y-4">
+      <div className={`w-full lg:w-1/2 space-y-4 ${isRTL ? 'text-right' : 'text-left'}`}>
         <h2 className="text-2xl lg:text-3xl font-bold text-blue-900 underline decoration-blue-900 decoration-2 underline-offset-4">
           {title}
         </h2>
@@ -46,7 +49,8 @@ const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlacehol
 
 const TrendsSection: React.FC = () => {
   const { currentLanguage } = useLanguage();
-  
+  const isRTL = currentLanguage === 'ar';
+
   // Helper function to get text based on current language
   const getText = (currentLanguage: string) => {
     const translations = {
@@ -91,38 +95,39 @@ const TrendsSection: React.FC = () => {
       id: 'hr-trends',
       title: text.hrTrendsTitle,
       description: text.hrTrendsDescription,
-      image: 'https://res.cloudinary.com/dtpl6x0sk/image/upload/v1737072767/HRTrends_iyyfie.jpg'
+      imagePlaceholder: '/images/home/HRTrends.jpg'
     },
     {
       id: 'ai-talent',
       title: text.aiTalentTitle,
       description: text.aiTalentDescription,
-      image: 'https://res.cloudinary.com/dtpl6x0sk/image/upload/v1737073006/TalentAcquisition_1_slgwfw.jpg'
+      imagePlaceholder: '/images/home/TalentAcquisition.jpg'
     },
     {
       id: 'industry-trends',
       title: text.industryTrendsTitle,
       description: text.industryTrendsDescription,
-      image: 'https://res.cloudinary.com/dtpl6x0sk/image/upload/v1737072767/EnergyConstruction_yqviyx.jpg'
+      imagePlaceholder: '/images/home/IndustryTrends.jpeg'
     }
   ];
 
   return (
-    <section className="py-16 lg:py-24 bg-gray-50">
+    <section className="py-16 lg:py-24 bg-[#f6f4ee]" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
         {trends.map((trend, index) => (
           <TrendItem
             key={trend.id}
             title={trend.title}
             description={trend.description}
-            imagePlaceholder={trend.image}
+            imagePlaceholder={trend.imagePlaceholder}
             isReversed={index % 2 === 1}
+            currentLanguage={currentLanguage}
           />
         ))}
 
         {/* Leverage Knowledge Section */}
-        <motion.div 
-          className="mt-16 text-center"
+        <motion.div
+          className={`mt-16 text-center ${isRTL ? 'rtl' : 'ltr'}`}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}

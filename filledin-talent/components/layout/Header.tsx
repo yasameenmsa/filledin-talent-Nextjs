@@ -80,7 +80,7 @@ export default function Header() {
       },
       'ui.login': {
         en: 'Login',
-        ar: 'تسجيل الدخول',
+        ar: ' تسجيل الدخول',
         fr: 'Connexion'
       },
       'ui.register': {
@@ -147,31 +147,28 @@ export default function Header() {
                   <>
                     <button
                       onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
-                      className={`flex items-center text-blue-900 hover:text-blue-600 transition-colors ${
-                        isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'
-                      }`}
+                      className={`flex items-center text-blue-900 hover:text-blue-600 transition-colors ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'
+                        }`}
                     >
                       <span>{item.name}</span>
                       <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
                     </button>
-                    
+
                     <AnimatePresence>
                       {dropdownOpen === item.name && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 ${
-                            isRTL ? 'right-0' : 'left-0'
-                          }`}
+                          className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 ${isRTL ? 'right-0' : 'left-0'
+                            }`}
                         >
                           {item.dropdown.map((subItem) => (
                             <Link
                               key={subItem.name}
                               href={subItem.href}
-                              className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 transition-colors ${
-                                isRTL ? 'text-right' : 'text-left'
-                              }`}
+                              className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 transition-colors ${isRTL ? 'text-right' : 'text-left'
+                                }`}
                               onClick={() => setDropdownOpen(null)}
                             >
                               {subItem.name}
@@ -200,9 +197,8 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(dropdownOpen === 'user' ? null : 'user')}
-                  className={`flex items-center text-blue-900 ${
-                    isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'
-                  }`}
+                  className={`flex items-center text-blue-900 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'
+                    }`}
                 >
                   <User className="w-5 h-5" />
                   <span>{userData?.profile?.firstName}</span>
@@ -214,38 +210,34 @@ export default function Header() {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 ${
-                        isRTL ? 'left-0' : 'right-0'
-                      }`}
+                      className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 ${isRTL ? 'left-0' : 'right-0'
+                        }`}
                     >
                       {userData?.role && (
                         <>
                           <Link
-                             href={`/${currentLanguage}/${userData.role}`}
-                             className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${
-                               isRTL ? 'text-right' : 'text-left'
-                             }`}
-                           >
-                             {getText('ui.dashboard')}
-                           </Link>
-                           <Link
-                             href={`/${currentLanguage}/${userData.role}/profile`}
-                             className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${
-                               isRTL ? 'text-right' : 'text-left'
-                             }`}
-                           >
-                             {getText('ui.profile')}
-                           </Link>
+                            href={`/${currentLanguage}/${userData.role}`}
+                            className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
+                              }`}
+                          >
+                            {getText('ui.dashboard')}
+                          </Link>
+                          <Link
+                            href={`/${currentLanguage}/${userData.role}/profile`}
+                            className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
+                              }`}
+                          >
+                            {getText('ui.profile')}
+                          </Link>
                         </>
                       )}
                       <button
-                         onClick={logout}
-                         className={`block w-full px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${
-                           isRTL ? 'text-right' : 'text-left'
-                         }`}
-                       >
-                         {getText('ui.logout')}
-                       </button>
+                        onClick={logout}
+                        className={`block w-full px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
+                          }`}
+                      >
+                        {getText('ui.logout')}
+                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -253,17 +245,17 @@ export default function Header() {
             ) : (
               <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-4' : 'space-x-4'}`}>
                 <Link
-                   href={`/${currentLanguage}/login`}
-                   className="text-blue-900 hover:text-blue-600 transition-colors"
-                 >
-                   {getText('ui.login')}
-                 </Link>
-                 <Link
-                   href={`/${currentLanguage}/register`}
-                   className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                 >
-                   {getText('ui.register')}
-                 </Link>
+                  href={`/${currentLanguage}/login`}
+                  className="text-blue-900 hover:text-blue-600 transition-colors"
+                >
+                  {getText('ui.login')}
+                </Link>
+                <Link
+                  href={`/${currentLanguage}/register`}
+                  className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                >
+                  {getText('ui.register')}
+                </Link>
               </div>
             )}
           </div>
@@ -294,9 +286,8 @@ export default function Header() {
                       <>
                         <button
                           onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
-                          className={`flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                            isRTL ? 'text-right' : 'text-left'
-                          }`}
+                          className={`flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                            }`}
                         >
                           <span>{item.name}</span>
                           <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
@@ -314,9 +305,8 @@ export default function Header() {
                                 <Link
                                   key={subItem.name}
                                   href={subItem.href}
-                                  className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                                    isRTL ? 'text-right' : 'text-left'
-                                  }`}
+                                  className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                                    }`}
                                   onClick={() => {
                                     setIsOpen(false);
                                     setDropdownOpen(null);
@@ -332,9 +322,8 @@ export default function Header() {
                     ) : (
                       <Link
                         href={item.href}
-                        className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                          isRTL ? 'text-right' : 'text-left'
-                        }`}
+                        className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                          }`}
                         onClick={() => setIsOpen(false)}
                       >
                         {item.name}
@@ -355,57 +344,52 @@ export default function Header() {
                     {userData?.role && (
                       <>
                         <Link
-                           href={`/${currentLanguage}/${userData.role}`}
-                           className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                             isRTL ? 'text-right' : 'text-left'
-                           }`}
-                           onClick={() => setIsOpen(false)}
-                         >
-                           {getText('ui.dashboard')}
-                         </Link>
-                         <Link
-                           href={`/${currentLanguage}/${userData.role}/profile`}
-                           className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                             isRTL ? 'text-right' : 'text-left'
-                           }`}
-                           onClick={() => setIsOpen(false)}
-                         >
-                           {getText('ui.profile')}
-                         </Link>
+                          href={`/${currentLanguage}/${userData.role}`}
+                          className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                            }`}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {getText('ui.dashboard')}
+                        </Link>
+                        <Link
+                          href={`/${currentLanguage}/${userData.role}/profile`}
+                          className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                            }`}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {getText('ui.profile')}
+                        </Link>
                       </>
                     )}
                     <button
-                       onClick={() => {
-                         logout();
-                         setIsOpen(false);
-                       }}
-                       className={`block w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                         isRTL ? 'text-right' : 'text-left'
-                       }`}
-                     >
-                       {getText('ui.logout')}
-                     </button>
+                      onClick={() => {
+                        logout();
+                        setIsOpen(false);
+                      }}
+                      className={`block w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                        }`}
+                    >
+                      {getText('ui.logout')}
+                    </button>
                   </div>
                 ) : (
                   <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
                     <Link
-                       href={`/${currentLanguage}/login`}
-                       className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${
-                         isRTL ? 'text-right' : 'text-left'
-                       }`}
-                       onClick={() => setIsOpen(false)}
-                     >
-                       {getText('ui.login')}
-                     </Link>
-                     <Link
-                       href={`/${currentLanguage}/register`}
-                       className={`block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md ${
-                         isRTL ? 'text-right' : 'text-left'
-                       }`}
-                       onClick={() => setIsOpen(false)}
-                     >
-                       {getText('ui.register')}
-                     </Link>
+                      href={`/${currentLanguage}/login`}
+                      className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                        }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {getText('ui.login')}
+                    </Link>
+                    <Link
+                      href={`/${currentLanguage}/register`}
+                      className={`block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                        }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {getText('ui.register')}
+                    </Link>
                   </div>
                 )}
               </div>
