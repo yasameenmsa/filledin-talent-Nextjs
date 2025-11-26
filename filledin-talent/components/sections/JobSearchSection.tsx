@@ -1,13 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { motion } from 'framer-motion';
 
 const JobSearchSection = () => {
   const { currentLanguage } = useLanguage();
-  
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    keywords: '',
+    category: '',
+    workingType: '',
+    location: ''
+  });
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (formData.keywords) params.append('q', formData.keywords);
+    if (formData.category) params.append('category', formData.category);
+    if (formData.workingType) params.append('workingType', formData.workingType);
+    if (formData.location) params.append('location', formData.location);
+
+    router.push(`/${currentLanguage}/jobs?${params.toString()}`);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
+  };
+
   // Helper function to get text based on current language
   const getText = (currentLanguage: string) => {
     const translations = {
@@ -54,99 +84,112 @@ const JobSearchSection = () => {
   const text = getText(currentLanguage);
 
   return (
-    <div 
-      className="pt-6" 
-      style={{
-        backgroundColor: '#f6f4ee',
-      }}
+    <div
+      className="pt-6 bg-[#f6f4ee]"
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       {/* Title */}
       <header className="text-center mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold italic text-gray-900">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl md:text-4xl font-bold italic text-gray-900"
+        >
           {text.title}
-        </h1>
+        </motion.h1>
       </header>
-      
-      <section 
-        className="relative py-16 min-h-[400px] flex items-center"
+
+      <section
+        className="relative py-16 min-h-[400px] flex items-center bg-cover bg-center"
         style={{
           backgroundImage: 'url(https://res.cloudinary.com/dtpl6x0sk/image/upload/q_auto,f_auto,w_1200/v1759850669/s_1_f86nnk_wgfpmc.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
         }}
         aria-label="Job Search"
       >
         {/* Content */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
-              {text.heading}
-            </h2>
-            <p className="text-lg mb-8 text-gray-700">
-              {text.subheading}
-            </p>
-            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
+                {text.heading}
+              </h2>
+              <p className="text-lg mb-8 text-gray-700">
+                {text.subheading}
+              </p>
+            </motion.div>
+
             {/* Search Form - 2x2 Grid */}
-            <form role="search" aria-label="Job search form" className="mb-10">
+            <form onSubmit={handleSearch} role="search" aria-label="Job search form" className="mb-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-3xl mx-auto mb-6">
                 <div>
                   <label htmlFor="keywords" className="sr-only">{text.keywords}</label>
-                  <input
+                  <Input
                     type="text"
                     id="keywords"
                     placeholder={text.keywords}
-                    className={`w-full placeholder-black text-black px-4 py-3 border border-gray-300 rounded-md focus:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
+                    value={formData.keywords}
+                    onChange={handleChange}
+                    className={`bg-white/90 border-gray-300 text-black placeholder:text-gray-500 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="category" className="sr-only">{text.category}</label>
-                  <input
+                  <Input
                     type="text"
                     id="category"
                     placeholder={text.category}
-                    className={`w-full placeholder-black text-black px-4 py-3 border border-gray-300 rounded-md focus:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
+                    value={formData.category}
+                    onChange={handleChange}
+                    className={`bg-white/90 border-gray-300 text-black placeholder:text-gray-500 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="workingType" className="sr-only">{text.workingType}</label>
-                  <input
+                  <Input
                     type="text"
                     id="workingType"
                     placeholder={text.workingType}
-                    className={`w-full placeholder-black text-black px-4 py-3 border border-gray-300 rounded-md focus:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
+                    value={formData.workingType}
+                    onChange={handleChange}
+                    className={`bg-white/90 border-gray-300 text-black placeholder:text-gray-500 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="location" className="sr-only">{text.location}</label>
-                  <input
+                  <Input
                     type="text"
                     id="location"
                     placeholder={text.location}
-                    className={`w-full placeholder-black text-black px-4 py-3 border border-gray-300 rounded-md focus:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
+                    value={formData.location}
+                    onChange={handleChange}
+                    className={`bg-white/90 border-gray-300 text-black placeholder:text-gray-500 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
                   />
                 </div>
               </div>
-              
-              <button 
+
+              <Button
                 type="submit"
-                className="px-8 py-3 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 transition-colors flex items-center justify-center mx-auto"
+                className="px-8 py-6 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 transition-colors mx-auto"
               >
                 <Search className="h-4 w-4 mr-2" />
                 {text.search}
-              </button>
+              </Button>
             </form>
-            
+
             {/* Popular searches */}
             <div className="mt-6">
               <p className="text-sm font-medium text-gray-700 mb-2">{text.popularSearches}</p>
               <div className="flex flex-wrap justify-center gap-2">
                 {text.popularTerms.map((term, index) => (
-                  <Link 
-                    key={index} 
+                  <Link
+                    key={index}
                     href={`/${currentLanguage}/jobs?q=${encodeURIComponent(term)}`}
                     className="px-3 py-1 bg-white text-gray-800 text-sm rounded-full border border-gray-300 hover:bg-gray-100 transition-colors"
                   >

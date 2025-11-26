@@ -148,8 +148,6 @@
   [dir="rtl"] textarea,
   [dir="rtl"] select {
     text-align: right;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
   }
 
   [dir="rtl"] .form-label {
@@ -180,6 +178,27 @@
     margin-left: auto;
   }
 
+  /* RTL Positioning */
+  [dir="rtl"] .left-0 {
+    left: auto;
+    right: 0;
+  }
+
+  [dir="rtl"] .right-0 {
+    right: auto;
+    left: 0;
+  }
+
+  [dir="rtl"] .left-4 {
+    left: auto;
+    right: 1rem;
+  }
+
+  [dir="rtl"] .right-4 {
+    right: auto;
+    left: 1rem;
+  }
+
   /* RTL Flexbox Utilities */
   [dir="rtl"] .justify-start {
     justify-content: flex-end;
@@ -187,6 +206,40 @@
 
   [dir="rtl"] .justify-end {
     justify-content: flex-start;
+  }
+
+  [dir="rtl"] .items-start {
+    align-items: flex-end;
+  }
+
+  [dir="rtl"] .items-end {
+    align-items: flex-start;
+  }
+
+  /* RTL Text Alignment with Logical Properties */
+  [dir="rtl"] .text-start {
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-end {
+    text-align: left;
+  }
+
+  /* RTL Space Utilities */
+  [dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+
+  [dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+
+  [dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+
+  [dir="rtl"] .space-x-8 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
   }
 
   /* RTL Language Switcher */
@@ -221,6 +274,21 @@
   /* RTL Typography */
   [dir="rtl"] {
     font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+  }
+
+  /* RTL Border Radius */
+  [dir="rtl"] .rounded-l-lg {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+
+  [dir="rtl"] .rounded-r-lg {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
   }
 
   /* RTL Specific Animations */

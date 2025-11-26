@@ -1,6 +1,6 @@
 import JobSearchSection from '@/components/sections/JobSearchSection';
 import TrendsSection from '@/components/sections/TrendsSection';
-import ExpertiseFooterSection from '@/components/sections/ExpertiseFooterSection';
+import ExpertiseSection from '@/components/sections/ExpertiseSection';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 
@@ -14,19 +14,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const headersList = headers();
   const userAgent = (await headersList).get('user-agent') || '';
   const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent);
-  
+
   const titles = {
     en: 'FilledIn Talent - Global Energy Talent Partner',
     ar: 'فيلد إن تالنت - شريك المواهب العالمية للطاقة',
     fr: 'FilledIn Talent - Partenaire Mondial des Talents Énergétiques'
   };
-  
+
   const descriptions = {
     en: 'Find your next career opportunity in the global energy sector. Connect with top employers worldwide.',
     ar: 'ابحث عن فرصتك المهنية القادمة في قطاع الطاقة العالمي. تواصل مع أفضل أصحاب العمل في جميع أنحاء العالم.',
     fr: 'Trouvez votre prochaine opportunité de carrière dans le secteur mondial de l\'énergie. Connectez-vous avec les meilleurs employeurs du monde entier.'
   };
-  
+
   return {
     title: titles[lang as keyof typeof titles] || titles.en,
     description: descriptions[lang as keyof typeof descriptions] || descriptions.en,
@@ -59,7 +59,7 @@ export default async function HomePage({ params }: Props) {
     <main>
       <JobSearchSection />
       <TrendsSection />
-      <ExpertiseFooterSection />
+      <ExpertiseSection />
     </main>
   );
 }

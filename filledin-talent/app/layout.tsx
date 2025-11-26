@@ -3,6 +3,7 @@ import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import ClientHtmlWrapper from '@/components/layout/ClientHtmlWrapper';
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -93,6 +94,7 @@ export default function RootLayout({
         <LanguageProvider>
           <ClientHtmlWrapper>
             {children}
+            <Toaster />
           </ClientHtmlWrapper>
         </LanguageProvider>
       </body>
