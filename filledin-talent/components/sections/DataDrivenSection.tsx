@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Globe, CheckCircle, TrendingUp } from 'lucide-react';
 
@@ -82,20 +83,21 @@ const DataDrivenSection = () => {
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col lg:flex-row gap-12 items-start">
-          {/* Left Content */}
-          <div className="flex-1">
-            {/* Header */}
-            <h2 className="text-5xl font-bold mb-6" style={{ color: '#000' }}>
+        {/* Header */}
+         <h2 className="text-3xl font-bold text-center" style={{ color: '#000' }}>
               {text.mainTitle}
             </h2>
             
-            <p className="text-lg leading-relaxed mb-12" style={{ color: '#000' }}>
+            <p className="text-lg leading-relaxed mb-16 text-center" style={{ color: '#000' }}>
               {text.intro}
             </p>
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
+          {/* Left Content */}
+          <div className="flex-1">
+          
 
             {/* Our Promise Section */}
-            <h3 className="text-3xl font-bold mb-8" style={{ color: '#000' }}>
+            <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
               {text.promiseTitle}
             </h3>
 
@@ -193,12 +195,14 @@ const DataDrivenSection = () => {
           {/* Right Content - Image with CTA */}
           <div className="flex-shrink-0 lg:w-[550px]">
             <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=800&h=900&fit=crop"
+              <Image
+                src="/images/business/Hand.png"
                 alt="Professional Handshake"
+                width={550}
+                height={650}
                 className="w-full h-auto rounded-lg shadow-lg"
                 style={{ aspectRatio: '550/650', objectFit: 'cover' }}
-                onError={(e) => {
+                onError={(e: { currentTarget: { src: string; }; }) => {
                   e.currentTarget.src = 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=900&fit=crop';
                 }}
               />

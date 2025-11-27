@@ -19,6 +19,8 @@ import { candidates } from './fr/candidates';
 import { status } from './fr/status';
 import { admin } from './fr/admin';
 import { imageBoxes } from './fr/imageBoxes';
+import { jobs } from './fr/jobs';
+import { applications } from './fr/applications';
 
 export const fr = {
   common,
@@ -41,6 +43,8 @@ export const fr = {
   candidates,
   status,
   admin,
-  imageBoxes
+  imageBoxes,
+  jobs,
+  applications
 };
 

@@ -1,20 +1,14 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { trends as enTrends } from './translations/en/trends';
-import { trends as arTrends } from './translations/ar/trends';
-import { trends as frTrends } from './translations/fr/trends';
+import { en } from './translations/en';
+import { ar } from './translations/ar';
+import { fr } from './translations/fr';
 
 const translations = {
-  en: {
-    trends: enTrends,
-  },
-  ar: {
-    trends: arTrends,
-  },
-  fr: {
-    trends: frTrends,
-  },
+  en,
+  ar,
+  fr,
 };
 
 type TranslationParams = Record<string, string | number>;

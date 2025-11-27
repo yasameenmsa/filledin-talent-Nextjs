@@ -1,8 +1,10 @@
-import SpecializedSourcingSection from '@/components/sections/SpecializedSourcingSection';
+import CommitmentSection from '@/components/sections/CommitmentSection';
+import DataDrivenSection from '@/components/sections/DataDrivenSection';
 export default function TrendsPage() {
   return (
     <div>
-      <SpecializedSourcingSection />
+      <CommitmentSection />
+      <DataDrivenSection />
     </div>
   );
 }

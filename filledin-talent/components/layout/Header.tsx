@@ -8,6 +8,7 @@ import { Menu, X, ChevronDown, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LocaleSwitcher } from './LocaleSwitcher';
+import { MobileLocaleSwitcher } from './MobileLocaleSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
@@ -160,8 +161,9 @@ export default function Header() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 ${isRTL ? 'right-0' : 'left-0'
+                          className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 max-h-[80vh] overflow-y-auto ${isRTL ? 'right-0 left-auto' : 'left-0 right-auto'
                             }`}
+                          style={{ maxWidth: 'calc(100vw - 2rem)' }}
                         >
                           {item.dropdown.map((subItem) => (
                             <Link
@@ -210,8 +212,9 @@ export default function Header() {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 ${isRTL ? 'left-0' : 'right-0'
+                      className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 max-h-[80vh] overflow-y-auto ${isRTL ? 'left-0 right-auto' : 'right-0 left-auto'
                         }`}
+                      style={{ maxWidth: 'calc(100vw - 2rem)' }}
                     >
                       {userData?.role && (
                         <>
@@ -335,7 +338,7 @@ export default function Header() {
                 {/* Mobile Language Switcher */}
                 <div className="border-t border-gray-200 pt-2 mt-2">
                   <div className="px-3 py-2">
-                    <LocaleSwitcher />
+                    <MobileLocaleSwitcher />
                   </div>
                 </div>
 

@@ -49,18 +49,18 @@ const CommitmentSection = () => {
 
   return (
     <div 
-      className="py-16 px-4"
+      className="pt-16 px-4"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="container mx-auto max-w-7xl">
         {/* Top Section */}
         <div className="mb-12">
-          <h2 className="text-5xl font-bold mb-6" style={{ color: '#000' }}>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: '#000' }}>
             {text.mainTitle}
           </h2>
           
-          <h3 className="text-3xl font-bold mb-8" style={{ color: '#000' }}>
+          <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
             {text.subtitle}
           </h3>
 
@@ -89,7 +89,7 @@ const CommitmentSection = () => {
 
         {/* Bottom Section */}
         <div>
-          <h3 className="text-3xl font-bold mb-8" style={{ color: '#000' }}>
+          <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
             {text.partnershipTitle}
           </h3>
 

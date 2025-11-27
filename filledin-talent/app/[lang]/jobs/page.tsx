@@ -54,7 +54,7 @@ async function getJobs(searchParams: JobSearchParams) {
     const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
 
     try {
-        const res = await fetch(`${protocol}://${host}/api/jobs/search?${params.toString()}`, {
+        const res = await fetch(`${protocol}://${host}/api/jobs?${params.toString()}`, {
             cache: 'no-store',
         });
 

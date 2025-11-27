@@ -20,6 +20,8 @@ import { candidates } from './en/candidates';
 import { status } from './en/status';
 import { admin } from './en/admin';
 import { imageBoxes } from './en/imageBoxes';
+import { jobs } from './en/jobs';
+import { applications } from './en/applications';
 
 export const en = {
   common,
@@ -43,5 +45,7 @@ export const en = {
   candidates,
   status,
   admin,
-  imageBoxes
+  imageBoxes,
+  jobs,
+  applications
 };

@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AboutFilledInTalent: React.FC = () => {
   const { currentLanguage } = useLanguage();
-  
+
   const getText = (lang: string) => {
     const translations = {
       en: {
@@ -43,7 +44,7 @@ const AboutFilledInTalent: React.FC = () => {
   const isRTL = currentLanguage === 'ar';
 
   return (
-    <section 
+    <section
       className="py-16 px-4 md:px-6 lg:px-8"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={isRTL ? 'rtl' : 'ltr'}
@@ -55,7 +56,7 @@ const AboutFilledInTalent: React.FC = () => {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight" style={{ color: '#000' }}>
               {text.title}
             </h2>
-            
+
             <p className="text-base md:text-lg leading-relaxed" style={{ color: '#000' }}>
               {text.p1}
             </p>
@@ -80,18 +81,20 @@ const AboutFilledInTalent: React.FC = () => {
           {/* Right Image */}
           <div className="flex-shrink-0 w-full lg:w-[450px] xl:w-[500px]">
             <div className="relative w-full">
-              <div 
-                className="w-full rounded-lg overflow-hidden shadow-lg"
-                style={{ 
+              <div
+                className="w-full rounded-lg overflow-hidden shadow-lg relative"
+                style={{
                   aspectRatio: '3/4',
-                  backgroundColor: '#1e3a5f'
                 }}
               >
-                <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-white text-xl md:text-2xl font-bold text-center px-6">
-                    {text.imageCaption}
-                  </p>
-                </div>
+                <Image
+                  src="/images/about/ArabWomen.png"
+                  alt={text.imageCaption}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                />
               </div>
             </div>
           </div>

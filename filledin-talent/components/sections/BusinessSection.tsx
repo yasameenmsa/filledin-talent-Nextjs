@@ -2,10 +2,11 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Globe, CheckCircle, TrendingUp } from 'lucide-react';
+import Image from 'next/image';
 
 const BusinessSection = () => {
   const { currentLanguage } = useLanguage();
-  
+
   const getText = (currentLanguage: string) => {
     const translations = {
       en: {
@@ -14,12 +15,11 @@ const BusinessSection = () => {
         intro: 'FilledIn Talent is committed to you and to provide you with future-Ready recruitment for the Energy Workforce of tomorrow.',
         partnership: 'We partner with employers like you to build long-term teams with the right skills for a rapidly evolving non-renewable and renewable energy industry. We also propose a flexible workforce to keep critical projects moving.',
         skillsMapping: 'We identify emerging skills i.e AI, Renewables, Automation, Digital, through future Skills Mapping to keep your business ahead.',
-        delivery: 'At FINT, we deliver top talent at reduced cost through AI-powered automation',
+        delivery: 'At FINT, we deliver top talent at reduced cost through AI-powered automation.',
         promiseTitle: 'Our promise to you',
         globalSourcing: 'Global Sourcing',
         noSecondInterview: 'No Second Interview, No Fee',
         keyMetrics: 'Key Recruitment Metrics',
-        expertise: 'Our expertise to your service - Deeply Specialized Sourcing, Not Just Searching',
         notTransactional: 'We are not a transactional agency. We are your strategic partner in talent acquisition, dedicated to providing a seamless, efficient, and effective service that delivers lasting value.',
         jobSeekers: 'Job seekers',
         jobSearch: 'Job search',
@@ -39,7 +39,6 @@ const BusinessSection = () => {
         globalSourcing: 'Sourcing Mondial',
         noSecondInterview: 'Pas de Deuxième Entretien, Pas de Frais',
         keyMetrics: 'Indicateurs Clés de Recrutement',
-        expertise: 'Notre expertise à votre service - Sourcing Profondément Spécialisé, Pas Seulement de la Recherche',
         notTransactional: 'Nous ne sommes pas une agence transactionnelle. Nous sommes votre partenaire stratégique en acquisition de talents, dédiés à fournir un service fluide, efficace et performant qui offre une valeur durable.',
         jobSeekers: 'Chercheurs d\'emploi',
         jobSearch: 'Recherche d\'emploi',
@@ -59,7 +58,6 @@ const BusinessSection = () => {
         globalSourcing: 'التوظيف العالمي',
         noSecondInterview: 'لا مقابلة ثانية، بدون رسوم',
         keyMetrics: 'مقاييس التوظيف الرئيسية',
-        expertise: 'خبرتنا في خدمتك - التوظيف المتخصص العميق، وليس مجرد البحث',
         notTransactional: 'نحن لسنا وكالة معاملات. نحن شريكك الاستراتيجي في اكتساب المواهب، ملتزمون بتقديم خدمة سلسة وفعالة وناجحة تقدم قيمة دائمة.',
         jobSeekers: 'الباحثون عن عمل',
         jobSearch: 'البحث عن وظيفة',
@@ -75,7 +73,7 @@ const BusinessSection = () => {
   const text = getText(currentLanguage);
 
   return (
-    <div 
+    <div
       className="min-h-screen"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
@@ -86,10 +84,10 @@ const BusinessSection = () => {
         <div className="flex gap-12 items-start">
           {/* Left Content */}
           <div className="flex-1">
-            <h1 className="text-5xl font-bold mb-6" style={{ color: '#1e3a5f' }}>
+            <h1 className="text-3xl font-bold mb-6" style={{ color: '#1e3a5f' }}>
               {text.forBusinesses}
             </h1>
-            <h2 className="text-3xl font-bold mb-8" style={{ color: '#000' }}>
+            <h2 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
               {text.hireFutureTalent}
             </h2>
 
@@ -130,7 +128,6 @@ const BusinessSection = () => {
               </div>
 
               <div className="space-y-4 text-base" style={{ color: '#000' }}>
-                <p className="font-bold">{text.expertise}</p>
                 <p>{text.notTransactional}</p>
               </div>
             </div>
@@ -138,11 +135,13 @@ const BusinessSection = () => {
 
           {/* Right Image */}
           <div className="flex-shrink-0 w-[450px]">
-            <img 
-              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=900&fit=crop"
+            <Image
+              src="/images/business/ForBusinesses.png"
               alt="Business Meeting"
+              width={450}
+              height={600}
               className="w-full h-auto rounded-lg shadow-lg"
-              style={{ aspectRatio: '450/600', objectFit: 'cover' }}
+              style={{ objectFit: 'cover' }}
             />
           </div>
         </div>
