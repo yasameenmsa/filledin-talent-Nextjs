@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { PasswordStrengthIndicator } from '@/components/ui/PasswordStrengthIndicator';
 
 type RegisterFormData = {
   name: string;
@@ -136,9 +137,9 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         fr: 'Veuillez entrer une adresse email valide'
       },
       'validation.passwordMinLength': {
-        en: 'Password must be at least 8 characters',
-        ar: 'يجب أن تكون كلمة المرور 8 أحرف على الأقل',
-        fr: 'Le mot de passe doit contenir au moins 8 caractères'
+        en: 'Password must be at least 12 characters',
+        ar: 'يجب أن تكون كلمة المرور 12 حرفاً على الأقل',
+        fr: 'Le mot de passe doit contenir au moins 12 caractères'
       },
       'validation.passwordMaxLength': {
         en: 'Password must be less than 128 characters',
@@ -179,7 +180,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         .email(getText('validation.emailInvalid')),
       password: z
         .string()
-        .min(8, getText('validation.passwordMinLength'))
+        .min(12, getText('validation.passwordMinLength')) // Updated to 12 characters
         .max(128, getText('validation.passwordMaxLength')),
       confirmPassword: z
         .string()
@@ -195,9 +196,13 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
     handleSubmit,
     formState: { errors },
     clearErrors,
+    watch,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+
+  // Watch password for strength indicator
+  const password = watch('password', '');
 
   // Reset form errors when language changes to get fresh error messages
   useEffect(() => {
@@ -306,6 +311,8 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
               )}
             </button>
           </div>
+          {/* Password strength indicator */}
+          {password && <PasswordStrengthIndicator password={password} />}
           {errors.password && (
             <p className="text-sm text-red-600">{errors.password.message}</p>
           )}
