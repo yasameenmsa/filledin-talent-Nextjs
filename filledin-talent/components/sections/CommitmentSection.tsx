@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const CommitmentSection = () => {
   const { currentLanguage } = useLanguage();
-  
+
   const getText = (currentLanguage: string) => {
     const translations = {
       en: {
@@ -48,66 +48,70 @@ const CommitmentSection = () => {
   const text = getText(currentLanguage);
 
   return (
-    <div 
-      className="pt-16 px-4"
+    <div
+      className="py-16 px-4"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="container mx-auto max-w-7xl">
-        {/* Top Section */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6" style={{ color: '#000' }}>
-            {text.mainTitle}
-          </h2>
-          
-          <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
-            {text.subtitle}
-          </h3>
+        {/* Main Title */}
+        <h2 className="text-4xl font-bold mb-12" style={{ color: '#000' }}>
+          {text.mainTitle}
+        </h2>
 
-          <div className="space-y-4 text-lg leading-relaxed max-w-5xl" style={{ color: '#000' }}>
-            <p>{text.intro1}</p>
-            <p>{text.intro2}</p>
-            <p>{text.intro3}</p>
+        {/* Top Section - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* Left Column - Text Content */}
+          <div>
+            <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>
+              {text.subtitle}
+            </h3>
+
+            <div className="space-y-4 text-base leading-relaxed" style={{ color: '#000' }}>
+              <p>{text.intro1}</p>
+              <p>{text.intro2}</p>
+              <p>{text.intro3}</p>
+            </div>
+          </div>
+
+          {/* Right Column - Image */}
+          <div className="flex items-start">
+            <img
+              src="/images/business/PrecisionRecruitment.jpg"
+              alt="Partnership Team"
+              className="w-full h-auto object-cover rounded-lg shadow-lg"
+              style={{
+                maxHeight: '350px',
+                objectPosition: 'center'
+              }}
+              onError={(e) => {
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=350&fit=crop';
+              }}
+            />
           </div>
         </div>
 
-        {/* Image Banner */}
-        <div className="w-full mb-12">
-          <img 
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&h=400&fit=crop"
-            alt="Partnership Team"
-            className="w-full h-[300px] object-cover rounded-lg shadow-lg"
-            style={{ 
-              filter: 'brightness(0.7) contrast(1.1)',
-              objectPosition: 'center 30%'
-            }}
-            onError={(e) => {
-              e.currentTarget.src = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1600&h=400&fit=crop';
-            }}
-          />
-        </div>
-
-        {/* Bottom Section */}
-        <div>
-          <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
+        {/* Bottom Section - Full Width */}
+        <div className="max-w-5xl">
+          <h3 className="text-2xl font-bold mb-6 text-center" style={{ color: '#000' }}>
             {text.partnershipTitle}
           </h3>
 
-          <p className="text-lg leading-relaxed mb-8" style={{ color: '#000' }}>
+          <p className="text-base leading-relaxed mb-6 text-center" style={{ color: '#000' }}>
             {text.partnershipIntro}
           </p>
 
-          <ul className="space-y-6 text-lg leading-relaxed" style={{ color: '#000' }}>
+          <ul className="space-y-4 text-base leading-relaxed" style={{ color: '#000' }}>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 mt-2">
-                <div className="w-2 h-2 rounded-full bg-black"></div>
+              <span className="flex-shrink-0 mt-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-black"></div>
               </span>
               <p>{text.nonManagerial}</p>
             </li>
 
             <li className="flex gap-3">
-              <span className="flex-shrink-0 mt-2">
-                <div className="w-2 h-2 rounded-full bg-black"></div>
+              <span className="flex-shrink-0 mt-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-black"></div>
               </span>
               <p>{text.managerial}</p>
             </li>

@@ -152,7 +152,49 @@ const DataDrivenSection = () => {
               </div>
             </div>
 
-            {/* Your Advantage */}
+           
+          </div>
+
+          {/* Right Content - Image with CTA */}
+          <div className="flex-shrink-0 lg:w-[450px]">
+            <div className="relative">
+              <Image
+                src="/images/business/Hand.png"
+                alt="Professional Handshake"
+                width={450}
+                height={650}
+                className="w-full h-auto rounded-lg shadow-lg"
+                style={{ aspectRatio: '550/650', objectFit: 'cover' }}
+                onError={(e: { currentTarget: { src: string; }; }) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=900&fit=crop';
+                }}
+              />
+              
+              {/* CTA Overlay */}
+              <div 
+                className="absolute bottom-0 left-0 right-0 p-8 text-center"
+                style={{ 
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
+                  borderRadius: '0 0 0.5rem 0.5rem'
+                }}
+              >
+             
+              </div>
+              
+            </div>
+            <div>
+               <h3 className="text-3xl font-bold text-black mb-2 text-center">
+                  {text.ctaTitle}
+                </h3>
+                <p className="text-2xl font-bold text-black text-center">
+                  {text.ctaSubtitle}
+                </p>
+                </div>
+          </div>
+        </div>
+      </div>
+
+ {/* Your Advantage */}
             <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>
               {text.advantageTitle}
             </h3>
@@ -190,42 +232,7 @@ const DataDrivenSection = () => {
             <p className="text-base leading-relaxed" style={{ color: '#000' }}>
               {text.protectionDesc}
             </p>
-          </div>
 
-          {/* Right Content - Image with CTA */}
-          <div className="flex-shrink-0 lg:w-[550px]">
-            <div className="relative">
-              <Image
-                src="/images/business/Hand.png"
-                alt="Professional Handshake"
-                width={550}
-                height={650}
-                className="w-full h-auto rounded-lg shadow-lg"
-                style={{ aspectRatio: '550/650', objectFit: 'cover' }}
-                onError={(e: { currentTarget: { src: string; }; }) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=900&fit=crop';
-                }}
-              />
-              
-              {/* CTA Overlay */}
-              <div 
-                className="absolute bottom-0 left-0 right-0 p-8 text-center"
-                style={{ 
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
-                  borderRadius: '0 0 0.5rem 0.5rem'
-                }}
-              >
-                <h3 className="text-3xl font-bold text-white mb-2">
-                  {text.ctaTitle}
-                </h3>
-                <p className="text-2xl font-bold text-white">
-                  {text.ctaSubtitle}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
