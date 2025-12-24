@@ -5,6 +5,7 @@ export interface IJob extends Document {
   title: string;
   description: string;
 
+  //ther is no job
   // Multi-language support (optional)
   i18n?: {
     en?: {
