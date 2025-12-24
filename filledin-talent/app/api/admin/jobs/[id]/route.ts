@@ -12,34 +12,33 @@ export async function PUT(
     const resolvedParams = await params;
     const jobId = resolvedParams.id;
     const body = await request.json();
-    const { status, reason } = body;
+    const { status, featured, urgent } = body;
 
-    if (!status) {
-      return NextResponse.json(
-        { error: 'Status is required' },
-        { status: 400 }
-      );
+    let updateData: any = {};
+
+    if (status) {
+      if (!['active', 'closed', 'draft'].includes(status)) {
+        return NextResponse.json(
+          { error: 'Invalid status. Must be active, closed, or draft' },
+          { status: 400 }
+        );
+      }
+      updateData.status = status;
     }
 
-    const validStatuses = ['active', 'closed', 'draft', 'pending', 'rejected'];
-    if (!validStatuses.includes(status)) {
-      return NextResponse.json(
-        { error: 'Invalid status. Must be one of: active, closed, draft, pending, rejected' },
-        { status: 400 }
-      );
+    if (featured !== undefined) {
+      updateData.featured = featured;
+    }
+
+    if (urgent !== undefined) {
+      updateData.urgent = urgent;
     }
 
     const job = await Job.findByIdAndUpdate(
       jobId,
-      {
-        $set: {
-          status,
-          ...(status === 'rejected' && reason && { rejectionReason: reason }),
-          updatedAt: new Date()
-        }
-      },
+      { $set: updateData },
       { new: true }
-    ).populate('postedBy', 'name email');
+    );
 
     if (!job) {
       return NextResponse.json(
@@ -49,18 +48,17 @@ export async function PUT(
     }
 
     return NextResponse.json({
-      message: 'Job status updated successfully',
+      message: 'Job updated successfully',
       job: {
-        id: job._id.toString(),
+        id: (job._id as any).toString(),
         title: job.title,
         status: job.status,
-        updatedAt: job.updatedAt,
-        postedBy: job.postedBy,
-        rejectionReason: job.rejectionReason,
+        featured: job.featured,
+        urgent: job.urgent,
       },
     });
   } catch (error) {
-    console.error('Error updating job status:', error);
+    console.error('Error updating job:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

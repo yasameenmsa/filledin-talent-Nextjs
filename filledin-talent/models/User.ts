@@ -12,6 +12,36 @@ export interface IUser extends Document {
   company?: string;
   position?: string;
   profileImage?: string;
+  bio?: string;
+  website?: string;
+  skills?: string[];
+  experience?: Array<{
+    company: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
+    current?: boolean;
+  }>;
+  education?: Array<{
+    institution: string;
+    degree: string;
+    field: string;
+    year: string;
+    grade?: string;
+  }>;
+  socialLinks?: {
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+    portfolio?: string;
+  };
+  preferences?: {
+    emailNotifications?: boolean;
+    jobAlerts?: boolean;
+    profileVisibility?: 'public' | 'private' | 'connections';
+    language?: 'en' | 'ar' | 'fr';
+  };
   role: 'job_seeker' | 'employer' | 'admin';
   isEmailVerified: boolean;
   loginAttempts: number;
@@ -63,6 +93,102 @@ const UserSchema = new Schema<IUser>({
   profileImage: {
     type: String,
     trim: true,
+  },
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: 500,
+  },
+  website: {
+    type: String,
+    trim: true,
+  },
+  skills: [{
+    type: String,
+    trim: true,
+    maxlength: 50,
+  }],
+  experience: [{
+    company: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    position: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    startDate: {
+      type: String,
+      required: true,
+    },
+    endDate: String,
+    description: {
+      type: String,
+      maxlength: 500,
+    },
+    current: {
+      type: Boolean,
+      default: false,
+    },
+  }],
+  education: [{
+    institution: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    degree: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    field: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    year: {
+      type: String,
+      required: true,
+      match: /^\d{4}$/,
+    },
+    grade: {
+      type: String,
+      maxlength: 10,
+    },
+  }],
+  socialLinks: {
+    linkedin: String,
+    github: String,
+    twitter: String,
+    portfolio: String,
+  },
+  preferences: {
+    emailNotifications: {
+      type: Boolean,
+      default: true,
+    },
+    jobAlerts: {
+      type: Boolean,
+      default: true,
+    },
+    profileVisibility: {
+      type: String,
+      enum: ['public', 'private', 'connections'],
+      default: 'public',
+    },
+    language: {
+      type: String,
+      enum: ['en', 'ar', 'fr'],
+      default: 'en',
+    },
   },
   role: {
     type: String,
