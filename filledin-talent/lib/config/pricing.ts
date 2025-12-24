@@ -108,7 +108,7 @@ export function getSubscriptionPrice(plan: keyof typeof pricingConfig.subscripti
 }
 
 export function calculateTax(amount: number, country: string = 'US'): number {
-  if (pricingConfig.tax.exemptCountries.includes(country)) {
+  if ((pricingConfig.tax.exemptCountries as readonly string[]).includes(country)) {
     return 0;
   }
   return amount * pricingConfig.tax.defaultRate;
