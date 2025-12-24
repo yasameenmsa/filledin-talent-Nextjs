@@ -49,12 +49,9 @@ export async function GET(request: NextRequest) {
       createdAt: { $gte: startOfToday }
     });
 
-    // Revenue statistics (placeholder - you can implement actual revenue tracking)
-    const thisMonthRevenue = 0; // TODO: Implement revenue tracking
-    const lastMonthRevenue = 0; // TODO: Implement revenue tracking
-    const totalRevenue = 0; // TODO: Implement revenue tracking
-    const growth = lastMonthRevenue > 0 ?
-      ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 : 0;
+    // Revenue statistics
+    const { RevenueService } = await import('@/lib/services/revenueService');
+    const revenueStats = await RevenueService.getRevenueStats();
 
     const stats = {
       users: {
@@ -79,10 +76,10 @@ export async function GET(request: NextRequest) {
         newToday,
       },
       revenue: {
-        thisMonth: thisMonthRevenue,
-        lastMonth: lastMonthRevenue,
-        growth,
-        totalRevenue,
+        thisMonth: revenueStats.thisMonth,
+        lastMonth: revenueStats.lastMonth,
+        growth: revenueStats.growth,
+        totalRevenue: revenueStats.totalRevenue,
       },
     };
 

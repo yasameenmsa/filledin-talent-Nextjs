@@ -8,7 +8,7 @@ export async function PUT(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { jobIds, action, reason } = body;
+    const { jobIds, action } = body;
 
     if (!jobIds || !Array.isArray(jobIds) || jobIds.length === 0) {
       return NextResponse.json(
@@ -27,32 +27,33 @@ export async function PUT(request: NextRequest) {
     let updateData: any = {};
     let actionDescription = '';
 
-    if (action === 'approve') {
+    if (action === 'activate') {
       updateData.status = 'active';
-      actionDescription = 'approved';
-    } else if (action === 'reject') {
-      updateData.status = 'rejected';
-      actionDescription = 'rejected';
-      if (reason) {
-        updateData.rejectionReason = reason;
-      }
+      actionDescription = 'activated';
     } else if (action === 'close') {
       updateData.status = 'closed';
       actionDescription = 'closed';
-    } else if (action === 'activate') {
-      updateData.status = 'active';
-      actionDescription = 'activated';
-    } else if (action === 'deactivate') {
+    } else if (action === 'draft') {
       updateData.status = 'draft';
-      actionDescription = 'deactivated';
+      actionDescription = 'moved to draft';
+    } else if (action === 'feature') {
+      updateData.featured = true;
+      actionDescription = 'featured';
+    } else if (action === 'unfeature') {
+      updateData.featured = false;
+      actionDescription = 'unfeatured';
+    } else if (action === 'urgent') {
+      updateData.urgent = true;
+      actionDescription = 'marked as urgent';
+    } else if (action === 'unurgent') {
+      updateData.urgent = false;
+      actionDescription = 'removed urgent status';
     } else {
       return NextResponse.json(
-        { error: 'Invalid action. Must be approve, reject, close, activate, or deactivate' },
+        { error: 'Invalid action. Must be activate, close, draft, feature, unfeature, urgent, or unurgent' },
         { status: 400 }
       );
     }
-
-    updateData.updatedAt = new Date();
 
     const result = await Job.updateMany(
       { _id: { $in: jobIds } },
@@ -66,7 +67,7 @@ export async function PUT(request: NextRequest) {
       action,
     });
   } catch (error) {
-    console.error('Error performing bulk action:', error);
+    console.error('Error performing bulk action on jobs:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
