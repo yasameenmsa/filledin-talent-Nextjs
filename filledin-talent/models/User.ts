@@ -7,10 +7,16 @@ export interface IUser extends Document {
   email: string;
   password: string;
   name?: string;
+  phone?: string;
+  location?: string;
+  company?: string;
+  position?: string;
+  profileImage?: string;
   role: 'job_seeker' | 'employer' | 'admin';
   isEmailVerified: boolean;
   loginAttempts: number;
   lockUntil?: Date;
+  lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
 
@@ -38,6 +44,26 @@ const UserSchema = new Schema<IUser>({
     type: String,
     trim: true,
   },
+  phone: {
+    type: String,
+    trim: true,
+  },
+  location: {
+    type: String,
+    trim: true,
+  },
+  company: {
+    type: String,
+    trim: true,
+  },
+  position: {
+    type: String,
+    trim: true,
+  },
+  profileImage: {
+    type: String,
+    trim: true,
+  },
   role: {
     type: String,
     enum: ['job_seeker', 'employer', 'admin'],
@@ -52,6 +78,9 @@ const UserSchema = new Schema<IUser>({
     default: 0,
   },
   lockUntil: {
+    type: Date,
+  },
+  lastLogin: {
     type: Date,
   },
 }, {

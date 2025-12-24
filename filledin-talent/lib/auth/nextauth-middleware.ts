@@ -7,7 +7,7 @@ import User from '@/models/User';
 export interface UserData {
   _id: string;
   email: string;
-  role: 'job_seeker' | 'employer' | 'admin';
+  role: 'job_seeker' | 'admin';
   profile?: {
     firstName?: string;
     lastName?: string;
@@ -73,7 +73,7 @@ export interface AuthenticatedUser {
   id: string;
   userId: string;
   email: string;
-  role: 'job_seeker' | 'employer' | 'admin';
+  role: 'job_seeker' | 'admin';
   userData?: UserData;
 }
 
@@ -97,7 +97,7 @@ export async function nextAuthMiddleware(
   try {
     // Get session from NextAuth
     const session = await auth();
-    
+
     if (!session || !session.user) {
       return {
         success: false,
@@ -108,7 +108,7 @@ export async function nextAuthMiddleware(
     // Connect to database and fetch user data
     await dbConnect();
     const userData = await User.findById(session.user.id).lean() as UserData | null;
-    
+
     if (!userData) {
       return {
         success: false,
@@ -126,10 +126,10 @@ export async function nextAuthMiddleware(
 
     // Role-based access control
     if (options.requiredRole) {
-      const requiredRoles = Array.isArray(options.requiredRole) 
-        ? options.requiredRole 
+      const requiredRoles = Array.isArray(options.requiredRole)
+        ? options.requiredRole
         : [options.requiredRole];
-      
+
       if (!requiredRoles.includes(userData.role)) {
         return {
           success: false,
@@ -139,10 +139,10 @@ export async function nextAuthMiddleware(
     }
 
     if (options.allowedRoles) {
-      const allowedRoles = Array.isArray(options.allowedRoles) 
-        ? options.allowedRoles 
+      const allowedRoles = Array.isArray(options.allowedRoles)
+        ? options.allowedRoles
         : [options.allowedRoles];
-      
+
       if (!allowedRoles.includes(userData.role)) {
         return {
           success: false,
@@ -188,7 +188,7 @@ export function withNextAuth(
 ) {
   return async (request: NextRequest, context?: Record<string, unknown>) => {
     const authResult = await nextAuthMiddleware(request, options);
-    
+
     if (!authResult.success) {
       return NextResponse.json(
         { error: authResult.error },

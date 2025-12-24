@@ -14,6 +14,18 @@ const CVSchema = new mongoose.Schema({
             'Please provide a valid email',
         ],
     },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false, // Optional for now to support guest uploads if needed
+    },
+    originalName: {
+        type: String,
+    },
+    isArchived: {
+        type: Boolean,
+        default: false,
+    },
     fileUrl: {
         type: String,
         required: [true, 'Please provide a file URL'],

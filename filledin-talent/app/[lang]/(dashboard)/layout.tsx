@@ -8,6 +8,7 @@ import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,7 +20,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, isRTL } = useLanguage();
 
   // Inline translation function
   const getText = (key: string): string => {
@@ -59,14 +60,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <DashboardSidebar 
+      <DashboardSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         userRole={user.role}
@@ -74,9 +75,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       />
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:ps-64">
         {/* Header */}
-        <DashboardHeader 
+        <DashboardHeader
           onMenuClick={() => setSidebarOpen(true)}
           user={user}
           lang={lang}

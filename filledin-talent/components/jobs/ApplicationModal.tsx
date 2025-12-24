@@ -53,6 +53,7 @@ export default function ApplicationModal({ jobId, jobTitle, lang }: ApplicationM
             // 1. Upload CV
             const formData = new FormData();
             formData.append('file', cvFile);
+            formData.append('jobId', jobId);
 
             const uploadRes = await fetch('/api/upload', {
                 method: 'POST',

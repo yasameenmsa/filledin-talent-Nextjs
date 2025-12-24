@@ -3,12 +3,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { 
-  Menu, 
-  Bell, 
-  Search, 
-  User, 
-  Settings, 
+import {
+  Menu,
+  Bell,
+  Search,
+  User,
+  Settings,
   LogOut,
   ChevronDown
 } from 'lucide-react';
@@ -19,7 +19,7 @@ interface User {
   _id: string;
   email: string;
   name?: string;
-  role: 'job_seeker' | 'employer' | 'admin';
+  role: 'job_seeker' | 'admin';
   profile?: {
     firstName?: string;
     lastName?: string;

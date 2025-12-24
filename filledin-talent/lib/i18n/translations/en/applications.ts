@@ -1,22 +1,20 @@
 export const applications = {
     title: 'Apply for Job',
     form: {
-        cv: 'Upload CV',
+        cv: 'Upload CV / Resume',
         coverLetter: 'Cover Letter',
-        submit: 'Submit Application',
         cancel: 'Cancel',
-        success: 'Application submitted successfully!',
-        error: 'Error submitting application',
-        uploading: 'Uploading...',
+        submit: 'Submit Application',
         submitting: 'Submitting...',
+        success: 'Application submitted successfully!',
+        error: 'Failed to submit application',
     },
     status: {
         pending: 'Pending',
-        reviewing: 'Reviewing',
-        shortlisted: 'Shortlisted',
-        interviewed: 'Interviewed',
-        offered: 'Offered',
+        interviews: 'Interview',
+        accepted: 'Accepted',
         rejected: 'Rejected',
-        withdrawn: 'Withdrawn',
-    }
+    },
+    history: 'Status History',
+    viewCv: 'View CV',
 };

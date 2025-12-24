@@ -75,11 +75,11 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
     const data = await getJobs(resolvedSearchParams);
     const { jobs, pagination } = data;
 
+    // Import helper dynamically to avoid server/client issues if any
+    const { getJobTranslation } = await import('@/lib/utils/getJobTranslation');
+
     return (
         <div className="min-h-screen bg-gray-50 pb-12">
-            {/* Re-use the search section but maybe compact or just the form? 
-          For now, let's just include the main search section at the top 
-          so users can refine their search. */}
             <JobSearchSection />
 
             <div className="container mx-auto px-4 mt-8">
@@ -89,69 +89,84 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
 
                 <div className="grid grid-cols-1 gap-6">
                     {jobs.length > 0 ? (
-                        jobs.map((job: { _id: string; title: string; company: { name: string }; location: { city: string; country: string }; workingType: string; createdAt: string; salary?: { display?: boolean; min?: number; max?: number; currency?: string }; description: string; featured?: boolean }) => (
-                            <div key={job._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                                <div className="flex flex-col md:flex-row justify-between gap-4">
-                                    <div className="flex-1">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <div>
-                                                <h2 className="text-xl font-bold text-blue-900 hover:underline">
-                                                    <Link href={`/${lang}/jobs/${job._id}`}>
-                                                        {job.title}
-                                                    </Link>
-                                                </h2>
-                                                <p className="text-gray-600 font-medium">{job.company.name}</p>
-                                            </div>
-                                            {job.featured && (
-                                                <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-semibold">
-                                                    Featured
-                                                </span>
-                                            )}
-                                        </div>
+                        jobs.map((job: any) => {
+                            const translatedJob = getJobTranslation(job, lang);
 
-                                        <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-500">
-                                            <div className="flex items-center">
-                                                <MapPin className="w-4 h-4 mr-1" />
-                                                {job.location.city}, {job.location.country}
+                            return (
+                                <div key={job._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                                    <div className="flex flex-col md:flex-row gap-6">
+                                        {/* Job Image */}
+                                        {job.imageUrl && (
+                                            <div className="w-full md:w-48 h-32 flex-shrink-0">
+                                                <img
+                                                    src={job.imageUrl}
+                                                    alt={translatedJob.title}
+                                                    className="w-full h-full object-cover rounded-lg"
+                                                />
                                             </div>
-                                            <div className="flex items-center">
-                                                <Briefcase className="w-4 h-4 mr-1" />
-                                                {job.workingType}
-                                            </div>
-                                            <div className="flex items-center">
-                                                <Clock className="w-4 h-4 mr-1" />
-                                                {new Date(job.createdAt).toLocaleDateString()}
-                                            </div>
-                                            {job.salary?.display && (
-                                                <div className="flex items-center text-green-700 font-medium">
-                                                    <DollarSign className="w-4 h-4 mr-1" />
-                                                    {job.salary.min && job.salary.max
-                                                        ? `${job.salary.currency} ${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()}`
-                                                        : 'Competitive'}
+                                        )}
+
+                                        <div className="flex-1">
+                                            <div className="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <h2 className="text-xl font-bold text-blue-900 hover:underline">
+                                                        <Link href={`/${lang}/jobs/${job._id}`}>
+                                                            {translatedJob.title}
+                                                        </Link>
+                                                    </h2>
+                                                    <p className="text-gray-600 font-medium">{job.company.name}</p>
                                                 </div>
-                                            )}
+                                                {job.featured && (
+                                                    <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-semibold">
+                                                        Featured
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-500">
+                                                <div className="flex items-center">
+                                                    <MapPin className="w-4 h-4 mr-1" />
+                                                    {job.location.city}, {job.location.country}
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <Briefcase className="w-4 h-4 mr-1" />
+                                                    {job.workingType}
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <Clock className="w-4 h-4 mr-1" />
+                                                    {new Date(job.createdAt).toLocaleDateString()}
+                                                </div>
+                                                {job.salary?.display && (
+                                                    <div className="flex items-center text-green-700 font-medium">
+                                                        <DollarSign className="w-4 h-4 mr-1" />
+                                                        {job.salary.min && job.salary.max
+                                                            ? `${job.salary.currency} ${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()}`
+                                                            : 'Competitive'}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <p className="mt-4 text-gray-600 line-clamp-2">
+                                                {translatedJob.description}
+                                            </p>
                                         </div>
 
-                                        <p className="mt-4 text-gray-600 line-clamp-2">
-                                            {job.description}
-                                        </p>
-                                    </div>
-
-                                    <div className="flex flex-col gap-2 min-w-[150px] justify-center">
-                                        <Link href={`/${lang}/jobs/${job._id}/apply`}>
-                                            <Button className="w-full bg-blue-900 hover:bg-blue-800">
-                                                Apply Now
-                                            </Button>
-                                        </Link>
-                                        <Link href={`/${lang}/jobs/${job._id}`}>
-                                            <Button variant="outline" className="w-full">
-                                                View Details
-                                            </Button>
-                                        </Link>
+                                        <div className="flex flex-col gap-2 min-w-[150px] justify-center">
+                                            <Link href={`/${lang}/jobs/${job._id}/apply`}>
+                                                <Button className="w-full bg-blue-900 hover:bg-blue-800">
+                                                    Apply Now
+                                                </Button>
+                                            </Link>
+                                            <Link href={`/${lang}/jobs/${job._id}`}>
+                                                <Button variant="outline" className="w-full">
+                                                    View Details
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
                         <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
                             <h3 className="text-lg font-medium text-gray-900">No jobs found</h3>

@@ -37,7 +37,7 @@ interface UserData {
   _id: string;
   email: string;
   name?: string;
-  role: 'job_seeker' | 'employer' | 'admin';
+  role: 'job_seeker' | 'admin';
   isEmailVerified: boolean;
   cv?: string;
   profile?: UserProfile;
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     _id: session.user.id,
     email: session.user.email,
     name: session.user.name,
-    role: session.user.role as 'job_seeker' | 'employer' | 'admin',
+    role: session.user.role as 'job_seeker' | 'admin',
     isEmailVerified: session.user.isEmailVerified,
   } : null;
 

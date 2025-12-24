@@ -6,6 +6,8 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const file = formData.get('file') as File;
+        const type = formData.get('type') as string; // 'cv' or 'job-image'
+        const jobId = formData.get('jobId') as string;
 
         if (!file) {
             return NextResponse.json(
@@ -16,7 +18,23 @@ export async function POST(request: NextRequest) {
 
         const buffer = Buffer.from(await file.arrayBuffer());
         const filename = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
-        const uploadDir = path.join(process.cwd(), 'public/uploads');
+
+        // Determine upload directory based on type
+        let uploadDir: string;
+        let urlPath: string;
+
+        if (type === 'job-image') {
+            uploadDir = path.join(process.cwd(), 'public/uploads/jobs');
+            urlPath = '/uploads/jobs';
+        } else if (jobId) {
+            // CV uploads for a specific job
+            uploadDir = path.join(process.cwd(), `public/uploads/jobs/${jobId}`);
+            urlPath = `/uploads/jobs/${jobId}`;
+        } else {
+            // Default to generic uploads if no jobId provided (fallback)
+            uploadDir = path.join(process.cwd(), 'public/uploads');
+            urlPath = '/uploads';
+        }
 
         try {
             await mkdir(uploadDir, { recursive: true });
@@ -27,7 +45,7 @@ export async function POST(request: NextRequest) {
         const filepath = path.join(uploadDir, filename);
         await writeFile(filepath, buffer);
 
-        const fileUrl = `/uploads/${filename}`;
+        const fileUrl = `${urlPath}/${filename}`;
 
         return NextResponse.json({ url: fileUrl });
     } catch (error) {

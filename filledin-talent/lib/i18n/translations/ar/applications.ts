@@ -1,22 +1,20 @@
 export const applications = {
-    title: 'التقديم للوظيفة',
+    title: 'التقدم للوظيفة',
     form: {
         cv: 'تحميل السيرة الذاتية',
         coverLetter: 'رسالة التغطية',
-        submit: 'إرسال الطلب',
         cancel: 'إلغاء',
-        success: 'تم إرسال الطلب بنجاح!',
-        error: 'خطأ في إرسال الطلب',
-        uploading: 'جاري التحميل...',
+        submit: 'إرسال الطلب',
         submitting: 'جاري الإرسال...',
+        success: 'تم إرسال الطلب بنجاح!',
+        error: 'فشل إرسال الطلب',
     },
     status: {
         pending: 'قيد الانتظار',
-        reviewing: 'قيد المراجعة',
-        shortlisted: 'في القائمة المختصرة',
-        interviewed: 'تمت المقابلة',
-        offered: 'تم تقديم عرض',
+        interviews: 'مقابلة',
+        accepted: 'مقبول',
         rejected: 'مرفوض',
-        withdrawn: 'منسحب',
-    }
+    },
+    history: 'سجل الحالة',
+    viewCv: 'عرض السيرة الذاتية',
 };

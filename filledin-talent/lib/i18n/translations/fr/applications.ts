@@ -1,22 +1,20 @@
 export const applications = {
-    title: 'Postuler à un emploi',
+    title: "Postuler à l'emploi",
     form: {
         cv: 'Télécharger le CV',
         coverLetter: 'Lettre de motivation',
-        submit: 'Soumettre la candidature',
         cancel: 'Annuler',
-        success: 'Candidature soumise avec succès !',
-        error: 'Erreur lors de la soumission de la candidature',
-        uploading: 'Téléchargement...',
-        submitting: 'Soumission...',
+        submit: 'Soumettre la candidature',
+        submitting: 'Envoi en cours...',
+        success: 'Candidature soumise avec succès!',
+        error: "Échec de l'envoi de la candidature",
     },
     status: {
         pending: 'En attente',
-        reviewing: 'En revue',
-        shortlisted: 'Présélectionné',
-        interviewed: 'Interviewé',
-        offered: 'Offre faite',
+        interviews: 'Entretien',
+        accepted: 'Accepté',
         rejected: 'Rejeté',
-        withdrawn: 'Retiré',
-    }
+    },
+    history: 'Historique du statut',
+    viewCv: 'Voir le CV',
 };

@@ -13,7 +13,7 @@ export interface IApplication extends Document {
     question: string;
     answer: string;
   }[];
-  status: 'pending' | 'reviewing' | 'shortlisted' | 'interviewed' | 'offered' | 'rejected' | 'withdrawn';
+  status: 'pending' | 'interviews' | 'accepted' | 'rejected';
   statusHistory: {
     status: string;
     date: Date;
@@ -59,7 +59,7 @@ const ApplicationSchema = new Schema<IApplication>({
   }],
   status: {
     type: String,
-    enum: ['pending', 'reviewing', 'shortlisted', 'interviewed', 'offered', 'rejected', 'withdrawn'],
+    enum: ['pending', 'interviews', 'accepted', 'rejected'],
     default: 'pending',
   },
   statusHistory: [{

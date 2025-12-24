@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
   Briefcase,
   Plus,
   Trash2,
@@ -135,7 +135,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
         }
       };
 
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -149,10 +149,10 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
       }
 
       const updatedUser = await response.json();
-      
+
       // Update the auth context
       await updateProfile(updatedUser);
-      
+
       setSuccess('Profile updated successfully!');
       onSuccess?.();
     } catch (error: unknown) {
@@ -381,7 +381,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {skills.map((skill, index) => (
                     <span
@@ -419,7 +419,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                   Add Experience
                 </button>
               </div>
-              
+
               <div className="space-y-6">
                 {experienceFields.map((field, index) => (
                   <div key={field.id} className="p-4 border border-gray-200 rounded-lg">
@@ -433,7 +433,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -451,7 +451,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Position *
@@ -468,7 +468,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Start Date *
@@ -484,7 +484,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           End Date
@@ -501,7 +501,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Description
@@ -536,7 +536,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                   Add Education
                 </button>
               </div>
-              
+
               <div className="space-y-6">
                 {educationFields.map((field, index) => (
                   <div key={field.id} className="p-4 border border-gray-200 rounded-lg">
@@ -550,7 +550,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -568,7 +568,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Degree *
@@ -585,7 +585,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Field of Study *
@@ -602,7 +602,7 @@ export default function ProfileForm({ onSuccess }: ProfileFormProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Year *

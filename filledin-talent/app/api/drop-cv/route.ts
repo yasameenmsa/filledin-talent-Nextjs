@@ -12,6 +12,24 @@ export async function POST(request: NextRequest) {
         const email = formData.get('email') as string;
         const language = formData.get('language') as string;
 
+        // Get user ID if available (optional)
+        let userId = null;
+        try {
+            // We can't easily get session here without importing auth, 
+            // but we can try to find user by email since we have it
+            if (email) {
+                await dbConnect();
+                // Dynamic import to avoid circular dependencies if any
+                const User = (await import('@/models/User')).default;
+                const user = await User.findOne({ email });
+                if (user) {
+                    userId = user._id;
+                }
+            }
+        } catch (e) {
+            console.error('Error finding user:', e);
+        }
+
         console.log('Processing upload for:', name, email, 'Language:', language);
 
         if (!file) {
@@ -51,6 +69,8 @@ export async function POST(request: NextRequest) {
         const cv = await CV.create({
             name,
             email,
+            userId, // Save user ID
+            originalName: file.name, // Save original filename
             fileUrl: `/uploads/cvs/${filename}`,
             language
         });

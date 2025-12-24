@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  FileText, 
-  Bookmark, 
-  Send, 
+import {
+  FileText,
+  Bookmark,
+  Send,
   Search,
   Calendar,
   Clock,
@@ -215,11 +215,11 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch application statistics
       const applicationsResponse = await fetch('/api/applications?limit=5');
       const applicationsData = await applicationsResponse.json();
-      
+
       // Fetch recommended jobs
       const jobsResponse = await fetch('/api/jobs?limit=5');
       const jobsData = await jobsResponse.json();
@@ -292,21 +292,24 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-lg p-8 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-16 -mt-16 transform rotate-45"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-5 rounded-full -ml-8 -mb-8"></div>
+
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold">
               {getText('jobseeker.welcomeBack')} {user?.profile?.firstName || getText('jobseeker.jobSeeker')}
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-blue-100 mt-2 text-lg">
               {getText('jobseeker.trackApplications')}
             </p>
           </div>
           <Link
             href={`/${lang}/jobs`}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-sm"
           >
-            <Search className="h-4 w-4 mr-2" />
+            <Search className="h-5 w-5 me-2" />
             {getText('jobseeker.findJobs')}
           </Link>
         </div>
@@ -314,50 +317,50 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
+            <div className="p-3 bg-blue-50 rounded-xl">
               <Send className="h-6 w-6 text-blue-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{getText('dashboard.applications')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
+            <div className="ms-4">
+              <p className="text-sm font-medium text-gray-500">{getText('dashboard.applications')}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.totalApplications}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
+            <div className="p-3 bg-yellow-50 rounded-xl">
               <Clock className="h-6 w-6 text-yellow-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{getText('applications.status.pending')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pendingApplications}</p>
+            <div className="ms-4">
+              <p className="text-sm font-medium text-gray-500">{getText('applications.status.pending')}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.pendingApplications}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
+            <div className="p-3 bg-purple-50 rounded-xl">
               <Calendar className="h-6 w-6 text-purple-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{getText('jobseeker.interviews')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.interviewsScheduled}</p>
+            <div className="ms-4">
+              <p className="text-sm font-medium text-gray-500">{getText('jobseeker.interviews')}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.interviewsScheduled}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-3 bg-green-50 rounded-xl">
               <Bookmark className="h-6 w-6 text-green-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{getText('jobseeker.savedJobs')}</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.savedJobs}</p>
+            <div className="ms-4">
+              <p className="text-sm font-medium text-gray-500">{getText('jobseeker.savedJobs')}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.savedJobs}</p>
             </div>
           </div>
         </div>
@@ -366,13 +369,13 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Applications */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">{getText('jobseeker.recentApplications')}</h2>
               <Link
                 href={`/${lang}/jobseeker/applications`}
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
                 {getText('viewAll')}
               </Link>
@@ -382,17 +385,17 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
             {stats.recentApplications.length > 0 ? (
               <div className="space-y-4">
                 {stats.recentApplications.map((application) => (
-                  <div key={application._id} className="flex items-center justify-between">
+                  <div key={application._id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
                     <div>
                       <p className="text-sm font-medium text-gray-900">
                         {application.job?.title}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 mt-1">
                         {application.job?.company?.name} • {application.job?.location?.city}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(application.status)}`}>
+                    <div className="text-end">
+                      <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${getStatusColor(application.status)}`}>
                         {getText(`applications.status.${application.status.toLowerCase()}`)}
                       </span>
                       <p className="text-xs text-gray-500 mt-1">
@@ -403,11 +406,11 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                 ))}
               </div>
             ) : (
-              <div className="text-center py-4">
-                <p className="text-gray-500 mb-2">{getText('jobseeker.noApplicationsYet')}</p>
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-3">{getText('jobseeker.noApplicationsYet')}</p>
                 <Link
                   href={`/${lang}/jobs`}
-                  className="text-sm text-blue-600 hover:text-blue-700"
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
                   {getText('jobseeker.startApplying')}
                 </Link>
@@ -417,13 +420,13 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         </div>
 
         {/* Recommended Jobs */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">{getText('jobseeker.recommendedJobs')}</h2>
               <Link
                 href={`/${lang}/jobs`}
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
                 {getText('viewAll')}
               </Link>
@@ -448,13 +451,13 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                           {formatSalary(job.salary?.min, job.salary?.max)}
                         </p>
                       </div>
-                      <div className="text-right ml-4">
+                      <div className="text-end ms-4">
                         <span className="text-xs text-gray-500">
                           {formatDate(new Date(job.createdAt), lang)}
                         </span>
                         {job.viewCount && (
-                          <div className="flex items-center mt-1">
-                            <Eye className="h-3 w-3 text-gray-400 mr-1" />
+                          <div className="flex items-center justify-end mt-1">
+                            <Eye className="h-3 w-3 text-gray-400 me-1" />
                             <span className="text-xs text-gray-500">{job.viewCount}</span>
                           </div>
                         )}
@@ -464,22 +467,24 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">{getText('jobseeker.noRecommendations')}</p>
+              <p className="text-gray-500 text-center py-8">{getText('jobseeker.noRecommendations')}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">{getText('jobseeker.quickActions')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href={`/${lang}/jobseeker/profile`}
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group"
           >
-            <FileText className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+              <FileText className="h-6 w-6 text-blue-600" />
+            </div>
+            <div className="ms-3">
               <h3 className="font-medium text-gray-900">{getText('jobseeker.updateProfile')}</h3>
               <p className="text-sm text-gray-600">{getText('jobseeker.keepProfileCurrent')}</p>
             </div>
@@ -487,10 +492,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
 
           <Link
             href={`/${lang}/jobs`}
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group"
           >
-            <Search className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors">
+              <Search className="h-6 w-6 text-green-600" />
+            </div>
+            <div className="ms-3">
               <h3 className="font-medium text-gray-900">{getText('jobseeker.searchJobs')}</h3>
               <p className="text-sm text-gray-600">{getText('jobseeker.findOpportunity')}</p>
             </div>
@@ -498,10 +505,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
 
           <Link
             href={`/${lang}/jobseeker/saved-jobs`}
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors group"
           >
-            <Bookmark className="h-8 w-8 text-purple-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-purple-50 rounded-lg group-hover:bg-purple-100 transition-colors">
+              <Bookmark className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ms-3">
               <h3 className="font-medium text-gray-900">{getText('jobseeker.savedJobs')}</h3>
               <p className="text-sm text-gray-600">{getText('jobseeker.reviewSavedPositions')}</p>
             </div>

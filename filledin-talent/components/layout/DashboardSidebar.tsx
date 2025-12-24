@@ -21,7 +21,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface DashboardSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  userRole: 'job_seeker' | 'employer' | 'admin';
+  userRole: 'job_seeker' | 'admin';
   lang: string;
 }
 

@@ -1,8 +1,44 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IJob extends Document {
+  // Default/fallback fields (single language, for backward compatibility)
   title: string;
   description: string;
+
+  // Multi-language support (optional)
+  i18n?: {
+    en?: {
+      title?: string;
+      description?: string;
+      responsibilities?: string[];
+      requirements?: {
+        experience?: string;
+        education?: string;
+      };
+    };
+    ar?: {
+      title?: string;
+      description?: string;
+      responsibilities?: string[];
+      requirements?: {
+        experience?: string;
+        education?: string;
+      };
+    };
+    fr?: {
+      title?: string;
+      description?: string;
+      responsibilities?: string[];
+      requirements?: {
+        experience?: string;
+        education?: string;
+      };
+    };
+  };
+
+  // Job image
+  imageUrl?: string;
+
   company: {
     name: string;
     logo?: string;
@@ -36,7 +72,8 @@ export interface IJob extends Document {
   benefits?: string[];
   responsibilities: string[];
   applicationDeadline?: Date;
-  status: 'active' | 'closed' | 'draft';
+  status: 'active' | 'closed' | 'draft' | 'pending' | 'rejected';
+  rejectionReason?: string;
   postedBy: mongoose.Types.ObjectId;
   viewCount: number;
   applicationCount: number;
@@ -56,6 +93,38 @@ const JobSchema = new Schema<IJob>({
     type: String,
     required: true,
   },
+  // Multi-language support
+  i18n: {
+    en: {
+      title: String,
+      description: String,
+      responsibilities: [String],
+      requirements: {
+        experience: String,
+        education: String,
+      },
+    },
+    ar: {
+      title: String,
+      description: String,
+      responsibilities: [String],
+      requirements: {
+        experience: String,
+        education: String,
+      },
+    },
+    fr: {
+      title: String,
+      description: String,
+      responsibilities: [String],
+      requirements: {
+        experience: String,
+        education: String,
+      },
+    },
+  },
+  // Job image
+  imageUrl: String,
   company: {
     name: { type: String, required: true },
     logo: String,
@@ -103,8 +172,12 @@ const JobSchema = new Schema<IJob>({
   applicationDeadline: Date,
   status: {
     type: String,
-    enum: ['active', 'closed', 'draft'],
+    enum: ['active', 'closed', 'draft', 'pending', 'rejected'],
     default: 'active',
+  },
+  rejectionReason: {
+    type: String,
+    required: false,
   },
   postedBy: {
     type: Schema.Types.ObjectId,
