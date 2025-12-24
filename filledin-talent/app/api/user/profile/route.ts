@@ -101,7 +101,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -109,10 +109,10 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { profile, cv, ...otherUpdates } = body;
 
-    await dbConnect();
-    
+    await connectDB();
+
     const user = await User.findOne({ email: session.user.email });
-    
+
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
