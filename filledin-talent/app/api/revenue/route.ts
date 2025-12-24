@@ -9,9 +9,9 @@ interface RevenueResponse {
   currency: string;
   description: string;
   status: string;
-  userId?: string;
-  jobId?: string;
-  companyId?: string;
+  userId?: { id: string; name: string; email: string };
+  jobId?: { id: string; title: string };
+  companyId?: { id: string; name: string };
   paymentMethod?: string;
   transactionId?: string;
   paymentProvider?: string;
