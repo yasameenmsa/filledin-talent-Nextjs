@@ -90,11 +90,22 @@ export default function ApplicationForm({ jobId, lang }: ApplicationFormProps) {
     const onSubmit = async (data: ApplicationFormData) => {
         setIsSubmitting(true);
         try {
-            // TODO: Implement application submission API
-            // const res = await fetch('/api/applications', { ... });
+            const res = await fetch('/api/applications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jobId,
+                    cvUrl: data.cvUrl,
+                    coverLetter: data.coverLetter,
+                }),
+            });
 
-            // For now, simulate success
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Application failed');
+            }
 
             toast({
                 title: 'Application submitted',

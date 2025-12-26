@@ -19,6 +19,7 @@ interface Application {
   _id: string;
   status: 'pending' | 'reviewing' | 'shortlisted' | 'interviewed' | 'offered' | 'rejected' | 'withdrawn';
   job: {
+    _id?: string;
     title: string;
     company: { name: string };
     location?: { city: string; country: string };
@@ -44,6 +45,7 @@ interface DashboardStats {
   savedJobs: number;
   recentApplications: Application[];
   recommendedJobs: Job[];
+  appliedJobIds: string[];
 }
 
 export default function JobSeekerDashboard({ params }: { params: Promise<{ lang: string }> }) {
@@ -204,7 +206,8 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
     interviewsScheduled: 0,
     savedJobs: 0,
     recentApplications: [],
-    recommendedJobs: []
+    recommendedJobs: [],
+    appliedJobIds: []
   });
   const [loading, setLoading] = useState(true);
 
@@ -224,18 +227,23 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
       const jobsResponse = await fetch('/api/jobs?limit=5');
       const jobsData = await jobsResponse.json();
 
+      // Fetch saved jobs count
+      const savedJobsResponse = await fetch('/api/saved-jobs');
+      const savedJobsData = await savedJobsResponse.json();
+
       // Calculate stats from applications
       const applications = applicationsData.applications || [];
       const pendingCount = applications.filter((app: Application) => app.status === 'pending').length;
-      const interviewCount = applications.filter((app: Application) => app.status === 'interviewed').length;
+      const interviewCount = applications.filter((app: Application) => ['interviewed', 'shortlisted'].includes(app.status)).length;
 
       setStats({
         totalApplications: applicationsData.stats?.totalApplications || applications.length,
         pendingApplications: pendingCount,
         interviewsScheduled: interviewCount,
-        savedJobs: 0, // This would come from a saved jobs API
+        savedJobs: savedJobsData.savedJobs?.length || 0,
         recentApplications: applications,
-        recommendedJobs: jobsData.jobs || []
+        recommendedJobs: jobsData.jobs || [],
+        appliedJobIds: applications.map((app: Application) => app.job?._id || app.job).filter(Boolean)
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -451,7 +459,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                           {formatSalary(job.salary?.min, job.salary?.max)}
                         </p>
                       </div>
-                      <div className="text-end ms-4">
+                      <div className="text-end ms-4 flex flex-col items-end">
+                        {stats.appliedJobIds.includes(job._id) ? (
+                          <span className="mb-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium inline-block">
+                            {getText('applications.status.applied') || 'Applied'}
+                          </span>
+                        ) : null}
                         <span className="text-xs text-gray-500">
                           {formatDate(new Date(job.createdAt), lang)}
                         </span>

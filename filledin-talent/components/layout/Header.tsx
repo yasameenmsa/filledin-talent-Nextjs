@@ -97,6 +97,11 @@ export default function Header() {
   // Logo selection based on language
   const logoSrc = '/new-logo.png';
 
+  const getRolePath = (role: string) => {
+    if (role === 'job_seeker') return 'jobseeker';
+    return role;
+  };
+
   const navigation = [
     {
       name: getText('nav.businesses'),
@@ -219,14 +224,14 @@ export default function Header() {
                       {userData?.role && (
                         <>
                           <Link
-                            href={`/${currentLanguage}/${userData.role}`}
+                            href={`/${currentLanguage}/${getRolePath(userData.role)}`}
                             className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
                               }`}
                           >
                             {getText('ui.dashboard')}
                           </Link>
                           <Link
-                            href={`/${currentLanguage}/${userData.role}/profile`}
+                            href={`/${currentLanguage}/${getRolePath(userData.role)}/profile`}
                             className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
                               }`}
                           >
@@ -347,7 +352,7 @@ export default function Header() {
                     {userData?.role && (
                       <>
                         <Link
-                          href={`/${currentLanguage}/${userData.role}`}
+                          href={`/${currentLanguage}/${getRolePath(userData.role)}`}
                           className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
                             }`}
                           onClick={() => setIsOpen(false)}
@@ -355,7 +360,7 @@ export default function Header() {
                           {getText('ui.dashboard')}
                         </Link>
                         <Link
-                          href={`/${currentLanguage}/${userData.role}/profile`}
+                          href={`/${currentLanguage}/${getRolePath(userData.role)}/profile`}
                           className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
                             }`}
                           onClick={() => setIsOpen(false)}

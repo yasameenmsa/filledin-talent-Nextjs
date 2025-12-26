@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation';
 import { MapPin, Briefcase, Clock, DollarSign, Calendar, Building } from 'lucide-react';
-import ApplicationModal from '@/components/jobs/ApplicationModal';
+import Link from 'next/link';
 import SaveJobButton from '@/components/jobs/SaveJobButton';
 import { auth } from '@/auth';
+import dbConnect from '@/lib/db/mongodb';
+import Application from '@/models/Application';
+import SavedJob from '@/models/SavedJob';
 
 // Helper to fetch job
 async function getJob(id: string) {
@@ -32,6 +35,23 @@ export default async function JobDetailsPage({
     const { lang, id } = await params;
     const job = await getJob(id);
     const session = await auth();
+
+    let hasApplied = false;
+    let hasSaved = false;
+    if (session?.user?.id) {
+        await dbConnect();
+        const existingApplication = await Application.findOne({
+            job: id,
+            applicant: session.user.id
+        });
+        hasApplied = !!existingApplication;
+
+        const existingSavedJob = await SavedJob.findOne({
+            jobId: id,
+            userId: session.user.id
+        });
+        hasSaved = !!existingSavedJob;
+    }
 
     if (!job) {
         notFound();
@@ -85,8 +105,22 @@ export default async function JobDetailsPage({
                             <div className="flex flex-col gap-3 min-w-[200px]">
                                 {session ? (
                                     <>
-                                        <ApplicationModal jobId={job._id} jobTitle={translatedJob.title} lang={lang} />
-                                        <SaveJobButton jobId={job._id} lang={lang} />
+                                        {hasApplied ? (
+                                            <button
+                                                disabled
+                                                className="w-full bg-green-600 text-white text-center py-3 rounded-lg font-semibold cursor-not-allowed opacity-90"
+                                            >
+                                                Applied
+                                            </button>
+                                        ) : (
+                                            <Link
+                                                href={`/${lang}/jobs/${job._id}/apply`}
+                                                className="w-full bg-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                            >
+                                                Apply Now
+                                            </Link>
+                                        )}
+                                        <SaveJobButton jobId={job._id} lang={lang} initialSaved={hasSaved} />
                                     </>
                                 ) : (
                                     <div className="text-center p-4 bg-gray-100 rounded-lg text-sm text-gray-600">
