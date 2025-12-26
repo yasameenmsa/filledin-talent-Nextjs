@@ -90,13 +90,13 @@ export default async function JobDetailsPage({
                                     </>
                                 ) : (
                                     <div className="text-center p-4 bg-gray-100 rounded-lg text-sm text-gray-600">
-                                        <a href="/login" className="text-blue-600 hover:underline font-medium">
+                                        <a href={`/${lang}/login`} className="text-blue-600 hover:underline font-medium">
                                             Login to apply
                                         </a>
                                         <br />
                                         <span className="text-xs">or</span>
                                         <br />
-                                        <a href="/register" className="text-blue-600 hover:underline font-medium">
+                                        <a href={`/${lang}/register`} className="text-blue-600 hover:underline font-medium">
                                             Register
                                         </a>
                                     </div>

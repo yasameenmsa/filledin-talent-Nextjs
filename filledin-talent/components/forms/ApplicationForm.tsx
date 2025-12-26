@@ -47,6 +47,7 @@ export default function ApplicationForm({ jobId, lang }: ApplicationFormProps) {
         setIsUploading(true);
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('type', 'cv');
 
         try {
             const res = await fetch('/api/upload', {
