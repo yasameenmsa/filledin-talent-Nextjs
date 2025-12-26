@@ -1,6 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import Image from 'next/image';
 
 const ExpertiseFooterSection = () => {
   const { currentLanguage } = useLanguage();
@@ -82,10 +83,12 @@ const ExpertiseFooterSection = () => {
   return (
     <div className="relative w-full min-h-screen" dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}>
       {/* Background Image - positioned absolutely to fill container */}
-      <img
+      <Image
         src="https://res.cloudinary.com/dtpl6x0sk/image/upload/v1732057806/%D9%86%D8%B3%D8%AE%D8%A9_%D9%85%D9%86_Recruitment_and_Selection_Policy_2_tab9m7.png"
         alt="Expertise Background"
-        className="absolute inset-0 w-full h-full object-cover"
+        fill
+        className="object-cover"
+        priority
       />
 
       {/* Expertise Section - Content overlaying the image */}

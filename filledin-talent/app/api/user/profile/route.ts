@@ -5,7 +5,8 @@ import User from '@/models/User';
 import { z } from 'zod';
 
 // Profile validation schema
-const profileUpdateSchema = z.object({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _profileUpdateSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
   phone: z.string().regex(/^[\+]?[1-9][\d]{0,15}$/, 'Invalid phone number').optional().or(z.literal('')),
   location: z.string().max(200, 'Location too long').optional(),
@@ -44,7 +45,7 @@ const profileUpdateSchema = z.object({
   }).optional()
 });
 
-type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
+// type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
 
 export async function GET() {
   try {

@@ -5,7 +5,7 @@ import { AuthSessionProvider } from '@/contexts/AuthContext';
 import Footer from '@/components/layout/Footer';
 // import { SessionTimeoutProvider } from '@/components/ui/SessionTimeoutWarning';
 
-export default function ClientLayoutWrapper({ children, currentLanguage, dir }: { children: React.ReactNode, currentLanguage: string, dir: string }) {
+export default function ClientLayoutWrapper({ children, dir }: { children: React.ReactNode, dir: string }) {
   return (
     <AuthSessionProvider>
       {/* <SessionTimeoutProvider> */}

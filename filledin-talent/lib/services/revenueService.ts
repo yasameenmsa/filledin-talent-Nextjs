@@ -1,5 +1,5 @@
 import connectDB from '@/lib/db/mongodb';
-import Revenue from '@/models/Revenue';
+import Revenue, { IRevenue } from '@/models/Revenue';
 import { pricingConfig, getJobPostingPrice, getFeaturePrice, getSubscriptionPrice } from '@/lib/config/pricing';
 
 export interface RevenueEvent {
@@ -11,14 +11,14 @@ export interface RevenueEvent {
   jobId?: string;
   companyId?: string;
   paymentMethod?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export class RevenueService {
   /**
    * Record a revenue event
    */
-  static async recordRevenue(event: RevenueEvent): Promise<any> {
+  static async recordRevenue(event: RevenueEvent): Promise<IRevenue> {
     await connectDB();
 
     const revenueData = {
@@ -42,7 +42,7 @@ export class RevenueService {
   /**
    * Record job posting revenue
    */
-  static async recordJobPosting(userId: string, jobId: string, tier: 'basic' | 'premium' = 'basic'): Promise<any> {
+  static async recordJobPosting(userId: string, jobId: string, tier: 'basic' | 'premium' = 'basic'): Promise<IRevenue> {
     const amount = getJobPostingPrice(tier);
     const description = `Job posting - ${tier} tier`;
 
@@ -63,7 +63,7 @@ export class RevenueService {
     userId: string,
     jobId: string,
     feature: 'featured' | 'urgent' | 'highlighted'
-  ): Promise<any> {
+  ): Promise<IRevenue> {
     const amount = getFeaturePrice(feature);
     const description = `${feature} job feature`;
 
@@ -80,7 +80,7 @@ export class RevenueService {
   /**
    * Record subscription revenue
    */
-  static async recordSubscription(userId: string, plan: 'starter' | 'professional' | 'enterprise'): Promise<any> {
+  static async recordSubscription(userId: string, plan: 'starter' | 'professional' | 'enterprise'): Promise<IRevenue> {
     const amount = getSubscriptionPrice(plan);
     const subscription = pricingConfig.subscriptions[plan];
     const description = `${plan} subscription - ${subscription.interval}`;

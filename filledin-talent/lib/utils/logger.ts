@@ -27,7 +27,6 @@ function emit(level: LogLevel, message: string, meta?: Record<string, unknown>) 
 
   if (isServer) {
     // Server-side: emit structured logs
-    // eslint-disable-next-line no-console
     switch (level) {
       case 'debug':
         console.debug(JSON.stringify(payload));
@@ -44,7 +43,6 @@ function emit(level: LogLevel, message: string, meta?: Record<string, unknown>) 
     }
   } else {
     // Client-side: emit readable logs
-    // eslint-disable-next-line no-console
     switch (level) {
       case 'debug':
         console.debug(`[debug] ${message}`, payload);

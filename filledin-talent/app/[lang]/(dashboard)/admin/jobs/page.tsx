@@ -337,8 +337,8 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
 
   const updateJobStatus = async (jobId: string, status: string, reason?: string) => {
     const confirmMessage = status === 'active' ? getText('dashboard.admin.confirmApprove') :
-                          status === 'rejected' ? getText('dashboard.admin.confirmReject') :
-                          status === 'closed' ? getText('dashboard.admin.confirmClose') : '';
+      status === 'rejected' ? getText('dashboard.admin.confirmReject') :
+        status === 'closed' ? getText('dashboard.admin.confirmClose') : '';
 
     if (confirmMessage && !confirm(confirmMessage)) {
       return;
@@ -390,9 +390,9 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
     }
 
     const confirmMessage = action === 'approve' ? getText('dashboard.admin.bulkApprove', { count: selectedJobs.length }) :
-                          action === 'reject' ? getText('dashboard.admin.bulkReject', { count: selectedJobs.length }) :
-                          action === 'close' ? getText('dashboard.admin.bulkClose', { count: selectedJobs.length }) :
-                          getText('dashboard.admin.bulkDelete', { count: selectedJobs.length });
+      action === 'reject' ? getText('dashboard.admin.bulkReject', { count: selectedJobs.length }) :
+        action === 'close' ? getText('dashboard.admin.bulkClose', { count: selectedJobs.length }) :
+          getText('dashboard.admin.bulkDelete', { count: selectedJobs.length });
 
     if (!confirm(confirmMessage)) {
       return;
@@ -450,8 +450,8 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.description.toLowerCase().includes(searchTerm.toLowerCase());
+      job.company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (job.description?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || job.status === statusFilter;
     const matchesCategory = categoryFilter === 'all' || job.category === categoryFilter;
 
@@ -751,10 +751,14 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
                                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getCategoryColor(job.category)}`}>
                                   {getText(`common.${job.category}`)}
                                 </span>
-                                <span className="mx-2">•</span>
-                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                                  {getText(`common.${job.workingType.replace('-', '')}`)}
-                                </span>
+                                {job.workingType && (
+                                  <>
+                                    <span className="mx-2">•</span>
+                                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                      {getText(`common.${job.workingType.replace('-', '')}`)}
+                                    </span>
+                                  </>
+                                )}
                               </div>
                               {formatSalary(job.salary) && (
                                 <div className="text-sm text-gray-500 flex items-center">
@@ -906,11 +910,10 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
                               <button
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
-                                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                  currentPage === page
-                                    ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                                }`}
+                                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === page
+                                  ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                  }`}
                               >
                                 {page}
                               </button>

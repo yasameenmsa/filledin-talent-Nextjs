@@ -15,7 +15,7 @@ interface RevenueResponse {
   paymentMethod?: string;
   transactionId?: string;
   paymentProvider?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
   processedAt?: string;
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build query
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (type !== 'all') {
       query.type = type;
@@ -54,17 +54,18 @@ export async function GET(request: NextRequest) {
 
     // Date range filter
     if (startDate || endDate) {
-      query.createdAt = {};
+      const createdAtFilter: { $gte?: Date; $lte?: Date } = {};
       if (startDate) {
-        query.createdAt.$gte = new Date(startDate);
+        createdAtFilter.$gte = new Date(startDate);
       }
       if (endDate) {
-        query.createdAt.$lte = new Date(endDate);
+        createdAtFilter.$lte = new Date(endDate);
       }
+      query.createdAt = createdAtFilter;
     }
 
     // Build sort
-    const sort: any = {};
+    const sort: Record<string, 1 | -1> = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     // Get total count
@@ -82,24 +83,24 @@ export async function GET(request: NextRequest) {
 
     // Format response
     const revenueResponse: RevenueResponse[] = revenueRecords.map(record => ({
-      id: (record._id as any).toString(),
+      id: String(record._id),
       type: record.type,
       amount: record.amount,
       currency: record.currency,
       description: record.description,
       status: record.status,
       userId: record.userId ? {
-        id: (record.userId as any)._id?.toString(),
-        name: (record.userId as any).name,
-        email: (record.userId as any).email,
+        id: String((record.userId as { _id: unknown })._id),
+        name: (record.userId as { name: string }).name,
+        email: (record.userId as { email: string }).email,
       } : undefined,
       jobId: record.jobId ? {
-        id: (record.jobId as any)._id?.toString(),
-        title: (record.jobId as any).title,
+        id: String((record.jobId as { _id: unknown })._id),
+        title: (record.jobId as { title: string }).title,
       } : undefined,
       companyId: record.companyId ? {
-        id: (record.companyId as any)._id?.toString(),
-        name: (record.companyId as any).name,
+        id: String((record.companyId as { _id: unknown })._id),
+        name: (record.companyId as { name: string }).name,
       } : undefined,
       paymentMethod: record.paymentMethod,
       transactionId: record.transactionId,
@@ -186,7 +187,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Revenue record created successfully',
       revenue: {
-        id: (savedRecord._id as any).toString(),
+        id: String(savedRecord._id),
         type: savedRecord.type,
         amount: savedRecord.amount,
         currency: savedRecord.currency,

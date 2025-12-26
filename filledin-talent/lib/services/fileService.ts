@@ -104,7 +104,7 @@ export class FileService {
     try {
       await mkdir(dirPath, { recursive: true });
     } catch (error) {
-      if ((error as any).code !== 'EEXIST') {
+      if ((error as { code?: string }).code !== 'EEXIST') {
         throw error;
       }
     }
@@ -172,7 +172,7 @@ export class FileService {
 }
 
 // API Response helpers
-export function createFileResponse(data: any, status = 200) {
+export function createFileResponse(data: unknown, status = 200) {
   return NextResponse.json(data, { status });
 }
 

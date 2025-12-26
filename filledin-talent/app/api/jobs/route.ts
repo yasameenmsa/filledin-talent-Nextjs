@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
 
         // Build query based on params
-        const query: any = { status: 'active' };
+        const query: Record<string, unknown> = { status: 'active' };
 
         const category = searchParams.get('category');
         if (category) query.category = category;

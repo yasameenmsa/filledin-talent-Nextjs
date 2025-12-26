@@ -121,7 +121,7 @@ export class JWTSecretRotation {
    */
   forceRotation(reason?: string): { newSecret: string; previousSecret: string; reason?: string } {
     const result = this.rotateSecret();
-    
+
     // Log rotation for audit purposes
     console.log(`JWT Secret rotation forced: ${reason || 'Manual rotation'}`, {
       timestamp: new Date().toISOString(),
@@ -213,20 +213,20 @@ export const jwtRotation = new JWTSecretRotation();
  * Middleware to check and handle JWT rotation
  */
 export function jwtRotationMiddleware() {
-  return async (request: NextRequest) => {
+  return async (_request: NextRequest) => {
     const rotationCheck = jwtRotation.checkRotationNeeded();
-    
+
     if (rotationCheck.shouldRotate) {
       // In a production environment, you would want to:
       // 1. Store the new secret in a secure key management system
       // 2. Notify other instances of the application
       // 3. Update environment variables or configuration
-      
+
       console.log('JWT Secret rotation needed', {
         timeUntilRotation: rotationCheck.timeUntilRotation,
         timestamp: new Date().toISOString()
       });
-      
+
       // For now, we'll just log the need for rotation
       // Actual rotation should be handled by a separate process
     }

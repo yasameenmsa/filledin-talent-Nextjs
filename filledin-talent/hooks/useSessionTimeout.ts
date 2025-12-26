@@ -20,18 +20,18 @@ interface UseSessionTimeoutOptions {
 
 export function useSessionTimeout(options: UseSessionTimeoutOptions = {}) {
   const {
-    warningTime = 5 * 60, // 5 minutes
+    // warningTime: _warningTime = 5 * 60, // 5 minutes
     checkInterval = 30, // 30 seconds
     onWarning,
     onExpiry,
     onExtend
   } = options;
 
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
   const [sessionStatus, setSessionStatus] = useState<SessionStatus | null>(null);
   const [showWarning, setShowWarning] = useState(false);
   const [lastActivity, setLastActivity] = useState(Date.now());
-  
+
   const warningShownRef = useRef(false);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const activityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -72,7 +72,7 @@ export function useSessionTimeout(options: UseSessionTimeoutOptions = {}) {
     if (status !== 'authenticated') return;
 
     setLastActivity(Date.now());
-    
+
     try {
       await fetch('/api/auth/activity', { method: 'POST' });
     } catch (error) {
@@ -93,17 +93,17 @@ export function useSessionTimeout(options: UseSessionTimeoutOptions = {}) {
     if (status !== 'authenticated') return;
 
     const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
+
     const handleActivity = () => {
       const now = Date.now();
       const timeSinceLastActivity = now - lastActivity;
-      
+
       // Only update if it's been more than 1 minute since last activity
       if (timeSinceLastActivity > 60 * 1000) {
         if (activityTimeoutRef.current) {
           clearTimeout(activityTimeoutRef.current);
         }
-        
+
         // Debounce activity updates
         activityTimeoutRef.current = setTimeout(() => {
           updateActivity();
@@ -152,14 +152,14 @@ export function useSessionTimeout(options: UseSessionTimeoutOptions = {}) {
   // Format time remaining for display
   const formatTimeRemaining = useCallback((seconds: number): string => {
     if (seconds <= 0) return '0:00';
-    
+
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    
+
     if (minutes > 0) {
       return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
-    
+
     return `0:${remainingSeconds.toString().padStart(2, '0')}`;
   }, []);
 

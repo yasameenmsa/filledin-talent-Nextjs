@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
 
     // Calculate date range
-    let dateFilter: any = {};
+    const dateFilter: { createdAt?: { $gte?: Date; $lte?: Date } } = {};
     const now = new Date();
 
     if (startDate && endDate) {
@@ -172,10 +172,10 @@ export async function GET(request: NextRequest) {
       previousPeriodStart = new Date(new Date(startDate).getTime() - periodLength);
       previousPeriodEnd = new Date(startDate);
     } else {
-      const currentPeriodStart = dateFilter.createdAt.$gte;
+      const currentPeriodStart = dateFilter.createdAt?.$gte ?? now;
       const periodLength = now.getTime() - currentPeriodStart.getTime();
       previousPeriodStart = new Date(currentPeriodStart.getTime() - periodLength);
-      previousPeriodEnd = currentPeriodStart;
+      previousPeriodEnd = new Date(currentPeriodStart);
     }
 
     const previousPeriodRevenue = await Revenue.aggregate([
@@ -231,7 +231,7 @@ export async function GET(request: NextRequest) {
         count: item.count,
       })),
       period: {
-        startDate: dateFilter.createdAt.$gte.toISOString(),
+        startDate: (dateFilter.createdAt?.$gte ?? now).toISOString(),
         endDate: now.toISOString(),
         period,
       },

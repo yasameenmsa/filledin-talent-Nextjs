@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
+// import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { DollarSign, Users, Building, FileText } from 'lucide-react';
 
@@ -39,7 +39,7 @@ interface JobFormData {
 export default function JobPostingForm({ lang }: JobPostingFormProps) {
   const router = useRouter();
   const { currentLanguage } = useLanguage();
-  
+
   // Inline translations
   const getText = (key: string): string => {
     const translations: Record<string, Record<string, string>> = {
@@ -342,7 +342,7 @@ export default function JobPostingForm({ lang }: JobPostingFormProps) {
 
     return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
   };
-  
+
   const [formData, setFormData] = useState<JobFormData>({
     title: '',
     description: '',
@@ -379,7 +379,7 @@ export default function JobPostingForm({ lang }: JobPostingFormProps) {
       setFormData(prev => {
         const parentKey = parent as keyof JobFormData;
         const currentParentValue = prev[parentKey];
-        
+
         // Ensure the parent value is an object before spreading
         if (typeof currentParentValue === 'object' && currentParentValue !== null) {
           return {
@@ -390,7 +390,7 @@ export default function JobPostingForm({ lang }: JobPostingFormProps) {
             },
           };
         }
-        
+
         // Fallback for non-object parent values
         return {
           ...prev,
@@ -449,25 +449,22 @@ export default function JobPostingForm({ lang }: JobPostingFormProps) {
         {steps.map((step, index) => (
           <div key={step.number} className="flex items-center">
             <div
-              className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                currentStep >= step.number
+              className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${currentStep >= step.number
                   ? 'bg-blue-600 border-blue-600 text-white'
                   : 'border-gray-300 text-gray-500'
-              }`}
+                }`}
             >
               <step.icon className="w-5 h-5" />
             </div>
             <div className="ml-3">
-              <p className={`text-sm font-medium ${
-                currentStep >= step.number ? 'text-blue-600' : 'text-gray-500'
-              }`}>
+              <p className={`text-sm font-medium ${currentStep >= step.number ? 'text-blue-600' : 'text-gray-500'
+                }`}>
                 {step.title}
               </p>
             </div>
             {index < steps.length - 1 && (
-              <div className={`w-16 h-0.5 mx-4 ${
-                currentStep > step.number ? 'bg-blue-600' : 'bg-gray-300'
-              }`} />
+              <div className={`w-16 h-0.5 mx-4 ${currentStep > step.number ? 'bg-blue-600' : 'bg-gray-300'
+                }`} />
             )}
           </div>
         ))}

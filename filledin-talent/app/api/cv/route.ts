@@ -5,7 +5,7 @@ import CV from '@/models/CV';
 import { unlink } from 'fs/promises';
 import path from 'path';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
     try {
         const session = await auth();
         if (!session?.user?.email) {

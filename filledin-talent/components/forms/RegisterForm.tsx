@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -39,7 +39,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
   const isRTL = currentLanguage === 'ar';
 
   // Inline translations
-  const getText = (key: string): string => {
+  const getText = useCallback((key: string): string => {
     const translations: Record<string, Record<string, string>> = {
       'auth.createAccount': {
         en: 'Create account',
@@ -164,7 +164,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
     };
 
     return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
-  };
+  }, [currentLanguage]);
 
   // Create validation schema - recreate on language change
   const registerSchema = useMemo(() =>
@@ -189,7 +189,7 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
       message: getText('validation.passwordsMismatch'),
       path: ['confirmPassword'],
     })
-    , [currentLanguage]);
+    , [getText]);
 
   const {
     register,

@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableHead, 
-    TableHeader, 
-    TableRow 
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from '@/components/ui/table';
 import { Select } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -32,6 +32,7 @@ interface JobApplicationsListProps {
     initialApplications: Application[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function JobApplicationsList({ jobId, initialApplications }: JobApplicationsListProps) {
     const router = useRouter();
     const [applications, setApplications] = useState<Application[]>(initialApplications);
@@ -48,10 +49,10 @@ export default function JobApplicationsList({ jobId, initialApplications }: JobA
 
             if (!res.ok) throw new Error('Failed to update status');
 
-            setApplications(apps => 
-                apps.map(app => 
-                    app._id === applicationId 
-                        ? { ...app, status: newStatus as any } 
+            setApplications(apps =>
+                apps.map(app =>
+                    app._id === applicationId
+                        ? { ...app, status: newStatus as Application['status'] }
                         : app
                 )
             );
@@ -115,9 +116,9 @@ export default function JobApplicationsList({ jobId, initialApplications }: JobA
                                         })}
                                     </TableCell>
                                     <TableCell>
-                                        <a 
-                                            href={app.cvUrl} 
-                                            target="_blank" 
+                                        <a
+                                            href={app.cvUrl}
+                                            target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex items-center text-blue-600 hover:underline"
                                         >
@@ -135,8 +136,8 @@ export default function JobApplicationsList({ jobId, initialApplications }: JobA
                                             {loadingId === app._id ? (
                                                 <Loader2 className="w-4 h-4 animate-spin" />
                                             ) : (
-                                                <Select 
-                                                    value={app.status} 
+                                                <Select
+                                                    value={app.status}
                                                     onChange={(e) => handleStatusChange(app._id, e.target.value)}
                                                     className="w-[130px]"
                                                 >

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { FileService, createFileResponse, createFileErrorResponse } from '@/lib/services/fileService';
 
 // POST - Cleanup old files (admin only operation)
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const normalizedDirectory = directory.startsWith('/') ? directory : `/${directory}`;
 
     // Check if directory exists and get initial stats
-    const initialFiles = await FileService.listFiles(normalizedDirectory);
+    // const initialFiles = await FileService.listFiles(normalizedDirectory);
     const initialSize = await FileService.getDirectorySize(normalizedDirectory);
 
     // Perform cleanup

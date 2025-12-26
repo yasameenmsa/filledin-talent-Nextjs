@@ -18,6 +18,7 @@ const DropCVSection = () => {
 
     const translations = {
         en: {
+            joinNetwork: 'Join Our Talent Network',
             title: 'Drop Your CV',
             subtitle: 'Join our exclusive talent pool. Let the best opportunities find you.',
             nameLabel: 'Full Name',
@@ -37,6 +38,7 @@ const DropCVSection = () => {
             fileSize: 'File size exceeds 5MB limit.',
         },
         fr: {
+            joinNetwork: 'Rejoignez notre réseau de talents',
             title: 'Déposez votre CV',
             subtitle: 'Rejoignez notre vivier de talents exclusif. Laissez les meilleures opportunités venir à vous.',
             nameLabel: 'Nom complet',
@@ -56,6 +58,7 @@ const DropCVSection = () => {
             fileSize: 'La taille du fichier dépasse la limite de 5 Mo.',
         },
         ar: {
+            joinNetwork: 'انضم إلى شبكة المواهب لدينا',
             title: 'أرسل سيرتك الذاتية',
             subtitle: 'انضم إلى مجموعة المواهب الحصرية لدينا. دع أفضل الفرص تجدك.',
             nameLabel: 'الاسم الكامل',
@@ -178,7 +181,7 @@ const DropCVSection = () => {
                 setMessage(data.error || 'Something went wrong');
                 setUploadProgress(0);
             }
-        } catch (error) {
+        } catch {
             setStatus('error');
             setMessage('Network error. Please try again.');
             setUploadProgress(0);
@@ -199,7 +202,10 @@ const DropCVSection = () => {
     };
 
     return (
-        <section className="relative py-24 px-4 min-h-[90vh] flex items-center justify-center overflow-hidden bg-white">
+        <section
+            className="relative py-24 px-4 min-h-[90vh] flex items-center justify-center overflow-hidden bg-white"
+            dir={isRTL ? 'rtl' : 'ltr'}
+        >
             {/* Background Elements */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-blue-50 rounded-full opacity-50 blur-3xl"></div>
@@ -209,7 +215,7 @@ const DropCVSection = () => {
             <div className="relative z-10 max-w-4xl w-full">
                 <div className="text-center mb-12">
                     <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
-                        Join Our Talent Network
+                        {t.joinNetwork}
                     </span>
                     <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
                         {t.title}
@@ -241,7 +247,7 @@ const DropCVSection = () => {
                                 <div className="grid md:grid-cols-2 gap-8">
                                     {/* Name Input */}
                                     <div className="space-y-2">
-                                        <label htmlFor="name" className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-left' : 'text-right'}`}>
+                                        <label htmlFor="name" className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
                                             {t.nameLabel}
                                         </label>
                                         <input
@@ -250,14 +256,15 @@ const DropCVSection = () => {
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                             required
-                                            className={`w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium ${isRTL ? 'text-left' : 'text-right'}`}
+                                            className={`w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium text-left`}
                                             placeholder={currentLanguage === 'ar' ? 'الاسم الكامل' : 'John Doe'}
+                                            dir="ltr"
                                         />
                                     </div>
 
                                     {/* Email Input */}
                                     <div className="space-y-2">
-                                        <label htmlFor="email" className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-left' : 'text-right'}`}>
+                                        <label htmlFor="email" className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
                                             {t.emailLabel}
                                         </label>
                                         <input
@@ -266,7 +273,7 @@ const DropCVSection = () => {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
-                                            className={`w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium ${isRTL ? 'text-left' : 'text-right'}`}
+                                            className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium text-left"
                                             placeholder="john@example.com"
                                             dir="ltr"
                                         />
@@ -275,7 +282,7 @@ const DropCVSection = () => {
 
                                 {/* File Upload Area */}
                                 <div className="space-y-3">
-                                    <label className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-left' : 'text-right'}`}>
+                                    <label className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
                                         CV / Resume
                                     </label>
                                     <div

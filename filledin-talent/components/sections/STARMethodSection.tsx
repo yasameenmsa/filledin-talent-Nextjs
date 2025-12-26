@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Linkedin, Instagram, Youtube } from 'lucide-react';
 
 const STARMethodSection = () => {
   const { currentLanguage } = useLanguage();
-  
-  const getText = (currentLanguage: string) => {
+
+  const getText = (lang: string) => {
     const translations = {
       en: {
         title: 'THE STAR METHOD',
@@ -121,13 +120,13 @@ const STARMethodSection = () => {
         footerTagline: 'The Alternative Solution'
       }
     };
-    return translations[currentLanguage as keyof typeof translations] || translations.en;
+    return translations[lang as keyof typeof translations] || translations.en;
   };
 
   const text = getText(currentLanguage);
 
   return (
-    <div 
+    <div
       className="py-12 px-4"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
@@ -138,14 +137,14 @@ const STARMethodSection = () => {
           {text.title}
         </h2>
 
-{/* STAR Diagram */}
+        {/* STAR Diagram */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between mb-12 gap-4">
           {/* S - Situation */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-5xl lg:text-6xl font-bold mb-3" style={{ color: '#000' }}>{text.s}</div>
-            <div 
+            <div
               className="w-full rounded-3xl p-5 lg:p-6"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '160px',
                 display: 'flex',
@@ -162,16 +161,16 @@ const STARMethodSection = () => {
           {/* Arrow */}
           <div className="hidden lg:flex justify-center items-center px-2">
             <svg width="60" height="40" viewBox="0 0 60 40" style={{ opacity: 0.5 }}>
-              <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0"/>
+              <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0" />
             </svg>
           </div>
 
           {/* T - Task */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-5xl lg:text-6xl font-bold mb-3" style={{ color: '#000' }}>{text.t}</div>
-            <div 
+            <div
               className="w-full rounded-3xl p-5 lg:p-6"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '160px',
                 display: 'flex',
@@ -188,16 +187,16 @@ const STARMethodSection = () => {
           {/* Arrow */}
           <div className="hidden lg:flex justify-center items-center px-2">
             <svg width="60" height="40" viewBox="0 0 60 40" style={{ opacity: 0.5 }}>
-              <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0"/>
+              <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0" />
             </svg>
           </div>
 
           {/* A - Action */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-5xl lg:text-6xl font-bold mb-3" style={{ color: '#000' }}>{text.a}</div>
-            <div 
+            <div
               className="w-full rounded-3xl p-5 lg:p-6"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '160px',
                 display: 'flex',
@@ -214,16 +213,16 @@ const STARMethodSection = () => {
           {/* Arrow */}
           <div className="hidden lg:flex justify-center items-center px-2">
             <svg width="60" height="40" viewBox="0 0 60 40" style={{ opacity: 0.5 }}>
-              <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0"/>
+              <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0" />
             </svg>
           </div>
 
           {/* R - Result */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-5xl lg:text-6xl font-bold mb-3" style={{ color: '#000' }}>{text.r}</div>
-            <div 
+            <div
               className="w-full rounded-3xl p-5 lg:p-6"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '160px',
                 display: 'flex',
@@ -245,9 +244,9 @@ const STARMethodSection = () => {
           {/* S - Situation */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.s}</div>
-            <div 
+            <div
               className="w-full rounded-2xl p-6 shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '180px',
                 display: 'flex',
@@ -266,9 +265,9 @@ const STARMethodSection = () => {
           {/* T - Task */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.t}</div>
-            <div 
+            <div
               className="w-full rounded-2xl p-6 shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '180px',
                 display: 'flex',
@@ -287,9 +286,9 @@ const STARMethodSection = () => {
           {/* A - Action */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.a}</div>
-            <div 
+            <div
               className="w-full rounded-2xl p-6 shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '180px',
                 display: 'flex',
@@ -308,9 +307,9 @@ const STARMethodSection = () => {
           {/* R - Result */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.r}</div>
-            <div 
+            <div
               className="w-full rounded-2xl p-6 shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: '#5b8fd6',
                 minHeight: '180px',
                 display: 'flex',
@@ -332,17 +331,17 @@ const STARMethodSection = () => {
         {/* Three Examples in Grid */}
         <div className="grid grid-cols-3 gap-6 mb-12">
           {/* Example 1 */}
-          <div 
+          <div
             className="rounded-lg p-6 shadow-lg"
             style={{ backgroundColor: '#d4dce9' }}
           >
-            <div 
+            <div
               className="rounded-lg p-4 mb-4 text-center"
               style={{ backgroundColor: '#5b8fd6' }}
             >
               <h4 className="text-xl font-bold text-white">{text.q1}</h4>
             </div>
-            
+
             <div className="space-y-4 text-sm">
               <div>
                 <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.situation}</p>
@@ -364,17 +363,17 @@ const STARMethodSection = () => {
           </div>
 
           {/* Example 2 */}
-          <div 
+          <div
             className="rounded-lg p-6 shadow-lg"
             style={{ backgroundColor: '#d4dce9' }}
           >
-            <div 
+            <div
               className="rounded-lg p-4 mb-4 text-center"
               style={{ backgroundColor: '#5b8fd6' }}
             >
               <h4 className="text-xl font-bold text-white">{text.q2}</h4>
             </div>
-            
+
             <div className="space-y-4 text-sm">
               <div>
                 <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.situation}</p>
@@ -396,17 +395,17 @@ const STARMethodSection = () => {
           </div>
 
           {/* Example 3 */}
-          <div 
+          <div
             className="rounded-lg p-6 shadow-lg"
             style={{ backgroundColor: '#d4dce9' }}
           >
-            <div 
+            <div
               className="rounded-lg p-4 mb-4 text-center"
               style={{ backgroundColor: '#5b8fd6' }}
             >
               <h4 className="text-xl font-bold text-white">{text.q3}</h4>
             </div>
-            
+
             <div className="space-y-4 text-sm">
               <div>
                 <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.situation}</p>
@@ -435,10 +434,10 @@ const STARMethodSection = () => {
             <div className="w-10 h-10" style={{ color: '#1e3a5f' }}>
               <svg viewBox="0 0 100 100" fill="currentColor">
                 <circle cx="50" cy="30" r="8" />
-                <path d="M50 38 L50 70 M35 50 L65 50 M40 60 L60 60" stroke="currentColor" strokeWidth="6" fill="none"/>
+                <path d="M50 38 L50 70 M35 50 L65 50 M40 60 L60 60" stroke="currentColor" strokeWidth="6" fill="none" />
                 <circle cx="35" cy="85" r="6" />
                 <circle cx="65" cy="85" r="6" />
-                <path d="M35 85 L35 70 M65 85 L65 70 M35 70 L65 70" stroke="currentColor" strokeWidth="4" fill="none"/>
+                <path d="M35 85 L35 70 M65 85 L65 70 M35 70 L65 70" stroke="currentColor" strokeWidth="4" fill="none" />
               </svg>
             </div>
             <div>

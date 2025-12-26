@@ -5,7 +5,7 @@ import SavedJob from '@/models/SavedJob';
 import Job from '@/models/Job';
 
 // GET: Fetch all saved jobs for the logged-in user
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
     try {
         const session = await auth();
 
