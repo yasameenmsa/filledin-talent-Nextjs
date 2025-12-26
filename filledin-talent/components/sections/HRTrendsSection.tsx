@@ -83,6 +83,7 @@ const HRTrendsSection = () => {
 
             {/* Right Image */}
             <div className="flex-shrink-0 lg:w-[450px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://res.cloudinary.com/dtpl6x0sk/image/upload/v1762016679/HRTrends1_whkqff.png"
                 alt="HR Trends"
@@ -100,6 +101,7 @@ const HRTrendsSection = () => {
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             {/* Left Image */}
             <div className="flex-shrink-0 lg:w-[450px] order-2 lg:order-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://res.cloudinary.com/dtpl6x0sk/image/upload/v1762016677/HRTrends2_uetb60.png"
                 alt="AI & Talent Acquisition"

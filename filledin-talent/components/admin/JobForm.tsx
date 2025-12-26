@@ -76,6 +76,7 @@ export default function JobForm({ lang }: { lang: string }) {
     const [uploadingImage, setUploadingImage] = useState(false);
 
     const { register, handleSubmit, formState: { errors } } = useForm<JobFormData>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(jobSchema) as any,
         defaultValues: {
             salary: { currency: 'USD' },
@@ -128,7 +129,7 @@ export default function JobForm({ lang }: { lang: string }) {
             }
 
             // Transform data for API
-            const apiData: any = {
+            const apiData: Record<string, unknown> = {
                 title: data.title,
                 description: data.description,
                 company: data.company,
@@ -154,7 +155,7 @@ export default function JobForm({ lang }: { lang: string }) {
             }
 
             // Build i18n object
-            const i18n: any = {};
+            const i18n: Record<string, unknown> = {};
 
             // English translations
             if (data.title_en || data.description_en || data.responsibilities_en || data.requirements_experience_en || data.requirements_education_en) {
@@ -207,13 +208,14 @@ export default function JobForm({ lang }: { lang: string }) {
             });
 
             if (!res.ok) {
-                throw new Error('Failed to create job');
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Failed to create job');
             }
 
             router.push(`/${lang}/jobs`);
             router.refresh();
-        } catch (err) {
-            setError('Something went wrong. Please try again.');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -280,8 +282,8 @@ export default function JobForm({ lang }: { lang: string }) {
                             type="button"
                             onClick={() => setActiveTab(tab.id)}
                             className={`px-6 py-3 font-medium transition-colors ${activeTab === tab.id
-                                    ? 'border-b-2 border-blue-900 text-blue-900'
-                                    : 'text-gray-500 hover:text-gray-700'
+                                ? 'border-b-2 border-blue-900 text-blue-900'
+                                : 'text-gray-500 hover:text-gray-700'
                                 }`}
                         >
                             {tab.label}

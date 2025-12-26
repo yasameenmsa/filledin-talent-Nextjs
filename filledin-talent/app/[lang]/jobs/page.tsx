@@ -1,9 +1,12 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { MapPin, Briefcase, Clock, DollarSign } from 'lucide-react';
+import { MapPin, Briefcase, Clock, DollarSign, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JobSearchSection from '@/components/sections/JobSearchSection';
+import { auth } from '@/auth';
+import dbConnect from '@/lib/db/mongodb';
+import Application from '@/models/Application';
 
 export const metadata: Metadata = {
     title: 'Job Search | FilledIn Talent',
@@ -72,8 +75,32 @@ async function getJobs(searchParams: JobSearchParams) {
 export default async function JobsPage({ params, searchParams }: JobsPageProps) {
     const { lang } = await params;
     const resolvedSearchParams = await searchParams;
-    const data = await getJobs(resolvedSearchParams);
+    const normalizedSearchParams = {
+        q: resolvedSearchParams.q,
+        category: resolvedSearchParams.category,
+        workingType: resolvedSearchParams.workingType,
+        location: resolvedSearchParams.location,
+        page: resolvedSearchParams.page,
+    };
+    const data = await getJobs(normalizedSearchParams);
     const { jobs, pagination } = data;
+
+    // Fetch user's applied jobs
+    const session = await auth();
+    const appliedJobIds = new Set<string>();
+
+    if (session?.user?.id) {
+        await dbConnect();
+        const applications = await Application.find({
+            applicant: session.user.id
+        }).select('job');
+
+        applications.forEach(app => {
+            if (app.job) {
+                appliedJobIds.add(app.job.toString());
+            }
+        });
+    }
 
     // Import helper dynamically to avoid server/client issues if any
     const { getJobTranslation } = await import('@/lib/utils/getJobTranslation');
@@ -152,11 +179,18 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                                         </div>
 
                                         <div className="flex flex-col gap-2 min-w-[150px] justify-center">
-                                            <Link href={`/${lang}/jobs/${job._id}/apply`}>
-                                                <Button className="w-full bg-blue-900 hover:bg-blue-800">
-                                                    Apply Now
+                                            {appliedJobIds.has(job._id.toString()) ? (
+                                                <Button disabled className="w-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-50">
+                                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                                    Applied
                                                 </Button>
-                                            </Link>
+                                            ) : (
+                                                <Link href={`/${lang}/jobs/${job._id}/apply`}>
+                                                    <Button className="w-full bg-blue-900 hover:bg-blue-800">
+                                                        Apply Now
+                                                    </Button>
+                                                </Link>
+                                            )}
                                             <Link href={`/${lang}/jobs/${job._id}`}>
                                                 <Button variant="outline" className="w-full">
                                                     View Details

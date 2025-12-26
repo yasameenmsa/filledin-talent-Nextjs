@@ -28,7 +28,7 @@ export async function GET(
     }
 
     return NextResponse.json({
-      id: (file._id as any).toString(),
+      id: String(file._id),
       filename: file.filename,
       originalName: file.originalName,
       url: file.url,
@@ -37,22 +37,22 @@ export async function GET(
       mimeType: file.mimeType,
       fileType: file.fileType,
       uploadedBy: {
-        id: (file.uploadedBy as any)._id?.toString(),
-        name: (file.uploadedBy as any).name,
-        email: (file.uploadedBy as any).email,
+        id: String((file.uploadedBy as unknown as { _id: string })._id),
+        name: (file.uploadedBy as unknown as { name: string }).name,
+        email: (file.uploadedBy as unknown as { email: string }).email,
       },
       userId: file.userId ? {
-        id: (file.userId as any)._id?.toString(),
-        name: (file.userId as any).name,
-        email: (file.userId as any).email,
+        id: String((file.userId as unknown as { _id: string })._id),
+        name: (file.userId as unknown as { name: string }).name,
+        email: (file.userId as unknown as { email: string }).email,
       } : null,
       jobId: file.jobId ? {
-        id: (file.jobId as any)._id?.toString(),
-        title: (file.jobId as any).title,
+        id: String((file.jobId as unknown as { _id: string })._id),
+        title: (file.jobId as unknown as { title: string }).title,
       } : null,
       companyId: file.companyId ? {
-        id: (file.companyId as any)._id?.toString(),
-        name: (file.companyId as any).name,
+        id: String((file.companyId as unknown as { _id: string })._id),
+        name: (file.companyId as unknown as { name: string }).name,
       } : null,
       isPublic: file.isPublic,
       metadata: file.metadata,
@@ -81,7 +81,7 @@ export async function PUT(
 
     const { originalName, isPublic, metadata } = body;
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
 
     if (originalName !== undefined) {
       updateData.originalName = originalName;
@@ -111,7 +111,7 @@ export async function PUT(
     return NextResponse.json({
       message: 'File updated successfully',
       file: {
-        id: (file._id as any).toString(),
+        id: String(file._id),
         filename: file.filename,
         originalName: file.originalName,
         isPublic: file.isPublic,

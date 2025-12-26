@@ -253,7 +253,7 @@ UserSchema.methods.incLoginAttempts = async function (): Promise<IUser> {
   }
 
   // Otherwise, increment attempts
-  const updates: any = { $inc: { loginAttempts: 1 } };
+  const updates: { $inc: { loginAttempts: number }; $set?: { lockUntil: Date } } = { $inc: { loginAttempts: 1 } };
 
   // Lock the account if we've reached max attempts
   const maxAttempts = authConfig.lockout.maxAttempts;

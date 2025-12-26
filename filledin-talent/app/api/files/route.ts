@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build query
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (fileType !== 'all') {
       query.fileType = fileType;
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build sort
-    const sort: any = {};
+    const sort: Record<string, 1 | -1> = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     // Get total count
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
 
     // Format response
     const filesResponse: FileResponse[] = files.map(file => ({
-      id: (file._id as any).toString(),
+      id: String(file._id),
       filename: file.filename,
       originalName: file.originalName,
       url: file.url,
@@ -91,8 +91,8 @@ export async function GET(request: NextRequest) {
       mimeType: file.mimeType,
       fileType: file.fileType,
       uploadedBy: {
-        id: (file.uploadedBy as any)._id?.toString() || '',
-        name: (file.uploadedBy as any).name || 'Unknown User',
+        id: (file.uploadedBy as { _id: unknown })._id?.toString() || '',
+        name: (file.uploadedBy as { name: string }).name || 'Unknown User',
       },
       userId: file.userId?.toString(),
       jobId: file.jobId?.toString(),

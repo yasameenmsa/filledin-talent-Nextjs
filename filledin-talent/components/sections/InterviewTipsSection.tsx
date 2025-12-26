@@ -5,8 +5,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const InterviewTipsSection = () => {
   const { currentLanguage } = useLanguage();
-  
-  const getText = (currentLanguage: string) => {
+
+  const getText = (lang: string) => {
     const translations = {
       en: {
         title: 'Our best tips for smashing your next interview !',
@@ -36,13 +36,13 @@ const InterviewTipsSection = () => {
         question3: '3- صف وقتاً كان عليك فيه حل نزاع في العمل'
       }
     };
-    return translations[currentLanguage as keyof typeof translations] || translations.en;
+    return translations[lang as keyof typeof translations] || translations.en;
   };
 
   const text = getText(currentLanguage);
 
   return (
-    <div 
+    <div
       className="py-16 px-4"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
@@ -54,7 +54,7 @@ const InterviewTipsSection = () => {
             <h2 className="text-4xl font-bold mb-8" style={{ color: '#000' }}>
               {text.title}
             </h2>
-            
+
             <div className="space-y-4 mb-12 text-lg leading-relaxed" style={{ color: '#000' }}>
               <p>{text.intro1}</p>
               <p>{text.intro2}</p>
@@ -74,7 +74,8 @@ const InterviewTipsSection = () => {
           {/* Right Image */}
           <div className="flex-shrink-0 lg:w-[500px]">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <img 
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=900&fit=crop"
                 alt="Job Interview"
                 className="w-full h-auto"

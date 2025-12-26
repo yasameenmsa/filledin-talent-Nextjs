@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2, Upload, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+// import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
@@ -47,6 +47,7 @@ export default function ApplicationForm({ jobId, lang }: ApplicationFormProps) {
         setIsUploading(true);
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('type', 'cv');
 
         try {
             const res = await fetch('/api/upload', {
@@ -89,11 +90,22 @@ export default function ApplicationForm({ jobId, lang }: ApplicationFormProps) {
     const onSubmit = async (data: ApplicationFormData) => {
         setIsSubmitting(true);
         try {
-            // TODO: Implement application submission API
-            // const res = await fetch('/api/applications', { ... });
+            const res = await fetch('/api/applications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jobId,
+                    cvUrl: data.cvUrl,
+                    coverLetter: data.coverLetter,
+                }),
+            });
 
-            // For now, simulate success
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Application failed');
+            }
 
             toast({
                 title: 'Application submitted',

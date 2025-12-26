@@ -76,6 +76,7 @@ const CommitmentSection = () => {
 
           {/* Right Column - Image */}
           <div className="flex items-start">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/business/PrecisionRecruitment.jpg"
               alt="Partnership Team"

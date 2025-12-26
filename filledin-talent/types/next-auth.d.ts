@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+// import NextAuth from 'next-auth';
 
 declare module 'next-auth' {
   interface User {
@@ -22,10 +22,11 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    id: string;
-    email: string;
+    sub?: string;
+    id?: string;
+    email?: string;
     name?: string;
-    role: string;
-    isEmailVerified: boolean;
+    role?: string;
+    isEmailVerified?: boolean;
   }
 }

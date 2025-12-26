@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const InterviewSuccessSection = () => {
   const { currentLanguage } = useLanguage();
-  
+
   const getText = (currentLanguage: string) => {
     const translations = {
       en: {
@@ -51,7 +51,7 @@ const InterviewSuccessSection = () => {
   const text = getText(currentLanguage);
 
   return (
-    <div 
+    <div
       className="py-16 px-4"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
@@ -64,7 +64,7 @@ const InterviewSuccessSection = () => {
             <h2 className="text-5xl font-bold mb-6" style={{ color: '#000' }}>
               {text.title}
             </h2>
-            
+
             <p className="text-lg leading-relaxed mb-8" style={{ color: '#000' }}>
               {text.intro}
             </p>
@@ -116,13 +116,14 @@ const InterviewSuccessSection = () => {
 
           {/* Right Image */}
           <div className="flex-shrink-0 lg:w-[500px]">
-            <div 
+            <div
               className="rounded-lg overflow-hidden shadow-lg"
-              style={{ 
+              style={{
                 background: 'linear-gradient(135deg, #e8e4dc 0%, #d4cfc4 100%)'
               }}
             >
-              <img 
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=800&h=900&fit=crop"
                 alt="Successful Interview"
                 className="w-full h-auto"
@@ -140,7 +141,7 @@ const InterviewSuccessSection = () => {
           <p className="text-lg leading-relaxed mb-6" style={{ color: '#000' }}>
             {text.conclusion}
           </p>
-          
+
           <p className="text-xl font-bold" style={{ color: '#000' }}>
             {text.cta}
           </p>

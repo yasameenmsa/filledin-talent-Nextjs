@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Mail } from 'lucide-react';
 
 const JobSeekersSection = () => {
   const { currentLanguage } = useLanguage();
-  
-  const getText = (currentLanguage: string) => {
+
+  const getText = (lang: string) => {
     const translations = {
       en: {
         forJobSeekers: 'For Job Seekers',
@@ -40,18 +39,18 @@ const JobSeekersSection = () => {
         getInTouch: 'تواصل معنا'
       }
     };
-    return translations[currentLanguage as keyof typeof translations] || translations.en;
+    return translations[lang as keyof typeof translations] || translations.en;
   };
 
   const text = getText(currentLanguage);
 
   return (
-    <div 
+    <div
       className="min-h-screen"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
-   
+
 
       {/* Main Content */}
       <main className="container mx-auto px-8 py-12">
@@ -93,7 +92,8 @@ const JobSeekersSection = () => {
 
           {/* Right - Image */}
           <div className="flex-shrink-0 w-[600px]">
-            <img 
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=1200&h=800&fit=crop"
               alt="Job Search"
               className="w-full h-auto rounded-lg shadow-lg"

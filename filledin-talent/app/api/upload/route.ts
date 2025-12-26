@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import connectDB from '@/lib/db/mongodb';
+
 import File from '@/models/File';
+import { auth } from '@/auth';
 
 // File type configurations
 const FILE_CONFIGS = {
@@ -92,15 +94,29 @@ function sanitizeFileName(fileName: string): string {
 
 export async function POST(request: NextRequest) {
     try {
+        const session = await auth();
         await connectDB();
 
         const formData = await request.formData();
         const file = formData.get('file') as File;
         const type = formData.get('type') as string;
-        const userId = formData.get('userId') as string;
         const jobId = formData.get('jobId') as string;
         const companyId = formData.get('companyId') as string;
-        const uploadedBy = formData.get('uploadedBy') as string;
+
+        // Use session user ID as fallback or primary source
+        const currentUserId = session?.user?.id;
+        const formUserId = formData.get('userId') as string;
+        const formUploadedBy = formData.get('uploadedBy') as string;
+
+        const userId = formUserId || currentUserId;
+        const uploadedBy = formUploadedBy || currentUserId;
+
+        if (!uploadedBy) {
+            return NextResponse.json(
+                { error: 'Unauthorized: User authentication required' },
+                { status: 401 }
+            );
+        }
 
         if (!file) {
             return NextResponse.json(
@@ -209,7 +225,7 @@ export async function POST(request: NextRequest) {
                 size: file.size,
                 mimeType: file.type,
                 fileType: type,
-                uploadedBy: uploadedBy || userId, // Use uploadedBy if provided, otherwise userId
+                uploadedBy: uploadedBy,
                 userId: userId,
                 jobId: jobId,
                 companyId: companyId,

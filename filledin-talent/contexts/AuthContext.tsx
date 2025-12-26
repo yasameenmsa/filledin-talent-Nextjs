@@ -62,13 +62,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const params = useParams();
 
-  const user: UserData | null = session?.user ? {
-    id: session.user.id,
-    _id: session.user.id,
-    email: session.user.email,
-    name: session.user.name,
-    role: session.user.role as 'job_seeker' | 'admin',
-    isEmailVerified: session.user.isEmailVerified,
+  // Type assertion needed because useSession's type doesn't see our next-auth.d.ts augmentation
+  const sessionUser = session?.user as { id?: string; email?: string | null; name?: string | null; role?: string; isEmailVerified?: boolean } | undefined;
+  const user: UserData | null = sessionUser ? {
+    id: sessionUser.id ?? '',
+    _id: sessionUser.id ?? '',
+    email: sessionUser.email ?? '',
+    name: sessionUser.name ?? undefined,
+    role: (sessionUser.role as 'job_seeker' | 'admin') ?? 'job_seeker',
+    isEmailVerified: sessionUser.isEmailVerified ?? false,
   } : null;
 
   const login = async (email: string, password: string) => {

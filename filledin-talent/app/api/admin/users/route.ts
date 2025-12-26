@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build query
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     // Search filter
     if (search) {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build sort
-    const sort: any = {};
+    const sort: Record<string, 1 | -1> = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     // Get total count
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
           await Application.countDocuments({ userId: user._id }) : 0;
 
         const userResponse: UserResponse = {
-          id: (user._id as any).toString(),
+          id: String(user._id),
           name: user.name || user.email.split('@')[0], // Fallback to email prefix
           email: user.email,
           phone: user.phone,
@@ -147,7 +147,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    let updateData: any = {};
+    const updateData: Record<string, unknown> = {};
 
     if (action === 'activate') {
       updateData.isEmailVerified = true;

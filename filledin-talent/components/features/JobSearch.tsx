@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, MapPin, Briefcase, Clock, Filter } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -36,11 +36,11 @@ export default function JobSearch() {
     workingType: '',
     sector: '',
   });
-  
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  
+
   const debouncedKeywords = useDebounce(filters.keywords, 500);
   const { currentLanguage } = useLanguage();
 
@@ -187,7 +187,7 @@ export default function JobSearch() {
     return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
   };
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams({
@@ -206,11 +206,11 @@ export default function JobSearch() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters.keywords, filters.location, filters.category, filters.workingType, filters.sector]);
 
   useEffect(() => {
     fetchJobs();
-  }, [debouncedKeywords, filters.location, filters.category, filters.workingType, filters.sector]);
+  }, [debouncedKeywords, filters.location, filters.category, filters.workingType, filters.sector, fetchJobs]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">

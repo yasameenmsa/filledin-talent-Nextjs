@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Job from '@/models/Job';
-import User from '@/models/User';
+// import User from '@/models/User';
 
 interface JobResponse {
   id: string;
   title: string;
+  description: string;
   company: {
     name: string;
     logo?: string;
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build query
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     // Search filter
     if (search) {
@@ -86,7 +87,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build sort
-    const sort: any = {};
+    const sort: Record<string, 1 | -1> = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     // Get total count
@@ -102,8 +103,9 @@ export async function GET(request: NextRequest) {
 
     // Format response
     const jobsResponse: JobResponse[] = jobs.map(job => ({
-      id: (job._id as any).toString(),
+      id: String(job._id),
       title: job.title,
+      description: job.description,
       company: job.company,
       category: job.category,
       sector: job.sector,
@@ -112,7 +114,7 @@ export async function GET(request: NextRequest) {
       featured: job.featured || false,
       urgent: job.urgent || false,
       postedBy: job.postedBy ? {
-        id: (job.postedBy._id as any).toString(),
+        id: String((job.postedBy as unknown as { _id: string })._id),
         name: job.postedBy.name || job.postedBy.email.split('@')[0],
         email: job.postedBy.email,
       } : {
@@ -161,7 +163,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    let updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     let actionDescription = '';
 
     if (action === 'activate') {

@@ -3,6 +3,7 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface TrendItemProps {
   title: string;
@@ -25,11 +26,12 @@ const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlacehol
     >
       {/* Image */}
       <div className="w-full lg:w-1/2">
-        <div className="aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
-          <img
+        <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
+          <Image
             src={imagePlaceholder}
             alt={title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         </div>
       </div>

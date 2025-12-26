@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, File, X, Check, AlertCircle, Loader2, Trash2, Archive, RotateCcw } from 'lucide-react';
+import { Upload, File, Check, AlertCircle, Loader2, Trash2, Archive, RotateCcw } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
@@ -26,14 +26,12 @@ interface CV {
 interface CVUploadProps {
   onUploadSuccess?: (cvUrl: string) => void;
   onUploadError?: (error: string) => void;
-  currentCvUrl?: string;
   className?: string;
 }
 
 export default function CVUpload({
   onUploadSuccess,
   onUploadError,
-  currentCvUrl,
   className = ''
 }: CVUploadProps) {
   const { user, userData, updateProfile } = useAuth();
@@ -44,7 +42,7 @@ export default function CVUpload({
   const [success, setSuccess] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [cvList, setCvList] = useState<CV[]>([]);
-  const [isLoadingList, setIsLoadingList] = useState(false);
+  // const [isLoadingList, setIsLoadingList] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Delete confirmation state
@@ -69,7 +67,7 @@ export default function CVUpload({
 
   const fetchCVs = async () => {
     try {
-      setIsLoadingList(true);
+      // setIsLoadingList(true);
       const response = await fetch('/api/cv');
       if (response.ok) {
         const data = await response.json();
@@ -78,7 +76,7 @@ export default function CVUpload({
     } catch (error) {
       console.error('Error fetching CVs:', error);
     } finally {
-      setIsLoadingList(false);
+      // setIsLoadingList(false);
     }
   };
 

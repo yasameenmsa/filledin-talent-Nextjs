@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Session } from 'next-auth';
+// import { Session } from 'next-auth';
 import { auth } from '@/auth';
 
 interface SessionTimeoutConfig {
@@ -28,7 +28,7 @@ export class SessionTimeout {
   /**
    * Check if session is expired
    */
-  async checkSessionExpiry(request: NextRequest): Promise<{
+  async checkSessionExpiry(): Promise<{
     isExpired: boolean;
     isIdle: boolean;
     timeRemaining: number;
@@ -36,7 +36,7 @@ export class SessionTimeout {
   }> {
     try {
       const session = await auth();
-      
+
       if (!session) {
         return {
           isExpired: true,
@@ -88,14 +88,14 @@ export class SessionTimeout {
   /**
    * Update last activity timestamp
    */
-  async updateActivity(request: NextRequest): Promise<void> {
+  async updateActivity(): Promise<void> {
     try {
       const session = await auth();
       if (session?.user) {
         // Update last activity in session
         // Note: This would typically be handled by NextAuth callbacks
         // or stored in a database/cache
-        const now = Math.floor(Date.now() / 1000);
+        // const now = Math.floor(Date.now() / 1000);
         // Implementation depends on your session storage strategy
       }
     } catch (error) {
@@ -108,7 +108,7 @@ export class SessionTimeout {
    */
   createMiddleware() {
     return async (request: NextRequest) => {
-      const { isExpired, timeRemaining, shouldWarn } = await this.checkSessionExpiry(request);
+      const { isExpired, timeRemaining, shouldWarn } = await this.checkSessionExpiry();
 
       if (isExpired) {
         // Redirect to login with session expired message
@@ -154,7 +154,7 @@ export class ClientSessionTimeout {
    */
   start(): void {
     this.checkSession();
-    
+
     // Check session status every minute
     setInterval(() => {
       this.checkSession();
@@ -178,7 +178,7 @@ export class ClientSessionTimeout {
       }
 
       const timeRemaining = data.timeRemaining || 0;
-      
+
       // Clear existing timers
       this.clearTimers();
 
@@ -210,7 +210,7 @@ export class ClientSessionTimeout {
    */
   private handleExpiry(): void {
     this.clearTimers();
-    
+
     if (this.onExpiry) {
       this.onExpiry();
     } else {
@@ -224,12 +224,12 @@ export class ClientSessionTimeout {
    */
   private setupActivityListeners(): void {
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
+
     let lastActivity = Date.now();
-    
+
     const activityHandler = () => {
       const now = Date.now();
-      
+
       // Throttle activity updates (max once per minute)
       if (now - lastActivity > 60 * 1000) {
         lastActivity = now;
@@ -266,7 +266,7 @@ export class ClientSessionTimeout {
       clearTimeout(this.warningTimer);
       this.warningTimer = undefined;
     }
-    
+
     if (this.logoutTimer) {
       clearTimeout(this.logoutTimer);
       this.logoutTimer = undefined;
@@ -281,12 +281,12 @@ export class ClientSessionTimeout {
       const response = await fetch('/api/auth/extend-session', {
         method: 'POST',
       });
-      
+
       if (response.ok) {
         this.checkSession(); // Restart monitoring
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('Session extension error:', error);

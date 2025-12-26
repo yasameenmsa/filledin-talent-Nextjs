@@ -5,7 +5,8 @@ import User from '@/models/User';
 import { z } from 'zod';
 
 // Profile validation schema
-const profileUpdateSchema = z.object({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _profileUpdateSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
   phone: z.string().regex(/^[\+]?[1-9][\d]{0,15}$/, 'Invalid phone number').optional().or(z.literal('')),
   location: z.string().max(200, 'Location too long').optional(),
@@ -44,7 +45,7 @@ const profileUpdateSchema = z.object({
   }).optional()
 });
 
-type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
+// type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
 
 export async function GET() {
   try {
@@ -101,7 +102,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const session = await auth();
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -109,10 +110,10 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { profile, cv, ...otherUpdates } = body;
 
-    await dbConnect();
-    
+    await connectDB();
+
     const user = await User.findOne({ email: session.user.email });
-    
+
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }

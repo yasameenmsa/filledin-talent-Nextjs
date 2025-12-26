@@ -1,11 +1,13 @@
 import NextAuth from 'next-auth';
+import type { Session, User as NextAuthUser } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import User from './models/User';
 import dbConnect from './lib/db/mongodb';
 import { resetLoginRateLimit } from './lib/middleware/rate-limiter';
 import { logSecurityEvent, SecurityEventType } from './lib/utils/security-logger';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const authConfig = {
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -65,7 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!isPasswordValid) {
             // Increment failed login attempts (direct update for backward compatibility)
-            const updates: any = { $inc: { loginAttempts: 1 } };
+            const updates: { $inc: { loginAttempts: number }; $set?: { lockUntil: Date } } = { $inc: { loginAttempts: 1 } };
             const currentAttempts = user.loginAttempts || 0;
 
             // Lock the account if we've reached max attempts (5)
@@ -134,16 +136,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: NextAuthUser & { role?: string; isEmailVerified?: boolean } }) {
       if (user) {
         token.role = user.role;
         token.isEmailVerified = user.isEmailVerified;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
-        session.user.id = token.sub!;
+        session.user.id = token.sub ?? '';
         session.user.role = token.role as string;
         session.user.isEmailVerified = token.isEmailVerified as boolean;
       }
@@ -154,6 +156,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: '/login',
   },
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-});
+};
+
+// NextAuth v5 type workaround - the default export is callable but TypeScript bundler resolution has issues
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const { handlers, signIn, signOut, auth } = (NextAuth as any)(authConfig);
