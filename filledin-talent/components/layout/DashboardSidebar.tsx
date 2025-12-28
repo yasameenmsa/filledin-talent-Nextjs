@@ -142,8 +142,11 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
             </div>
             <nav className="mt-8 flex-1 space-y-1 px-2">
               {navigation.map((item) => {
-                const isActive = pathname === item.href ||
-                  (item.href !== `/${lang}/${userRole}` && pathname.startsWith(item.href));
+                const isRootPath = item.href === `/${lang}/jobseeker` || item.href === `/${lang}/admin`;
+
+                const isActive = isRootPath
+                  ? pathname === item.href
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
                 return (
                   <Link
@@ -207,8 +210,11 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
           </div>
           <nav className="mt-4 flex-1 space-y-1 px-2 pb-4">
             {navigation.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== `/${lang}/${userRole}` && pathname.startsWith(item.href));
+              const isRootPath = item.href === `/${lang}/jobseeker` || item.href === `/${lang}/admin`;
+
+              const isActive = isRootPath
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
               return (
                 <Link

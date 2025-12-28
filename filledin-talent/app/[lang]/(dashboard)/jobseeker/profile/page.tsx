@@ -6,10 +6,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ProfileForm from '@/components/forms/ProfileForm';
 import CVUpload from '@/components/features/CVUpload';
-import { 
-  User, 
-  FileText, 
-  Settings, 
+import {
+  User,
+  FileText,
+  Settings,
   Mail,
   Phone,
   MapPin,
@@ -17,14 +17,37 @@ import {
   Globe
 } from 'lucide-react';
 
-export default function JobseekerProfilePage({ params }: { params: Promise<{ lang: string }> }) {
-  const { userData } = useAuth();
-  // const resolvedParams = React.use(params);
+export default function JobseekerProfilePage() {
+  const { userData: sessionData } = useAuth();
   const { currentLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<'profile' | 'cv'>('profile');
+  const [fullProfile, setFullProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch full profile data
+  React.useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const res = await fetch('/api/user/profile');
+        if (res.ok) {
+          const data = await res.json();
+          setFullProfile(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProfile();
+  }, []);
+
+  // Use fullProfile if available, otherwise fall back to sessionData (which might be incomplete)
+  const displayData = fullProfile || sessionData;
 
   // Inline translation function
   const getText = (key: string, params?: Record<string, string | number>): string => {
+    // ... (rest of getText implementation is unchanged, but we need to keep it inside the component)
     const translations: Record<string, Record<string, string>> = {
       en: {
         'profile.profileInformation': 'Profile Information',
@@ -134,23 +157,23 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
         'profile.cvTip3': 'Utilisez des verbes d\'action et quantifiez les résultats',
         'profile.cvTip4': 'Adaptez votre CV pour chaque candidature',
         'profile.cvTip5': 'Relisez pour l\'orthographe et la grammaire',
-        'profile.skillsOverview': 'Aperçu des compétences',
+        'profile.cvTip6': 'Aperçu des compétences',
         'profile.recentExperience': 'Expérience récente'
       }
     };
 
     let text = translations[currentLanguage]?.[key] || translations['en'][key] || key;
-    
+
     if (params) {
       Object.entries(params).forEach(([paramKey, value]) => {
         text = text.replace(`{{${paramKey}}}`, String(value));
       });
     }
-    
+
     return text;
   };
 
-  if (!userData) {
+  if (loading && !sessionData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
@@ -180,9 +203,9 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                  {userData.profile?.profileImage ? (
+                  {displayData?.profile?.profileImage ? (
                     <Image
-                      src={userData.profile.profileImage}
+                      src={displayData.profile.profileImage}
                       alt="Profile"
                       className="w-16 h-16 rounded-full object-cover"
                       width={64}
@@ -194,14 +217,14 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
                 </div>
                 <div className="ml-4">
                   <h1 className="text-2xl font-bold text-gray-900">
-                    {userData.profile?.firstName && userData.profile?.lastName
-                      ? `${userData.profile.firstName} ${userData.profile.lastName}`
+                    {displayData?.profile?.firstName && displayData?.profile?.lastName
+                      ? `${displayData.profile.firstName} ${displayData.profile.lastName}`
                       : getText('profile.completeYourProfile')
                     }
                   </h1>
                   <p className="text-gray-600">
-                    {userData.profile?.position || getText('profile.jobSeeker')}
-                    {userData.profile?.company && ` ${getText('profile.at')} ${userData.profile.company}`}
+                    {displayData?.profile?.position || getText('profile.jobSeeker')}
+                    {displayData?.profile?.company && ` ${getText('profile.at')} ${displayData.profile.company}`}
                   </p>
                 </div>
               </div>
@@ -212,29 +235,29 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
 
             {/* Quick Info */}
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {userData.email && (
+              {displayData?.email && (
                 <div className="flex items-center text-sm text-gray-600">
                   <Mail className="w-4 h-4 mr-2" />
-                  {userData.email}
+                  {displayData.email}
                 </div>
               )}
-              {userData.profile?.phone && (
+              {displayData?.profile?.phone && (
                 <div className="flex items-center text-sm text-gray-600">
                   <Phone className="w-4 h-4 mr-2" />
-                  {userData.profile.phone}
+                  {displayData.profile.phone}
                 </div>
               )}
-              {userData.profile?.location && (
+              {displayData?.profile?.location && (
                 <div className="flex items-center text-sm text-gray-600">
                   <MapPin className="w-4 h-4 mr-2" />
-                  {userData.profile.location}
+                  {displayData.profile.location}
                 </div>
               )}
-              {userData.profile?.website && (
+              {displayData?.profile?.website && (
                 <div className="flex items-center text-sm text-gray-600">
                   <Globe className="w-4 h-4 mr-2" />
                   <a
-                    href={userData.profile.website}
+                    href={displayData.profile.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800"
@@ -250,13 +273,13 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">{getText('profile.profileCompletion')}</span>
                 <span className="font-medium text-gray-900">
-                  {calculateProfileCompletion(userData)}%
+                  {displayData ? calculateProfileCompletion(displayData) : 0}%
                 </span>
               </div>
               <div className="mt-2 bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${calculateProfileCompletion(userData)}%` }}
+                  style={{ width: `${displayData ? calculateProfileCompletion(displayData) : 0}%` }}
                 />
               </div>
             </div>
@@ -295,8 +318,14 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
           {activeTab === 'profile' && (
             <div>
               <ProfileForm
-                onSuccess={() => {
-                  // Profile updated successfully
+                initialData={fullProfile}
+                onSuccess={async () => {
+                  // Refetch profile on success to update header/other sections
+                  const res = await fetch('/api/user/profile');
+                  if (res.ok) {
+                    const data = await res.json();
+                    setFullProfile(data);
+                  }
                 }}
               />
             </div>
@@ -343,13 +372,13 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
         </div>
 
         {/* Skills and Experience Summary */}
-        {userData.profile?.skills && userData.profile.skills.length > 0 && (
+        {displayData?.profile?.skills && displayData.profile.skills.length > 0 && (
           <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               {getText('profile.skillsOverview')}
             </h3>
             <div className="flex flex-wrap gap-2">
-              {userData.profile.skills.map((skill, index) => (
+              {displayData.profile.skills.map((skill: string, index: number) => (
                 <span
                   key={index}
                   className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
@@ -362,14 +391,14 @@ export default function JobseekerProfilePage({ params }: { params: Promise<{ lan
         )}
 
         {/* Recent Experience */}
-        {userData.profile?.experience && userData.profile.experience.length > 0 && (
+        {displayData?.profile?.experience && displayData.profile.experience.length > 0 && (
           <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Briefcase className="w-5 h-5 mr-2" />
               {getText('profile.recentExperience')}
             </h3>
             <div className="space-y-4">
-              {userData.profile.experience.slice(0, 3).map((exp, index) => (
+              {displayData.profile.experience.slice(0, 3).map((exp: any, index: number) => (
                 <div key={index} className="border-l-4 border-blue-200 pl-4">
                   <h4 className="font-medium text-gray-900">{exp.position}</h4>
                   <p className="text-gray-600">{exp.company}</p>

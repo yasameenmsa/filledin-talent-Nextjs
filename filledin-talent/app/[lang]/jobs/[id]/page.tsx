@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { MapPin, Briefcase, Clock, DollarSign, Calendar, Building } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import SaveJobButton from '@/components/jobs/SaveJobButton';
 import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
@@ -68,10 +69,11 @@ export default async function JobDetailsPage({
                     {/* Job Image */}
                     {job.imageUrl && (
                         <div className="w-full h-64 relative">
-                            <img
+                            <Image
                                 src={job.imageUrl}
                                 alt={translatedJob.title}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </div>
                     )}

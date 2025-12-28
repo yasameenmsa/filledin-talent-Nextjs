@@ -102,6 +102,76 @@ export default function CVUpload({
         en: 'Failed to upload CV. Please try again.',
         ar: 'فشل في تحميل السيرة الذاتية. يرجى المحاولة مرة أخرى.',
         fr: 'Échec du téléchargement du CV. Veuillez réessayer.'
+      },
+      'cv.uploadTitle': {
+        en: 'Upload your CV/Resume',
+        ar: 'رفع السيرة الذاتية',
+        fr: 'Téléchargez votre CV'
+      },
+      'cv.uploadDesc': {
+        en: 'Drag and drop your file here, or click to browse',
+        ar: 'اسحب وأفلت الملف هنا، أو انقر للتصفح',
+        fr: 'Glissez et déposez votre fichier ici, ou cliquez pour parcourir'
+      },
+      'cv.uploadSupport': {
+        en: 'Supports PDF, DOC, DOCX (max 5MB)',
+        ar: 'يدعم PDF, DOC, DOCX (بحد أقصى 5 ميجابايت)',
+        fr: 'Supporte PDF, DOC, DOCX (max 5 Mo)'
+      },
+      'cv.uploading': {
+        en: 'Uploading CV...',
+        ar: 'جاري رفع السيرة الذاتية...',
+        fr: 'Téléchargement du CV en cours...'
+      },
+      'cv.uploadComplete': {
+        en: 'complete',
+        ar: 'مكتمل',
+        fr: 'complété'
+      },
+      'cv.activeCV': {
+        en: 'Active CV',
+        ar: 'السيرة الذاتية النشطة',
+        fr: 'CV Actif'
+      },
+      'cv.currentCV': {
+        en: 'Current CV',
+        ar: 'السيرة الذاتية الحالية',
+        fr: 'CV Actuel'
+      },
+      'cv.view': {
+        en: 'View',
+        ar: 'عرض',
+        fr: 'Voir'
+      },
+      'cv.uploaded': {
+        en: 'Uploaded:',
+        ar: 'تاريخ الرفع:',
+        fr: 'Téléchargé le :'
+      },
+      'cv.archivedCVs': {
+        en: 'Archived CVs',
+        ar: 'السير الذاتية المؤرشفة',
+        fr: 'CVs Archivés'
+      },
+      'cv.archive': {
+        en: 'Archive CV',
+        ar: 'أرشفة السيرة الذاتية',
+        fr: 'Archiver le CV'
+      },
+      'cv.delete': {
+        en: 'Delete CV',
+        ar: 'حذف السيرة الذاتية',
+        fr: 'Supprimer le CV'
+      },
+      'cv.restore': {
+        en: 'Restore to Active',
+        ar: 'استعادة كنشط',
+        fr: 'Restaurer comme actif'
+      },
+      'cv.deletePermanent': {
+        en: 'Delete Permanently',
+        ar: 'حذف نهائي',
+        fr: 'Supprimer définitivement'
       }
     };
 
@@ -359,7 +429,7 @@ export default function CVUpload({
               <Loader2 className="w-8 h-8 text-blue-600 mx-auto animate-spin" />
               <div>
                 <p className="text-sm font-medium text-gray-900">
-                  Uploading CV...
+                  {getText('cv.uploading')}
                 </p>
                 <div className="mt-2 bg-gray-200 rounded-full h-2">
                   <div
@@ -368,7 +438,7 @@ export default function CVUpload({
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  {uploadProgress}% complete
+                  {uploadProgress}% {getText('cv.uploadComplete')}
                 </p>
               </div>
             </div>
@@ -377,13 +447,13 @@ export default function CVUpload({
               <Upload className="w-8 h-8 text-gray-400 mx-auto" />
               <div>
                 <p className="text-sm font-medium text-gray-900">
-                  Upload your CV/Resume
+                  {getText('cv.uploadTitle')}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Drag and drop your file here, or click to browse
+                  {getText('cv.uploadDesc')}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Supports PDF, DOC, DOCX (max 5MB)
+                  {getText('cv.uploadSupport')}
                 </p>
               </div>
             </div>
@@ -394,14 +464,14 @@ export default function CVUpload({
       {/* Active CV Display */}
       {hasActiveCv && (
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-700">Active CV</h3>
+          <h3 className="text-sm font-medium text-gray-700">{getText('cv.activeCV')}</h3>
           <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <File className="w-5 h-5 text-green-600 mr-2" />
                 <div>
                   <p className="text-sm font-medium text-green-800">
-                    {activeCv?.originalName || 'Current CV'}
+                    {activeCv?.originalName || getText('cv.currentCV')}
                   </p>
                   <div className="flex space-x-3 mt-1">
                     <a
@@ -410,11 +480,11 @@ export default function CVUpload({
                       rel="noopener noreferrer"
                       className="text-xs text-green-600 hover:text-green-800 underline"
                     >
-                      View
+                      {getText('cv.view')}
                     </a>
                     <span className="text-xs text-gray-400">|</span>
                     <span className="text-xs text-gray-500">
-                      Uploaded: {activeCv ? new Date(activeCv.createdAt).toLocaleDateString() : 'Unknown'}
+                      {getText('cv.uploaded')} {activeCv ? new Date(activeCv.createdAt).toLocaleDateString() : 'Unknown'}
                     </span>
                   </div>
                 </div>
@@ -424,7 +494,7 @@ export default function CVUpload({
                   <button
                     onClick={() => toggleArchive(activeCv._id, true)}
                     className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                    title="Archive CV"
+                    title={getText('cv.archive')}
                   >
                     <Archive className="w-4 h-4" />
                   </button>
@@ -432,7 +502,7 @@ export default function CVUpload({
                 <button
                   onClick={() => activeCv ? handleDeleteClick(activeCv._id) : null}
                   className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                  title="Delete CV"
+                  title={getText('cv.delete')}
                   disabled={!activeCv}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -446,7 +516,7 @@ export default function CVUpload({
       {/* Archived CVs List */}
       {archivedCVs.length > 0 && (
         <div className="space-y-2 pt-4 border-t border-gray-100">
-          <h3 className="text-sm font-medium text-gray-500">Archived CVs</h3>
+          <h3 className="text-sm font-medium text-gray-500">{getText('cv.archivedCVs')}</h3>
           <div className="space-y-2">
             {archivedCVs.map((cv) => (
               <div key={cv._id} className="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
@@ -463,14 +533,14 @@ export default function CVUpload({
                   <button
                     onClick={() => toggleArchive(cv._id, false)}
                     className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
-                    title="Restore to Active"
+                    title={getText('cv.restore')}
                   >
                     <RotateCcw className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteClick(cv._id)}
                     className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                    title="Delete Permanently"
+                    title={getText('cv.deletePermanent')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

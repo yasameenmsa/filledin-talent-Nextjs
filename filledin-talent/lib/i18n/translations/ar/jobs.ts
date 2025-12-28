@@ -58,5 +58,9 @@ export const jobs = {
         contract: 'عقد',
         remote: 'عن بعد',
         hybrid: 'هجين',
+    },
+    actions: {
+        save: 'حفظ الوظيفة',
+        saved: 'محفوظة',
     }
 };

@@ -58,5 +58,9 @@ export const jobs = {
         contract: 'Contrat',
         remote: 'À distance',
         hybrid: 'Hybride',
+    },
+    actions: {
+        save: 'Sauvegarder l\'emploi',
+        saved: 'Sauvegardé',
     }
 };

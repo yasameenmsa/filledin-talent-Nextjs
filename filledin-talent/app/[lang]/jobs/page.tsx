@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin, Briefcase, Clock, DollarSign, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JobSearchSection from '@/components/sections/JobSearchSection';
@@ -124,11 +125,12 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                                     <div className="flex flex-col md:flex-row gap-6">
                                         {/* Job Image */}
                                         {job.imageUrl && (
-                                            <div className="w-full md:w-48 h-32 flex-shrink-0">
-                                                <img
+                                            <div className="w-full md:w-48 h-32 flex-shrink-0 relative">
+                                                <Image
                                                     src={job.imageUrl}
                                                     alt={translatedJob.title}
-                                                    className="w-full h-full object-cover rounded-lg"
+                                                    fill
+                                                    className="object-cover rounded-lg"
                                                 />
                                             </div>
                                         )}
