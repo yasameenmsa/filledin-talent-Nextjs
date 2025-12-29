@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  Bookmark, 
-  BookmarkX, 
-  Search, 
+import {
+  Bookmark,
+  BookmarkX,
+  Search,
   // Filter,
   MapPin,
   Building,
@@ -167,13 +167,13 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
     };
 
     let text = translations[currentLanguage]?.[key] || translations['en'][key] || key;
-    
+
     if (params) {
       Object.entries(params).forEach(([paramKey, paramValue]) => {
         text = text.replace(`{{${paramKey}}}`, String(paramValue));
       });
     }
-    
+
     return text;
   };
 
@@ -201,7 +201,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
       const response = await fetch(`/api/saved-jobs/${jobId}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         setSavedJobs(prev => prev.filter(savedJob => savedJob.job._id !== jobId));
       }
@@ -212,13 +212,13 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
 
   const filteredJobs = savedJobs.filter(savedJob => {
     const matchesSearch = savedJob.job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         savedJob.job.company.name.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesFilter = filterType === 'all' || 
-                         (filterType === 'active' && savedJob.job.isActive) ||
-                         (filterType === 'inactive' && !savedJob.job.isActive) ||
-                         savedJob.job.jobType.toLowerCase() === filterType.toLowerCase();
-    
+      savedJob.job.company.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesFilter = filterType === 'all' ||
+      (filterType === 'active' && savedJob.job.isActive) ||
+      (filterType === 'inactive' && !savedJob.job.isActive) ||
+      savedJob.job.jobType.toLowerCase() === filterType.toLowerCase();
+
     return matchesSearch && matchesFilter;
   });
 
@@ -239,11 +239,11 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
 
   const formatSalary = (salary: { min?: number; max?: number; currency?: string } | null | undefined) => {
     if (!salary || (!salary.min && !salary.max)) return getText('savedJobs.salaryNotSpecified');
-    
+
     const currency = salary.currency || 'USD';
     const min = salary.min ? `${currency} ${salary.min.toLocaleString()}` : '';
     const max = salary.max ? `${currency} ${salary.max.toLocaleString()}` : '';
-    
+
     if (min && max) return `${min} - ${max}`;
     if (min) return `${getText('savedJobs.salaryFrom')} ${min}`;
     if (max) return `${getText('savedJobs.salaryUpTo')} ${max}`;
@@ -330,7 +330,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                 />
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <select
                 value={filterType}
@@ -345,7 +345,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                 <option value="contract">{getText('savedJobs.contract')}</option>
                 <option value="remote">{getText('savedJobs.remote')}</option>
               </select>
-              
+
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -368,7 +368,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
               {savedJobs.length === 0 ? getText('savedJobs.noSavedJobs') : getText('savedJobs.noMatchingJobs')}
             </h3>
             <p className="text-gray-600 mb-6">
-              {savedJobs.length === 0 
+              {savedJobs.length === 0
                 ? getText('savedJobs.startExploring')
                 : getText('savedJobs.tryAdjusting')
               }
@@ -405,13 +405,12 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center space-x-2">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            savedJob.job.isActive 
-                              ? 'bg-green-100 text-green-800' 
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${savedJob.job.isActive
+                              ? 'bg-green-100 text-green-800'
                               : 'bg-red-100 text-red-800'
-                          }`}>
+                            }`}>
                             {savedJob.job.isActive ? getText('savedJobs.active') : getText('savedJobs.expired')}
                           </span>
                           <button
@@ -446,7 +445,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <Link
-                            href={`/jobs/${savedJob.job._id}`}
+                            href={`/${resolvedParams.lang}/jobs/${savedJob.job._id}`}
                             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                           >
                             <Eye className="w-4 h-4 mr-2" />
@@ -454,7 +453,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                           </Link>
                           {savedJob.job.isActive && (
                             <Link
-                              href={`/jobs/${savedJob.job._id}#apply`}
+                              href={`/${resolvedParams.lang}/jobs/${savedJob.job._id}#apply`}
                               className="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50"
                             >
                               <ExternalLink className="w-4 h-4 mr-2" />
@@ -462,7 +461,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                             </Link>
                           )}
                         </div>
-                        
+
                         <div className="text-sm text-gray-500">
                           {getText('savedJobs.posted')} {formatDate(new Date(savedJob.job.postedAt), resolvedParams.lang)}
                         </div>

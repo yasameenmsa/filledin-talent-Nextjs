@@ -154,7 +154,6 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
                     href={item.href}
                     className={cn(
                       'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors',
-                      isRTL && 'flex-row-reverse justify-end',
                       isActive
                         ? cn(
                           'bg-blue-50 text-blue-700 border-blue-700',
@@ -223,7 +222,6 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
                   onClick={onClose}
                   className={cn(
                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors',
-                    isRTL && 'flex-row-reverse justify-end',
                     isActive
                       ? cn(
                         'bg-blue-50 text-blue-700 border-blue-700',

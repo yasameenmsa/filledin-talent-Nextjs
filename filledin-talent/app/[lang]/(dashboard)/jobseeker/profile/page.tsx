@@ -9,12 +9,14 @@ import CVUpload from '@/components/features/CVUpload';
 import {
   User,
   FileText,
-  Settings,
   Mail,
   Phone,
   MapPin,
   Briefcase,
-  Globe
+  Globe,
+  Sparkles,
+  Award,
+  GraduationCap
 } from 'lucide-react';
 
 export default function JobseekerProfilePage() {
@@ -47,7 +49,6 @@ export default function JobseekerProfilePage() {
 
   // Inline translation function
   const getText = (key: string, params?: Record<string, string | number>): string => {
-    // ... (rest of getText implementation is unchanged, but we need to keep it inside the component)
     const translations: Record<string, Record<string, string>> = {
       en: {
         'profile.profileInformation': 'Profile Information',
@@ -84,7 +85,8 @@ export default function JobseekerProfilePage() {
         'profile.cvTip4': 'Tailor your CV for each application',
         'profile.cvTip5': 'Proofread for spelling and grammar',
         'profile.skillsOverview': 'Skills Overview',
-        'profile.recentExperience': 'Recent Experience'
+        'profile.recentExperience': 'Recent Experience',
+        'profile.present': 'Present'
       },
       ar: {
         'profile.profileInformation': 'معلومات الملف الشخصي',
@@ -121,7 +123,8 @@ export default function JobseekerProfilePage() {
         'profile.cvTip4': 'خصص سيرتك الذاتية لكل طلب',
         'profile.cvTip5': 'راجع الإملاء والقواعد النحوية',
         'profile.skillsOverview': 'نظرة عامة على المهارات',
-        'profile.recentExperience': 'الخبرة الحديثة'
+        'profile.recentExperience': 'الخبرة الحديثة',
+        'profile.present': 'الحالي'
       },
       fr: {
         'profile.profileInformation': 'Informations du profil',
@@ -158,7 +161,8 @@ export default function JobseekerProfilePage() {
         'profile.cvTip4': 'Adaptez votre CV pour chaque candidature',
         'profile.cvTip5': 'Relisez pour l\'orthographe et la grammaire',
         'profile.cvTip6': 'Aperçu des compétences',
-        'profile.recentExperience': 'Expérience récente'
+        'profile.recentExperience': 'Expérience récente',
+        'profile.present': 'Présent'
       }
     };
 
@@ -175,8 +179,13 @@ export default function JobseekerProfilePage() {
 
   if (loading && !sessionData) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-indigo-200 rounded-full animate-spin border-t-indigo-600"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-indigo-600 animate-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -194,122 +203,162 @@ export default function JobseekerProfilePage() {
     },
   ];
 
+  const completionPercentage = displayData ? calculateProfileCompletion(displayData) : 0;
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+        {/* Professional Header Card */}
         <div className="mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                  {displayData?.profile?.profileImage ? (
-                    <Image
-                      src={displayData.profile.profileImage}
-                      alt="Profile"
-                      className="w-16 h-16 rounded-full object-cover"
-                      width={64}
-                      height={64}
-                    />
-                  ) : (
-                    <User className="w-8 h-8 text-blue-600" />
-                  )}
+          <div className="relative overflow-hidden bg-white rounded-2xl shadow-xl border border-gray-100">
+            {/* Gradient Background Decoration */}
+            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 opacity-90"></div>
+            <div className="absolute top-0 left-0 right-0 h-32 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzLTItMi00LTJjMCAwLTItMi0yLTRzMi00IDItNGMtMiAwLTQtMi00LTJzMiAyIDQgMmMwIDAgMiAyIDIgNHMtMiA0LTIgNGMyIDAgNCAxIDQgMnMtMiAyLTQgMmMwIDAtMiAyLTIgNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
+
+            <div className="relative px-6 pt-20 pb-6">
+              {/* Profile Avatar */}
+              <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
+                <div className="relative -mt-16 md:-mt-12">
+                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-1 shadow-2xl">
+                    <div className="w-full h-full rounded-xl bg-white flex items-center justify-center overflow-hidden">
+                      {displayData?.profile?.profileImage ? (
+                        <Image
+                          src={displayData.profile.profileImage}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                          width={112}
+                          height={112}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
+                          <User className="w-12 h-12 text-indigo-600" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Status Indicator */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-white shadow-lg"></div>
                 </div>
-                <div className="ml-4">
-                  <h1 className="text-2xl font-bold text-gray-900">
+
+                <div className="flex-1 text-center md:text-start">
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                     {displayData?.profile?.firstName && displayData?.profile?.lastName
                       ? `${displayData.profile.firstName} ${displayData.profile.lastName}`
                       : getText('profile.completeYourProfile')
                     }
                   </h1>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 mt-1 flex items-center justify-center md:justify-start gap-2">
+                    <Briefcase className="w-4 h-4" />
                     {displayData?.profile?.position || getText('profile.jobSeeker')}
-                    {displayData?.profile?.company && ` ${getText('profile.at')} ${displayData.profile.company}`}
+                    {displayData?.profile?.company && (
+                      <span className="text-gray-400">
+                        {getText('profile.at')} <span className="text-indigo-600 font-medium">{displayData.profile.company}</span>
+                      </span>
+                    )}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Settings className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
 
-            {/* Quick Info */}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {displayData?.email && (
-                <div className="flex items-center text-sm text-gray-600">
-                  <Mail className="w-4 h-4 mr-2" />
-                  {displayData.email}
+                {/* Quick Stats */}
+                <div className="flex gap-4">
+                  <div className="text-center px-4 py-2 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      {displayData?.profile?.skills?.length || 0}
+                    </div>
+                    <div className="text-xs text-gray-500 font-medium">{getText('profile.skills')}</div>
+                  </div>
+                  <div className="text-center px-4 py-2 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      {displayData?.profile?.experience?.length || 0}
+                    </div>
+                    <div className="text-xs text-gray-500 font-medium">{getText('profile.experience')}</div>
+                  </div>
                 </div>
-              )}
-              {displayData?.profile?.phone && (
-                <div className="flex items-center text-sm text-gray-600">
-                  <Phone className="w-4 h-4 mr-2" />
-                  {displayData.profile.phone}
-                </div>
-              )}
-              {displayData?.profile?.location && (
-                <div className="flex items-center text-sm text-gray-600">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  {displayData.profile.location}
-                </div>
-              )}
-              {displayData?.profile?.website && (
-                <div className="flex items-center text-sm text-gray-600">
-                  <Globe className="w-4 h-4 mr-2" />
+              </div>
+
+              {/* Quick Info Pills */}
+              <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+                {displayData?.email && (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-full text-sm text-gray-600 transition-all duration-200 hover:shadow-md">
+                    <Mail className="w-4 h-4 text-indigo-500" />
+                    {displayData.email}
+                  </div>
+                )}
+                {displayData?.profile?.phone && (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-full text-sm text-gray-600 transition-all duration-200 hover:shadow-md">
+                    <Phone className="w-4 h-4 text-purple-500" />
+                    {displayData.profile.phone}
+                  </div>
+                )}
+                {displayData?.profile?.location && (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-full text-sm text-gray-600 transition-all duration-200 hover:shadow-md">
+                    <MapPin className="w-4 h-4 text-pink-500" />
+                    {displayData.profile.location}
+                  </div>
+                )}
+                {displayData?.profile?.website && (
                   <a
                     href={displayData.profile.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 rounded-full text-sm text-indigo-600 transition-all duration-200 hover:shadow-md"
                   >
+                    <Globe className="w-4 h-4" />
                     {getText('profile.website')}
                   </a>
-                </div>
-              )}
-            </div>
-
-            {/* Profile Completion */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">{getText('profile.profileCompletion')}</span>
-                <span className="font-medium text-gray-900">
-                  {displayData ? calculateProfileCompletion(displayData) : 0}%
-                </span>
+                )}
               </div>
-              <div className="mt-2 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${displayData ? calculateProfileCompletion(displayData) : 0}%` }}
-                />
+
+              {/* Profile Completion Progress */}
+              <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-indigo-50/50 rounded-xl border border-gray-100">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Award className="w-4 h-4 text-indigo-500" />
+                    {getText('profile.profileCompletion')}
+                  </span>
+                  <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    {completionPercentage}%
+                  </span>
+                </div>
+                <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-700 ease-out"
+                    style={{ width: `${completionPercentage}%` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">{getText('profile.completeProfile')}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Modern Tabs */}
         <div className="mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`
-                      flex items-center py-2 px-1 border-b-2 font-medium text-sm
-                      ${activeTab === tab.id
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                      }
-                    `}
-                  >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
+          <div className="flex gap-2 p-1.5 bg-gray-100/80 rounded-xl w-fit">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    relative flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-300
+                    ${isActive
+                      ? 'bg-white text-indigo-600 shadow-md'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                    }
+                  `}
+                >
+                  <Icon className={`w-4 h-4 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`} />
+                  {tab.label}
+                  {isActive && (
+                    <span className="absolute inset-x-0 -bottom-1.5 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -320,7 +369,6 @@ export default function JobseekerProfilePage() {
               <ProfileForm
                 initialData={fullProfile}
                 onSuccess={async () => {
-                  // Refetch profile on success to update header/other sections
                   const res = await fetch('/api/user/profile');
                   if (res.ok) {
                     const data = await res.json();
@@ -332,13 +380,15 @@ export default function JobseekerProfilePage() {
           )}
 
           {activeTab === 'cv' && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                  <FileText className="w-5 h-5 mr-2" />
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50/50 to-purple-50/50">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg">
+                    <FileText className="w-5 h-5 text-white" />
+                  </div>
                   {getText('profile.cvResumeManagement')}
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-600 mt-2">
                   {getText('profile.uploadManageCv')}
                 </p>
               </div>
@@ -353,17 +403,21 @@ export default function JobseekerProfilePage() {
                   }}
                 />
 
-                {/* CV Tips */}
-                <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h3 className="font-medium text-blue-900 mb-2">
+                {/* CV Tips Card */}
+                <div className="mt-8 p-5 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border border-indigo-100 rounded-xl">
+                  <h3 className="font-semibold text-indigo-900 mb-3 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
                     {getText('profile.cvTips')}
                   </h3>
-                  <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• {getText('profile.cvTip1')}</li>
-                    <li>• {getText('profile.cvTip2')}</li>
-                    <li>• {getText('profile.cvTip3')}</li>
-                    <li>• {getText('profile.cvTip4')}</li>
-                    <li>• {getText('profile.cvTip5')}</li>
+                  <ul className="space-y-2">
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <li key={num} className="flex items-start gap-2 text-sm text-indigo-800">
+                        <span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-full text-xs font-bold">
+                          {num}
+                        </span>
+                        {getText(`profile.cvTip${num}`)}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -371,18 +425,22 @@ export default function JobseekerProfilePage() {
           )}
         </div>
 
-        {/* Skills and Experience Summary */}
+        {/* Skills Overview Card */}
         {displayData?.profile?.skills && displayData.profile.skills.length > 0 && (
-          <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-6 overflow-hidden">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
               {getText('profile.skillsOverview')}
             </h3>
             <div className="flex flex-wrap gap-2">
               {displayData.profile.skills.map((skill: string, index: number) => (
                 <span
                   key={index}
-                  className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                  className="group relative inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 text-indigo-700 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-default border border-indigo-100"
                 >
+                  <span className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/5 group-hover:to-purple-500/5 rounded-full transition-all duration-300"></span>
                   {skill}
                 </span>
               ))}
@@ -390,26 +448,39 @@ export default function JobseekerProfilePage() {
           </div>
         )}
 
-        {/* Recent Experience */}
+        {/* Recent Experience Card */}
         {displayData?.profile?.experience && displayData.profile.experience.length > 0 && (
-          <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <Briefcase className="w-5 h-5 mr-2" />
+          <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-6 overflow-hidden">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+                <Briefcase className="w-4 h-4 text-white" />
+              </div>
               {getText('profile.recentExperience')}
             </h3>
-            <div className="space-y-4">
-              {displayData.profile.experience.slice(0, 3).map((exp: any, index: number) => (
-                <div key={index} className="border-l-4 border-blue-200 pl-4">
-                  <h4 className="font-medium text-gray-900">{exp.position}</h4>
-                  <p className="text-gray-600">{exp.company}</p>
-                  <p className="text-sm text-gray-500">
-                    {exp.startDate} {exp.endDate ? `- ${exp.endDate}` : '- Present'}
-                  </p>
-                  {exp.description && (
-                    <p className="text-sm text-gray-700 mt-1">{exp.description}</p>
-                  )}
-                </div>
-              ))}
+            <div className="relative">
+              {/* Timeline Line */}
+              <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500"></div>
+
+              <div className="space-y-6">
+                {displayData.profile.experience.slice(0, 3).map((exp: { position: string; company: string; startDate: string; endDate?: string; description?: string }, index: number) => (
+                  <div key={index} className="relative pl-10 group">
+                    {/* Timeline Dot */}
+                    <div className="absolute left-2 top-2 w-4 h-4 bg-white border-4 border-indigo-500 rounded-full group-hover:scale-125 transition-transform duration-300 shadow-lg"></div>
+
+                    <div className="p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 hover:from-gray-100 hover:to-indigo-100/30 rounded-xl transition-all duration-300 hover:shadow-md group-hover:-translate-x-1">
+                      <h4 className="font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">{exp.position}</h4>
+                      <p className="text-indigo-600 font-medium text-sm">{exp.company}</p>
+                      <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <GraduationCap className="w-3 h-3" />
+                        {exp.startDate} — {exp.endDate || getText('profile.present')}
+                      </p>
+                      {exp.description && (
+                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">{exp.description}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

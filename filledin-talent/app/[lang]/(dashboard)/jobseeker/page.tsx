@@ -116,6 +116,11 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         ar: 'مقابلة',
         fr: 'Entretien'
       },
+      'applications.status.applied': {
+        en: 'Applied',
+        ar: 'تم التقديم',
+        fr: 'Postulé'
+      },
       'applications.status.rejected': {
         en: 'Rejected',
         ar: 'مرفوض',
@@ -393,7 +398,11 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
             {stats.recentApplications.length > 0 ? (
               <div className="space-y-4">
                 {stats.recentApplications.map((application) => (
-                  <div key={application._id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <Link
+                    href={`/${lang}/jobs/${application.job?._id}`}
+                    key={application._id}
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
                     <div>
                       <p className="text-sm font-medium text-gray-900">
                         {application.job?.title}
@@ -410,7 +419,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                         {formatDate(new Date(application.createdAt), lang)}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : (

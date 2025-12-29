@@ -13,13 +13,14 @@ import {
   Plus,
   Trash2,
   Save,
-  Loader2
+  Loader2,
+  Globe,
+  GraduationCap,
+  Sparkles,
+  Check
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-// Profile validation schema
-// ... (schema remains unchanged)
 
 // Translations
 const translations = {
@@ -228,7 +229,7 @@ const profileSchema = z.object({
       institution: z.string().min(1, 'Institution is required'),
       degree: z.string().min(1, 'Degree is required'),
       field: z.string().min(1, 'Field of study is required'),
-      year: z.string().min(1, 'Year is required'),
+      year: z.string().regex(/^\d{4}$/, 'Year must be a 4-digit number (e.g., 2023)'),
     })).optional(),
   }),
 });
@@ -237,7 +238,7 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
   onSuccess?: () => void;
-  initialData?: any; // Using any to avoid complex type duplication for now, or match UserData structure
+  initialData?: any;
 }
 
 export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps) {
@@ -395,159 +396,186 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
     });
   };
 
+  // Custom input class with modern styling
+  const inputClass = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all duration-300 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 focus:outline-none hover:border-gray-300";
+  const labelClass = "block text-sm font-semibold text-gray-700 mb-2";
+  const errorClass = "text-red-500 text-sm mt-1.5 flex items-center gap-1";
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-            <User className="w-6 h-6 mr-2" />
-            {getText('profile.settings')}
-          </h2>
-          <p className="text-gray-600 mt-1">
-            {getText('profile.settingsDesc')}
-          </p>
+    <div className="max-w-4xl mx-auto">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        {/* Header */}
+        <div className="relative p-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50/50 via-purple-50/50 to-pink-50/50">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl shadow-lg">
+              <User className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {getText('profile.settings')}
+              </h2>
+              <p className="text-gray-600 mt-1">
+                {getText('profile.settingsDesc')}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-8">
-          {/* Basic Information */}
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-10">
+          {/* Basic Information Section */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <User className="w-5 h-5 mr-2" />
-              {getText('profile.basicInfo')}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {getText('profile.firstName')} *
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg">
+                <User className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900">
+                {getText('profile.basicInfo')}
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* First Name */}
+              <div className="group">
+                <label className={labelClass}>
+                  {getText('profile.firstName')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register('profile.firstName')}
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputClass}
                   placeholder={getText('profile.firstNamePlaceholder')}
                 />
                 {errors.profile?.firstName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.profile.firstName.message}</p>
+                  <p className={errorClass}>{errors.profile.firstName.message}</p>
                 )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {getText('profile.lastName')} *
+              {/* Last Name */}
+              <div className="group">
+                <label className={labelClass}>
+                  {getText('profile.lastName')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register('profile.lastName')}
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputClass}
                   placeholder={getText('profile.lastNamePlaceholder')}
                 />
                 {errors.profile?.lastName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.profile.lastName.message}</p>
+                  <p className={errorClass}>{errors.profile.lastName.message}</p>
                 )}
               </div>
 
-              <div>
-                <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                  <Mail className="w-4 h-4 mr-1" />
-                  {getText('profile.email')} *
+              {/* Email */}
+              <div className="group">
+                <label className={`${labelClass} flex items-center gap-2`}>
+                  <Mail className="w-4 h-4 text-indigo-500" />
+                  {getText('profile.email')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register('email')}
                   type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputClass}
                   placeholder={getText('profile.emailPlaceholder')}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                  <p className={errorClass}>{errors.email.message}</p>
                 )}
               </div>
 
-              <div>
-                <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                  <Phone className="w-4 h-4 mr-1" />
+              {/* Phone */}
+              <div className="group">
+                <label className={`${labelClass} flex items-center gap-2`}>
+                  <Phone className="w-4 h-4 text-purple-500" />
                   {getText('profile.phone')}
                 </label>
                 <input
                   {...register('profile.phone')}
                   type="tel"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputClass}
                   placeholder={getText('profile.phonePlaceholder')}
                 />
-                {errors.profile?.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.profile.phone.message}</p>
-                )}
               </div>
 
-              <div>
-                <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                  <MapPin className="w-4 h-4 mr-1" />
+              {/* Location */}
+              <div className="group">
+                <label className={`${labelClass} flex items-center gap-2`}>
+                  <MapPin className="w-4 h-4 text-pink-500" />
                   {getText('profile.location')}
                 </label>
                 <input
                   {...register('profile.location')}
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputClass}
                   placeholder={getText('profile.locationPlaceholder')}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              {/* Website */}
+              <div className="group">
+                <label className={`${labelClass} flex items-center gap-2`}>
+                  <Globe className="w-4 h-4 text-cyan-500" />
                   {getText('profile.website')}
                 </label>
                 <input
                   {...register('profile.website')}
                   type="url"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputClass}
                   placeholder={getText('profile.websitePlaceholder')}
                 />
                 {errors.profile?.website && (
-                  <p className="text-red-500 text-sm mt-1">{errors.profile.website.message}</p>
+                  <p className={errorClass}>{errors.profile.website.message}</p>
                 )}
               </div>
             </div>
 
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            {/* Bio */}
+            <div className="mt-5">
+              <label className={labelClass}>
                 {getText('profile.bio')}
               </label>
               <textarea
                 {...register('profile.bio')}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={`${inputClass} resize-none`}
                 placeholder={getText('profile.bioPlaceholder')}
               />
             </div>
           </div>
 
-          {/* Professional Information */}
+          {/* Professional Information Section */}
           {userData?.role === 'job_seeker' && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Briefcase className="w-5 h-5 mr-2" />
-                {getText('profile.professionalInfo')}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+                  <Briefcase className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {getText('profile.professionalInfo')}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="group">
+                  <label className={labelClass}>
                     {getText('profile.currentCompany')}
                   </label>
                   <input
                     {...register('profile.company')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={inputClass}
                     placeholder={getText('profile.companyPlaceholder')}
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label className={labelClass}>
                     {getText('profile.currentPosition')}
                   </label>
                   <input
                     {...register('profile.position')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={inputClass}
                     placeholder={getText('profile.positionPlaceholder')}
                   />
                 </div>
@@ -558,25 +586,31 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
           {/* Skills Section */}
           {userData?.role === 'job_seeker' && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {getText('profile.skills')}
-              </h3>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {getText('profile.skills')}
+                </h3>
+              </div>
+
               <div className="space-y-4">
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <input
                     type="text"
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`flex-1 ${inputClass}`}
                     placeholder={getText('profile.addSkillPlaceholder')}
                   />
                   <button
                     type="button"
                     onClick={addSkill}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+                    className="px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -584,13 +618,13 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
                   {skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                      className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 text-indigo-700 rounded-full text-sm font-medium transition-all duration-300 border border-indigo-100 hover:shadow-md"
                     >
                       {skill}
                       <button
                         type="button"
                         onClick={() => removeSkill(skill)}
-                        className="ml-2 text-blue-600 hover:text-blue-800"
+                        className="w-5 h-5 flex items-center justify-center bg-indigo-200/50 hover:bg-red-500 text-indigo-600 hover:text-white rounded-full transition-all duration-200"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -604,29 +638,39 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
           {/* Experience Section */}
           {userData?.role === 'job_seeker' && (
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {getText('profile.workExperience')}
-                </h3>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg">
+                    <Briefcase className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {getText('profile.workExperience')}
+                  </h3>
+                </div>
                 <button
                   type="button"
                   onClick={addExperience}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center text-sm"
+                  className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2 text-sm font-medium"
                 >
-                  <Plus className="w-4 h-4 mr-1" />
+                  <Plus className="w-4 h-4" />
                   {getText('profile.addExperience')}
                 </button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {experienceFields.map((field, index) => (
-                  <div key={field.id} className="p-4 border border-gray-200 rounded-lg">
+                  <div key={field.id} className="group p-5 bg-gradient-to-r from-gray-50 to-green-50/30 border border-gray-200 rounded-2xl transition-all duration-300 hover:shadow-lg hover:border-green-200">
                     <div className="flex justify-between items-start mb-4">
-                      <h4 className="font-medium text-gray-900">{getText('profile.experience')} {index + 1}</h4>
+                      <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <span className="w-6 h-6 flex items-center justify-center bg-green-500 text-white rounded-full text-xs">
+                          {index + 1}
+                        </span>
+                        {getText('profile.experience')}
+                      </h4>
                       <button
                         type="button"
                         onClick={() => removeExperience(index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -634,80 +678,75 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.currentCompany')} *
+                        <label className={labelClass}>
+                          {getText('profile.currentCompany')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.experience.${index}.company`)}
                           type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.companyPlaceholder')}
                         />
                         {errors.profile?.experience?.[index]?.company && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.experience[index]?.company?.message}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.currentPosition')} *
+                        <label className={labelClass}>
+                          {getText('profile.currentPosition')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.experience.${index}.position`)}
                           type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.positionPlaceholder')}
                         />
                         {errors.profile?.experience?.[index]?.position && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.experience[index]?.position?.message}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.startDate')} *
+                        <label className={labelClass}>
+                          {getText('profile.startDate')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.experience.${index}.startDate`)}
                           type="month"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                         />
                         {errors.profile?.experience?.[index]?.startDate && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.experience[index]?.startDate?.message}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className={labelClass}>
                           {getText('profile.endDate')}
                         </label>
                         <input
                           {...register(`profile.experience.${index}.endDate`)}
                           type="month"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.endDatePlaceholder')}
                         />
-                        {errors.profile?.experience?.[index]?.endDate && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.profile.experience[index]?.endDate?.message}
-                          </p>
-                        )}
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className={labelClass}>
                           {getText('profile.description')}
                         </label>
                         <textarea
                           {...register(`profile.experience.${index}.description`)}
                           rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={`${inputClass} resize-none`}
                           placeholder={getText('profile.descriptionPlaceholder')}
                         />
                       </div>
@@ -721,29 +760,39 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
           {/* Education Section */}
           {userData?.role === 'job_seeker' && (
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {getText('profile.education')}
-                </h3>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+                    <GraduationCap className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {getText('profile.education')}
+                  </h3>
+                </div>
                 <button
                   type="button"
                   onClick={addEducation}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center text-sm"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2 text-sm font-medium"
                 >
-                  <Plus className="w-4 h-4 mr-1" />
+                  <Plus className="w-4 h-4" />
                   {getText('profile.addEducation')}
                 </button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {educationFields.map((field, index) => (
-                  <div key={field.id} className="p-4 border border-gray-200 rounded-lg">
+                  <div key={field.id} className="group p-5 bg-gradient-to-r from-gray-50 to-blue-50/30 border border-gray-200 rounded-2xl transition-all duration-300 hover:shadow-lg hover:border-blue-200">
                     <div className="flex justify-between items-start mb-4">
-                      <h4 className="font-medium text-gray-900">{getText('profile.education')} {index + 1}</h4>
+                      <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <span className="w-6 h-6 flex items-center justify-center bg-blue-500 text-white rounded-full text-xs">
+                          {index + 1}
+                        </span>
+                        {getText('profile.education')}
+                      </h4>
                       <button
                         type="button"
                         onClick={() => removeEducation(index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -751,68 +800,68 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.institution')} *
+                        <label className={labelClass}>
+                          {getText('profile.institution')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.education.${index}.institution`)}
                           type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.institutionPlaceholder')}
                         />
                         {errors.profile?.education?.[index]?.institution && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.education[index]?.institution?.message}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.degree')} *
+                        <label className={labelClass}>
+                          {getText('profile.degree')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.education.${index}.degree`)}
                           type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.degreePlaceholder')}
                         />
                         {errors.profile?.education?.[index]?.degree && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.education[index]?.degree?.message}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.field')} *
+                        <label className={labelClass}>
+                          {getText('profile.field')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.education.${index}.field`)}
                           type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.fieldPlaceholder')}
                         />
                         {errors.profile?.education?.[index]?.field && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.education[index]?.field?.message}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {getText('profile.year')} *
+                        <label className={labelClass}>
+                          {getText('profile.year')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           {...register(`profile.education.${index}.year`)}
                           type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder={getText('profile.yearPlaceholder')}
                         />
                         {errors.profile?.education?.[index]?.year && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className={errorClass}>
                             {errors.profile.education[index]?.year?.message}
                           </p>
                         )}
@@ -826,32 +875,41 @@ export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps
 
           {/* Error and Success Messages */}
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600">{error}</p>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+              <div className="w-8 h-8 flex items-center justify-center bg-red-100 rounded-full">
+                <Trash2 className="w-4 h-4 text-red-600" />
+              </div>
+              <p className="text-red-700 font-medium">{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-600">{success}</p>
+            <div className="p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
+              <div className="w-8 h-8 flex items-center justify-center bg-green-100 rounded-full">
+                <Check className="w-4 h-4 text-green-600" />
+              </div>
+              <p className="text-green-700 font-medium">{success}</p>
             </div>
           )}
 
           {/* Submit Button */}
-          <div className="flex justify-end pt-6 border-t border-gray-200">
+          <div className="flex justify-end pt-6 border-t border-gray-100">
             <button
               type="submit"
               disabled={isLoading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              className="relative px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/30 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-none flex items-center gap-3 overflow-hidden group"
             >
+              {/* Shimmer Effect */}
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                   {getText('profile.saving')}
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4 mr-2" />
+                  <Save className="w-5 h-5" />
                   {getText('profile.save')}
                 </>
               )}

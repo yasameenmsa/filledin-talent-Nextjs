@@ -7,7 +7,7 @@ import { Mail } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
-    const { currentLanguage } = useLanguage();
+    const { currentLanguage, isRTL } = useLanguage();
 
     const getText = (key: string) => {
         const translations: Record<string, Record<string, string>> = {
@@ -31,7 +31,7 @@ export default function Footer() {
     };
 
     return (
-        <footer className="bg-white border-t border-gray-200" dir="ltr">
+        <footer className="bg-white border-t border-gray-200" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="container mx-auto px-4 max-w-7xl">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-2">
                     {/* Logo Section */}
@@ -55,13 +55,13 @@ export default function Footer() {
                             <span className="text-lg text-gray-700">{getText('footer.followUs')}</span>
                             <div className="flex items-center gap-3">
                                 <Link href="#" className="text-black font-medium hover:text-[#3d5a80] transition-colors">
-                                    INSTA
+                                    Instagram
                                 </Link>
                                 <Link href="#" className="text-black font-medium hover:text-[#3d5a80] transition-colors">
                                     LinkedIn
                                 </Link>
                                 <Link href="#" className="text-black font-medium hover:text-[#3d5a80] transition-colors">
-                                    Youtube
+                                    YouTube
                                 </Link>
                             </div>
                         </div>
@@ -72,7 +72,7 @@ export default function Footer() {
                             className="flex items-center gap-2 text-black font-medium hover:text-[#3d5a80] transition-colors"
                         >
                             <span>{getText('footer.getInTouch')}</span>
-                            <Mail className="h-5 w-5" />
+                            <Mail className={`h-5 w-5 ${isRTL ? 'mr-1' : 'ml-1'}`} />
                         </Link>
                     </div>
                 </div>

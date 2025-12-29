@@ -14,7 +14,7 @@ export default async function RootLayout({
   const dir = rtlLanguages.includes(lang as 'en' | 'ar' | 'fr') ? 'rtl' : 'ltr';
 
   return (
-    <ClientLayoutWrapper dir={dir}>
+    <ClientLayoutWrapper dir={dir} lang={lang}>
       {/* <LocaleSwitcher /> */}
       {children}
     </ClientLayoutWrapper>
