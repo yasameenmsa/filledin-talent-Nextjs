@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
     await dbConnect();
 
-    const user = await User.findById(session.user.id).lean();
+    const user = await User.findById(session.user.id).lean() as any;
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -98,7 +98,7 @@ export async function PUT(req: NextRequest) {
       session.user.id,
       { $set: updates },
       { new: true, runValidators: true }
-    ).lean();
+    ).lean() as any;
 
     if (!updatedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -132,8 +132,9 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json(responseData, { status: 200 });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating profile:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    const status = error.name === 'ValidationError' ? 400 : 500;
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status });
   }
 }

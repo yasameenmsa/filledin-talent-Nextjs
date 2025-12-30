@@ -262,9 +262,12 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     return translation;
   };
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: '10',
@@ -273,15 +276,23 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
       });
 
       const response = await fetch(`/api/applications?${params}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch applications');
+      }
+
       const data = await response.json();
 
       if (data.success) {
         setApplications(data.applications);
         setTotalPages(data.pagination.totalPages);
         setStats(data.stats);
+      } else {
+        throw new Error(data.error || 'Failed to fetch applications');
       }
     } catch (error) {
       console.error('Error fetching applications:', error);
+      setError('Failed to load applications. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -391,6 +402,24 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
+        <div className="bg-red-50 p-4 rounded-full mb-4">
+          <AlertCircle className="h-12 w-12 text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h3>
+        <p className="text-gray-500 mb-6 max-w-md">{error}</p>
+        <button
+          onClick={() => fetchApplications()}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -472,27 +501,29 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
                         <Link
-                          href={`/${lang}/jobs/${application.job._id}`}
+                          href={`/${lang}/jobs/${application.job?._id}`}
                           className="hover:text-blue-600"
                         >
-                          {application.job.title}
+                          {application.job?.title || 'Unknown Job Title'}
                         </Link>
                       </h3>
                       <div className="flex items-center text-sm text-gray-500 mt-1 space-x-4">
                         <div className="flex items-center">
                           <Building className="h-4 w-4 mr-1" />
-                          {application.job.company.name}
+                          {application.job?.company?.name || 'Unknown Company'}
                         </div>
                         <div className="flex items-center">
                           <MapPin className="h-4 w-4 mr-1" />
-                          {application.job.location.city}, {application.job.location.state}
+                          {application.job?.location ? `${application.job.location.city}, ${application.job.location.state}` : 'Location not available'}
                         </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {application.job.jobType}
-                        </div>
+                        {application.job?.jobType && (
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            {application.job.jobType}
+                          </div>
+                        )}
                       </div>
-                      {application.job.salary && (
+                      {application.job?.salary && (
                         <div className="text-sm text-gray-600 mt-1">
                           {formatSalary(application.job.salary.min, application.job.salary.max)}
                         </div>

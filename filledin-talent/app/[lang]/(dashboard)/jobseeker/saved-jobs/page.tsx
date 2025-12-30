@@ -13,7 +13,8 @@ import {
   DollarSign,
   Eye,
   ExternalLink,
-  Calendar
+  Calendar,
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -177,6 +178,8 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
     return text;
   };
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     fetchSavedJobs();
   }, []);
@@ -184,13 +187,17 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
   const fetchSavedJobs = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await fetch('/api/saved-jobs');
       if (response.ok) {
         const data = await response.json();
         setSavedJobs(data.savedJobs || []);
+      } else {
+        throw new Error('Failed to fetch saved jobs');
       }
     } catch (error) {
       console.error('Error fetching saved jobs:', error);
+      setError('Failed to load saved jobs. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -256,6 +263,24 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 bg-gray-50">
+        <div className="bg-red-50 p-4 rounded-full mb-4">
+          <AlertCircle className="h-12 w-12 text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h3>
+        <p className="text-gray-500 mb-6 max-w-md">{error}</p>
+        <button
+          onClick={() => fetchSavedJobs()}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        >
+          Try Again
+        </button>
       </div>
     );
   }
@@ -408,8 +433,8 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
 
                         <div className="flex items-center space-x-2">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${savedJob.job.isActive
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
                             }`}>
                             {savedJob.job.isActive ? getText('savedJobs.active') : getText('savedJobs.expired')}
                           </span>

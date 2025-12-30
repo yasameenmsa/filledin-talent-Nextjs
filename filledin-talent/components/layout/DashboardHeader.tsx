@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useNotifications } from '@/hooks/useNotifications';
 import {
   Menu,
   Bell,
@@ -41,6 +42,14 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const { currentLanguage } = useLanguage();
+
+  // Custom hook for notifications
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead
+  } = useNotifications();
 
   // Inline translations
   const getText = (key: string) => {
@@ -171,19 +180,64 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
               >
                 <Bell className="h-6 w-6" />
                 {/* Notification badge */}
-                <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-400"></span>
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                )}
               </button>
 
               {/* Notifications dropdown */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                  <div className="py-1">
-                    <div className="px-4 py-2 text-sm font-medium text-gray-900 border-b border-gray-200">
-                      {getText('notifications')}
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 z-50 overflow-hidden border border-gray-100">
+                  <div className="py-2">
+                    <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-sm font-semibold text-gray-900">{getText('notifications')}</h3>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={() => markAllAsRead()}
+                          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          Mark all read
+                        </button>
+                      )}
                     </div>
-                    <div className="px-4 py-3 text-sm text-gray-500">
-                      {getText('noData')}
+
+                    <div className="max-h-[300px] overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification._id}
+                            className={`px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 cursor-pointer ${!notification.read ? 'bg-blue-50/40' : ''}`}
+                            onClick={() => {
+                              if (!notification.read) markAsRead(notification._id);
+                              if (notification.link) router.push(notification.link);
+                            }}
+                          >
+                            <div className="flex gap-3">
+                              <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${!notification.read ? 'bg-blue-600' : 'bg-transparent'}`} />
+                              <div>
+                                <p className={`text-sm ${!notification.read ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
+                                  {notification.title}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                                  {notification.message}
+                                </p>
+                                <p className="text-[10px] text-gray-400 mt-1.5">
+                                  {new Date(notification.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', {
+                                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-8 text-center text-gray-500">
+                          <Bell className="h-8 w-8 mx-auto text-gray-300 mb-2" />
+                          <p className="text-sm">{getText('noData')}</p>
+                        </div>
+                      )}
                     </div>
+
                   </div>
                 </div>
               )}
