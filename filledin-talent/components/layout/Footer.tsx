@@ -68,7 +68,7 @@ export default function Footer() {
 
                         {/* Get In Touch Button */}
                         <Link
-                            href="/contact"
+                            href={`/${currentLanguage}/contact`}
                             className="flex items-center gap-2 text-black font-medium hover:text-[#3d5a80] transition-colors"
                         >
                             <span>{getText('footer.getInTouch')}</span>

@@ -13,7 +13,8 @@ import {
   User,
   BookmarkPlus,
   Search,
-  X
+  X,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -80,6 +81,11 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
         en: 'Analytics',
         ar: 'التحليلات',
         fr: 'Analyses'
+      },
+      'dashboard.nav.messages': {
+        en: 'Messages',
+        ar: 'الرسائل',
+        fr: 'Messages'
       }
     };
 
@@ -100,6 +106,7 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
     { name: getText('dashboard.nav.users'), href: `/${lang}/admin/users`, icon: Users },
     { name: getText('dashboard.nav.jobs'), href: `/${lang}/admin/jobs`, icon: Briefcase },
     { name: getText('dashboard.nav.applications'), href: `/${lang}/admin/applications`, icon: FileText },
+    { name: getText('dashboard.nav.messages'), href: `/${lang}/admin/messages`, icon: Mail },
     { name: getText('dashboard.nav.analytics'), href: `/${lang}/admin/analytics`, icon: BarChart3 },
     { name: getText('dashboard.nav.settings'), href: `/${lang}/admin/settings`, icon: Settings },
   ];
