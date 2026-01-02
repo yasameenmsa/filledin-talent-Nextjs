@@ -18,17 +18,21 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
             sendButton: 'Send Message',
             successMessage: 'Message sent successfully! We will get back to you soon.',
             errorMessage: 'Failed to send message. Please try again.',
-            sending: 'Sending...'
+            sending: 'Sending...',
+            sendAnother: 'Send another message',
+            emailPlaceholder: 'name@example.com'
         },
         fr: {
             title: 'Contactez-nous',
-            subtitle: 'Nous aimerions avoir de vos nouvelles. Envoyez-nous un message et nous vous répondrons dès que possible.',
+            subtitle: 'Nous aimerions avoir de vos nouvelles. Envoyez-nous un message et nous vous réponدرons dès que possible.',
             emailLabel: 'Adresse E-mail',
             messageLabel: 'Votre Message',
             sendButton: 'Envoyer le Message',
             successMessage: 'Message envoyé avec succès! Nous vous répondrons bientôt.',
             errorMessage: 'Échec de l\'envoi du message. Veuillez réessayer.',
-            sending: 'Envoi en cours...'
+            sending: 'Envoi en cours...',
+            sendAnother: 'Envoyer un autre message',
+            emailPlaceholder: 'nom@exemple.com'
         },
         ar: {
             title: 'تواصل معنا',
@@ -38,7 +42,9 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
             sendButton: 'إرسال الرسالة',
             successMessage: 'تم إرسال الرسالة بنجاح! سنرد عليك قريبا.',
             errorMessage: 'فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.',
-            sending: 'جاري الإرسال...'
+            sending: 'جاري الإرسال...',
+            sendAnother: 'إرسال رسالة أخرى',
+            emailPlaceholder: 'الاسم@مثال.com'
         }
     };
 
@@ -101,7 +107,7 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
                                         <div className="bg-white/10 p-2 rounded-lg">
                                             <Mail className="h-5 w-5" />
                                         </div>
-                                        <span>contact@filledintalent.com</span>
+                                        <span>filledintalent@gmail.com</span>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +130,7 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
                                         onClick={() => setStatus('idle')}
                                         className="mt-6 text-[#3d5a80] font-medium hover:underline focus:outline-none"
                                     >
-                                        Send another message
+                                        {t.sendAnother}
                                     </button>
                                 </div>
                             ) : (
@@ -140,7 +146,7 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#3d5a80] focus:border-transparent outline-none transition-all bg-gray-50 focus:bg-white"
-                                            placeholder="name@example.com"
+                                            placeholder={t.emailPlaceholder}
                                         />
                                     </div>
 

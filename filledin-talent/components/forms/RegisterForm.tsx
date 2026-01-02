@@ -15,7 +15,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { PasswordStrengthIndicator } from '@/components/ui/PasswordStrengthIndicator';
 
 type RegisterFormData = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -51,15 +52,25 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         ar: 'انضم إلى منصتنا وابدأ رحلتك.',
         fr: 'Rejoignez notre plateforme et commencez votre parcours.'
       },
-      'auth.fullName': {
-        en: 'Full Name',
-        ar: 'الاسم الكامل',
-        fr: 'Nom complet'
+      'auth.firstName': {
+        en: 'First Name',
+        ar: 'الاسم الأول',
+        fr: 'Prénom'
       },
-      'auth.enterFullName': {
-        en: 'Enter your full name',
-        ar: 'أدخل اسمك الكامل',
-        fr: 'Entrez votre nom complet'
+      'auth.lastName': {
+        en: 'Last Name',
+        ar: 'الاسم الأخير',
+        fr: 'Nom'
+      },
+      'auth.enterFirstName': {
+        en: 'Enter your first name',
+        ar: 'أدخل اسمك الأول',
+        fr: 'Entrez votre prénom'
+      },
+      'auth.enterLastName': {
+        en: 'Enter your last name',
+        ar: 'أدخل اسمك الأخير',
+        fr: 'Entrez votre nom'
       },
       'auth.email': {
         en: 'Email',
@@ -111,9 +122,14 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         ar: 'تم إنشاء الحساب بنجاح!',
         fr: 'Compte créé avec succès !'
       },
-      'validation.nameRequired': {
-        en: 'Name is required',
-        ar: 'الاسم مطلوب',
+      'validation.firstNameRequired': {
+        en: 'First name is required',
+        ar: 'الاسم الأول مطلوب',
+        fr: 'Le prénom est requis'
+      },
+      'validation.lastNameRequired': {
+        en: 'Last name is required',
+        ar: 'الاسم الأخير مطلوب',
         fr: 'Le nom est requis'
       },
       'validation.nameMinLength': {
@@ -122,9 +138,9 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
         fr: 'Le nom doit contenir au moins 2 caractères'
       },
       'validation.nameMaxLength': {
-        en: 'Name must be less than 100 characters',
-        ar: 'يجب أن يكون الاسم أقل من 100 حرف',
-        fr: 'Le nom doit contenir moins de 100 caractères'
+        en: 'Name must be less than 50 characters',
+        ar: 'يجب أن يكون الاسم أقل من 50 حرف',
+        fr: 'Le nom doit contenir moins de 50 caractères'
       },
       'validation.emailRequired': {
         en: 'Email is required',
@@ -169,11 +185,16 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
   // Create validation schema - recreate on language change
   const registerSchema = useMemo(() =>
     z.object({
-      name: z
+      firstName: z
         .string()
-        .min(1, getText('validation.nameRequired'))
+        .min(1, getText('validation.firstNameRequired'))
         .min(2, getText('validation.nameMinLength'))
-        .max(100, getText('validation.nameMaxLength')),
+        .max(50, getText('validation.nameMaxLength')),
+      lastName: z
+        .string()
+        .min(1, getText('validation.lastNameRequired'))
+        .min(2, getText('validation.nameMinLength'))
+        .max(50, getText('validation.nameMaxLength')),
       email: z
         .string()
         .min(1, getText('validation.emailRequired'))
@@ -215,10 +236,13 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
     setSuccessMessage('');
 
     try {
+      // Concatenate first and last name
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+
       const result = await registerUser({
         email: data.email,
         password: data.password,
-        name: data.name,
+        name: fullName,
       });
 
       if (result.success) {
@@ -261,18 +285,34 @@ export default function RegisterForm({ lang }: RegisterFormProps) {
           </div>
         )}
 
-        <div className="space-y-2">
-          <Label htmlFor="name">{getText('auth.fullName')}</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder={getText('auth.enterFullName')}
-            error={!!errors.name}
-            {...register('name')}
-          />
-          {errors.name && (
-            <p className="text-sm text-red-600">{errors.name.message}</p>
-          )}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="firstName">{getText('auth.firstName')}</Label>
+            <Input
+              id="firstName"
+              type="text"
+              placeholder={getText('auth.enterFirstName')}
+              error={!!errors.firstName}
+              {...register('firstName')}
+            />
+            {errors.firstName && (
+              <p className="text-sm text-red-600">{errors.firstName.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="lastName">{getText('auth.lastName')}</Label>
+            <Input
+              id="lastName"
+              type="text"
+              placeholder={getText('auth.enterLastName')}
+              error={!!errors.lastName}
+              {...register('lastName')}
+            />
+            {errors.lastName && (
+              <p className="text-sm text-red-600">{errors.lastName.message}</p>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">
