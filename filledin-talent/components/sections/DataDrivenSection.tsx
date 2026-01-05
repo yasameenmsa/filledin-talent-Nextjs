@@ -81,7 +81,7 @@ const DataDrivenSection = () => {
     >
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
-        <h2 className="text-3xl font-bold text-center" style={{ color: '#000' }}>
+        <h2 className="text-2xl font-bold text-center" style={{ color: '#000' }}>
           {text.mainTitle}
         </h2>
 
@@ -190,15 +190,17 @@ const DataDrivenSection = () => {
       </div>
 
       {/* Your Advantage */}
-      <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>
-        {text.advantageTitle}
-      </h3>
+      <div className="text-center">
+        <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>
+          {text.advantageTitle}
+        </h3>
 
-      <p className="text-base leading-relaxed mb-4" style={{ color: '#000' }}>
-        {text.advantageIntro}
-      </p>
+        <p className="text-base leading-relaxed mb-4 text-center" style={{ color: '#000' }}>
+          {text.advantageIntro}
+        </p>
+      </div>
 
-      <ul className="space-y-3 mb-12 text-base" style={{ color: '#000' }}>
+      <ul className="space-y-3 mb-12 text-base max-w-3xl mx-auto" style={{ color: '#000' }}>
         <li className="flex gap-3">
           <span className="flex-shrink-0 mt-2">
             <div className="w-2 h-2 rounded-full bg-black"></div>
@@ -220,13 +222,15 @@ const DataDrivenSection = () => {
       </ul>
 
       {/* Investment Protection */}
-      <h3 className="text-2xl font-bold mb-4" style={{ color: '#000' }}>
-        {text.protectionTitle}
-      </h3>
+      <div className="text-center max-w-4xl mx-auto">
+        <h3 className="text-lg font-bold mb-4" style={{ color: '#000' }}>
+          {text.protectionTitle}
+        </h3>
 
-      <p className="text-base leading-relaxed" style={{ color: '#000' }}>
-        {text.protectionDesc}
-      </p>
+        <p className="text-base leading-relaxed" style={{ color: '#000' }}>
+          {text.protectionDesc}
+        </p>
+      </div>
 
     </div>
   );

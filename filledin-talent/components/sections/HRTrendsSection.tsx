@@ -53,7 +53,7 @@ const HRTrendsSection = () => {
       <div className="container mx-auto max-w-7xl">
         {/* HR Trends Section */}
         <div className="mb-16">
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
             {/* Left Content */}
             <div className="flex-1">
               <h2 className="text-4xl font-bold mb-8" style={{ color: '#1e3a5f' }}>
@@ -62,7 +62,7 @@ const HRTrendsSection = () => {
 
               <div className="space-y-6">
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
                   <p className="text-gray-800 leading-relaxed text-base text-start">
@@ -71,7 +71,7 @@ const HRTrendsSection = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
                   <p className="text-gray-800 leading-relaxed text-base text-start">
@@ -98,7 +98,7 @@ const HRTrendsSection = () => {
 
         {/* AI & Talent Acquisition Section */}
         <div>
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
             {/* Left Image */}
             <div className="flex-shrink-0 lg:w-[450px] order-2 lg:order-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -120,7 +120,7 @@ const HRTrendsSection = () => {
 
               <div className="space-y-6">
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
                   <p className="text-gray-800 leading-relaxed text-base text-start">
@@ -129,7 +129,7 @@ const HRTrendsSection = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
                   <p className="text-gray-800 leading-relaxed text-base text-start">

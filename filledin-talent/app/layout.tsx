@@ -16,13 +16,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://filledintalent.com"),
   title: "FilledIn Talent - Global Energy Talent Partner",
   description: "Connecting expertise from the reservoir to the refinery or from the source to the grid. Find your next career opportunity in the energy sector.",
   keywords: "energy jobs, talent recruitment, oil and gas careers, renewable energy jobs, engineering positions, global energy sector",
   openGraph: {
     title: "FilledIn Talent - Global Energy Talent Partner",
     description: "Find your next career opportunity in the global energy sector. Connect with top employers worldwide.",
-    url: "https://filledin-talent.com",
+    url: "https://filledintalent.com",
     siteName: "FilledIn Talent",
     images: [
       {
@@ -53,11 +54,11 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://filledin-talent.com",
+    canonical: "https://filledintalent.com",
     languages: {
-      'en': 'https://filledin-talent.com/en',
-      'ar': 'https://filledin-talent.com/ar',
-      'fr': 'https://filledin-talent.com/fr',
+      'en': 'https://filledintalent.com/en',
+      'ar': 'https://filledintalent.com/ar',
+      'fr': 'https://filledintalent.com/fr',
     },
   },
 };
@@ -79,8 +80,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "FilledIn Talent",
-              "url": "https://filledin-talent.com",
-              "logo": "https://filledin-talent.com/new-logo.png",
+              "url": "https://filledintalent.com",
+              "logo": "https://filledintalent.com/new-logo.png",
               "sameAs": [
                 "https://www.linkedin.com/company/filledin-talent",
                 "https://twitter.com/filledintalent"

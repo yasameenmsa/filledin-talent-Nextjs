@@ -100,7 +100,7 @@ const BusinessSection = () => {
 
             {/* Promise Section */}
             <div className="mt-12">
-              <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
+              <h3 className="text-center text-2xl font-bold mb-8" style={{ color: '#000' }}>
                 {text.promiseTitle}
               </h3>
 
@@ -134,11 +134,11 @@ const BusinessSection = () => {
           </div>
 
           {/* Right Image */}
-          <div className="flex-shrink-0 w-[450px]">
+          <div className="flex-shrink-0 w-[450px] lg:w-[350px]">
             <Image
               src="/images/business/ForBusinesses.png"
               alt="Business Meeting"
-              width={450}
+              width={350}
               height={600}
               className="w-full h-auto rounded-lg shadow-lg"
               style={{ objectFit: 'cover' }}

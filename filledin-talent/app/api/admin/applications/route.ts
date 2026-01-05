@@ -5,14 +5,10 @@ import Application from '@/models/Application';
 import Job from '@/models/Job';
 import User from '@/models/User';
 
-export async function GET(req: NextRequest) {
+import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
+
+export const GET = withAdminAuth(async (req) => {
     try {
-        const session = await auth();
-
-        if (!session || session.user.role !== 'admin') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         await dbConnect();
         const { searchParams } = new URL(req.url);
 
@@ -155,4 +151,4 @@ export async function GET(req: NextRequest) {
         console.error('Error fetching admin applications:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
-}
+});

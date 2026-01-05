@@ -31,11 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: titles[lang as keyof typeof titles] || titles.en,
     description: descriptions[lang as keyof typeof descriptions] || descriptions.en,
     alternates: {
-      canonical: `https://filledin-talent.com/${lang}`,
+      canonical: `https://filledintalent.com/${lang}`,
       languages: {
-        'en': 'https://filledin-talent.com/en',
-        'ar': 'https://filledin-talent.com/ar',
-        'fr': 'https://filledin-talent.com/fr',
+        'en': 'https://filledintalent.com/en',
+        'ar': 'https://filledintalent.com/ar',
+        'fr': 'https://filledintalent.com/fr',
       },
     },
     robots: {

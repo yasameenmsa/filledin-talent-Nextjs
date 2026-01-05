@@ -4,7 +4,9 @@ import User from '@/models/User';
 import Job from '@/models/Job';
 import Application from '@/models/Application';
 
-export async function GET(request: NextRequest) {
+import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
+
+export const GET = withAdminAuth(async (request) => {
   try {
     await connectDB();
 
@@ -67,6 +69,7 @@ export async function GET(request: NextRequest) {
         pending: pendingJobs,
         expired: expiredJobs,
         newThisWeek,
+        newToday, // Added for frontend consistency if needed
       },
       applications: {
         total: totalApplications,
@@ -91,4 +94,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
