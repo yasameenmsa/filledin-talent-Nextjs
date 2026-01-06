@@ -3,6 +3,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import connectDB from '@/lib/db/mongodb';
 import File from '@/models/File';
+import { storageConfig } from '@/lib/config/storage';
 
 // Reuse validation and utility functions from main upload route
 const FILE_CONFIGS = {
@@ -12,9 +13,9 @@ const FILE_CONFIGS = {
         extensions: ['.pdf', '.doc', '.docx']
     },
     'job-image': {
-        allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+        allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
         maxSize: 5 * 1024 * 1024, // 5MB
-        extensions: ['.jpg', '.jpeg', '.png', '.webp']
+        extensions: ['.jpg', '.jpeg', '.png', '.webp', '.svg']
     },
     'company-logo': {
         allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
@@ -90,53 +91,46 @@ function sanitizeFileName(fileName: string): string {
         .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
 }
 
-// Get upload directory and URL path based on type
+// Get upload directory and URL path based on type using centralized storage config
 function getUploadPaths(type: string, userId?: string, jobId?: string, companyId?: string) {
     let uploadDir: string;
-    let urlPath: string;
+    const privateRoot = storageConfig.privateRoot;
+    const publicRoot = storageConfig.publicRoot;
 
     switch (type) {
         case 'cv':
-            uploadDir = path.join(process.cwd(), `public/uploads/cvs/${userId || 'general'}`);
-            urlPath = `/uploads/cvs/${userId || 'general'}`;
+            uploadDir = path.join(process.cwd(), privateRoot, `cvs/${userId || 'general'}`);
             break;
 
         case 'job-image':
             if (jobId) {
-                uploadDir = path.join(process.cwd(), `public/uploads/jobs/${jobId}/images`);
-                urlPath = `/uploads/jobs/${jobId}/images`;
+                uploadDir = path.join(process.cwd(), publicRoot, `jobs/${jobId}/images`);
             } else {
-                uploadDir = path.join(process.cwd(), 'public/uploads/jobs/images');
-                urlPath = '/uploads/jobs/images';
+                uploadDir = path.join(process.cwd(), publicRoot, 'jobs/images');
             }
             break;
 
         case 'company-logo':
-            uploadDir = path.join(process.cwd(), `public/uploads/companies/${companyId || 'general'}/logos`);
-            urlPath = `/uploads/companies/${companyId || 'general'}/logos`;
+            uploadDir = path.join(process.cwd(), publicRoot, `companies/${companyId || 'general'}/logos`);
             break;
 
         case 'profile-image':
-            uploadDir = path.join(process.cwd(), `public/uploads/users/${userId || 'general'}/profile`);
-            urlPath = `/uploads/users/${userId || 'general'}/profile`;
+            uploadDir = path.join(process.cwd(), publicRoot, `profiles/${userId || 'general'}`);
             break;
 
         case 'document':
-            uploadDir = path.join(process.cwd(), `public/uploads/documents/${userId || 'general'}`);
-            urlPath = `/uploads/documents/${userId || 'general'}`;
+            uploadDir = path.join(process.cwd(), privateRoot, `documents/${userId || 'general'}`);
             break;
 
         case 'certificate':
-            uploadDir = path.join(process.cwd(), `public/uploads/certificates/${userId || 'general'}`);
-            urlPath = `/uploads/certificates/${userId || 'general'}`;
+            uploadDir = path.join(process.cwd(), privateRoot, `certificates/${userId || 'general'}`);
             break;
 
         default:
-            uploadDir = path.join(process.cwd(), 'public/uploads/general');
-            urlPath = '/uploads/general';
+            uploadDir = path.join(process.cwd(), privateRoot, 'general');
     }
 
-    return { uploadDir, urlPath };
+    return { uploadDir };
 }
 
 export async function POST(request: NextRequest) {
@@ -172,7 +166,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { uploadDir, urlPath } = getUploadPaths(type, userId, jobId, companyId);
+        const { uploadDir } = getUploadPaths(type, userId, jobId, companyId);
 
         // Create directory if it doesn't exist
         try {
@@ -209,15 +203,13 @@ export async function POST(request: NextRequest) {
                 const filepath = path.join(uploadDir, filename);
                 await writeFile(filepath, buffer);
 
-                const fileUrl = `${urlPath}/${filename}`;
-
                 // Save file metadata to database
-                let fileMetadata = null;
+                let fileMetadata: any = null;
                 try {
                     const fileDoc = new File({
                         filename,
                         originalName: file.name,
-                        url: fileUrl,
+                        url: '/api/files/download/pending', // Will be updated after save
                         filePath: filepath,
                         size: file.size,
                         mimeType: file.type,
@@ -226,16 +218,25 @@ export async function POST(request: NextRequest) {
                         userId: userId,
                         jobId: jobId,
                         companyId: companyId,
-                        isPublic: true,
+                        isPublic: ['job-image', 'company-logo', 'profile-image'].includes(type),
                     });
 
                     fileMetadata = await fileDoc.save();
+
+                    // Update URL with actual file ID
+                    fileMetadata.url = `/api/files/download/${fileMetadata._id}`;
+                    await fileMetadata.save();
                 } catch (dbError) {
                     console.warn(`Failed to save file metadata for ${filename}:`, dbError);
                 }
 
+                // Return authenticated download URL
+                const downloadUrl = fileMetadata?._id
+                    ? `/api/files/download/${fileMetadata._id}`
+                    : null;
+
                 uploadedFiles.push({
-                    url: fileUrl,
+                    url: downloadUrl,
                     filename: filename,
                     originalName: file.name,
                     size: file.size,

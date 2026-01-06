@@ -93,7 +93,7 @@ const CommitmentSection = () => {
         </div>
 
         {/* Bottom Section - Full Width */}
-        <div className="max-w-5xl">
+        <div className="">
           <h3 className="text-2xl font-bold mb-6 text-center" style={{ color: '#000' }}>
             {text.partnershipTitle}
           </h3>

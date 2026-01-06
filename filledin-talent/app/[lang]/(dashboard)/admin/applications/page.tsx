@@ -45,7 +45,7 @@ interface Application {
             profileImage?: string;
         };
     };
-    status: 'pending' | 'interviews' | 'accepted' | 'rejected';
+    status: 'pending' | 'interviews' | 'accepted' | 'rejected' | 'offer-accepted' | 'offer-rejected';
     cvUrl: string;
     coverLetter?: string;
     createdAt: string;
@@ -91,6 +91,8 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                 'dashboard.status.interviews': 'Interviews',
                 'dashboard.status.accepted': 'Accepted',
                 'dashboard.status.rejected': 'Rejected',
+                'dashboard.status.offer-accepted': 'Offer Accepted',
+                'dashboard.status.offer-rejected': 'Offer Rejected',
                 'common.sortBy': 'Sort By',
                 'dashboard.admin.newestFirst': 'Newest First',
                 'dashboard.admin.oldestFirst': 'Oldest First',
@@ -124,6 +126,8 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                 'dashboard.status.interviews': 'مقابلات',
                 'dashboard.status.accepted': 'مقبول',
                 'dashboard.status.rejected': 'مرفوض',
+                'dashboard.status.offer-accepted': 'قُبل العرض',
+                'dashboard.status.offer-rejected': 'رُفض العرض',
                 'common.sortBy': 'ترتيب حسب',
                 'dashboard.admin.newestFirst': 'الأحدث أولاً',
                 'dashboard.admin.oldestFirst': 'الأقدم أولاً',
@@ -157,6 +161,8 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                 'dashboard.status.interviews': 'Entretiens',
                 'dashboard.status.accepted': 'Accepté',
                 'dashboard.status.rejected': 'Rejeté',
+                'dashboard.status.offer-accepted': 'Offre Acceptée',
+                'dashboard.status.offer-rejected': 'Offre Rejetée',
                 'common.sortBy': 'Trier par',
                 'dashboard.admin.newestFirst': 'Plus Récent d\'Abord',
                 'dashboard.admin.oldestFirst': 'Plus Ancien d\'Abord',
@@ -223,6 +229,10 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                 return 'bg-green-100 text-green-800';
             case 'rejected':
                 return 'bg-red-100 text-red-800';
+            case 'offer-accepted':
+                return 'bg-emerald-100 text-emerald-800';
+            case 'offer-rejected':
+                return 'bg-rose-100 text-rose-800';
             default:
                 return 'bg-gray-100 text-gray-800';
         }
@@ -235,8 +245,10 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
             case 'interviews':
                 return <Calendar className="w-3 h-3" />;
             case 'accepted':
+            case 'offer-accepted':
                 return <CheckCircle className="w-3 h-3" />;
             case 'rejected':
+            case 'offer-rejected':
                 return <XCircle className="w-3 h-3" />;
             default:
                 return null;
@@ -397,6 +409,8 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                                 <option value="interviews">{getText('dashboard.status.interviews')}</option>
                                 <option value="accepted">{getText('dashboard.status.accepted')}</option>
                                 <option value="rejected">{getText('dashboard.status.rejected')}</option>
+                                <option value="offer-accepted">{getText('dashboard.status.offer-accepted')}</option>
+                                <option value="offer-rejected">{getText('dashboard.status.offer-rejected')}</option>
                             </select>
                         </div>
 
@@ -462,7 +476,7 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center">
                                                         <div className="flex-shrink-0 h-10 w-10">
-                                                            {application.applicant.profile?.profileImage ? (
+                                                            {application?.applicant?.profile?.profileImage ? (
                                                                 <img
                                                                     className="h-10 w-10 rounded-full object-cover"
                                                                     src={application.applicant.profile.profileImage}
@@ -476,10 +490,10 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                                                         </div>
                                                         <div className="ml-4">
                                                             <div className="text-sm font-medium text-gray-900">
-                                                                {getApplicantName(application.applicant)}
+                                                                {application.applicant ? getApplicantName(application.applicant) : 'Unknown Applicant'}
                                                             </div>
                                                             <div className="text-sm text-gray-500">
-                                                                {application.applicant.email}
+                                                                {application.applicant?.email || 'No email'}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -514,21 +528,28 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-sm font-medium">
-                                                    <div className="flex items-center space-x-3">
+                                                    <div className="flex items-center space-x-2">
                                                         <a
-                                                            href={application.cvUrl}
+                                                            href={`/api/admin/applications/${application._id}/download?view=true`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-blue-600 hover:text-blue-900 flex items-center"
+                                                            className="text-orange-600 hover:text-orange-900 flex items-center bg-orange-50 px-3 py-1.5 rounded-md hover:bg-orange-100 transition-colors"
                                                             title={getText('admin.applications.viewCV')}
                                                         >
                                                             <Eye className="w-4 h-4 mr-1" />
-                                                            CV
+                                                            {getText('admin.applications.viewCV')}
+                                                        </a>
+                                                        <a
+                                                            href={`/api/admin/applications/${application._id}/download`}
+                                                            className="text-blue-600 hover:text-blue-900 flex items-center bg-blue-50 px-3 py-1.5 rounded-md hover:bg-blue-100 transition-colors"
+                                                            title="Download CV"
+                                                        >
+                                                            <Download className="w-4 h-4" />
                                                         </a>
                                                         {application.job?._id && (
                                                             <Link
                                                                 href={`/${resolvedParams.lang}/admin/jobs/${application.job._id}/applications`}
-                                                                className="text-orange-600 hover:text-orange-900 flex items-center"
+                                                                className="text-gray-600 hover:text-gray-900 flex items-center bg-gray-50 px-2 py-1.5 rounded-md hover:bg-gray-100 transition-colors"
                                                                 title={getText('admin.applications.viewDetails')}
                                                             >
                                                                 <ExternalLink className="w-4 h-4" />
@@ -592,8 +613,8 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                                                                 key={page}
                                                                 onClick={() => setCurrentPage(page)}
                                                                 className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === page
-                                                                        ? 'z-10 bg-orange-50 border-orange-500 text-orange-600'
-                                                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                                                    ? 'z-10 bg-orange-50 border-orange-500 text-orange-600'
+                                                                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                                                                     }`}
                                                             >
                                                                 {page}

@@ -3,6 +3,7 @@ import connectDB from '@/lib/db/mongodb';
 import File from '@/models/File';
 import { unlink } from 'fs/promises';
 import path from 'path';
+import { storageConfig } from '@/lib/config/storage';
 
 interface FileResponse {
   id: string;
@@ -141,8 +142,23 @@ export async function DELETE(request: NextRequest) {
     // Delete physical files
     const deletePromises = filesToDelete.map(async (file) => {
       try {
-        // Convert relative path to absolute
-        const absolutePath = path.join(process.cwd(), 'public', file.filePath.replace('/uploads', 'uploads'));
+        // filePath is now stored as absolute path in the new system
+        // Handle both old (public/uploads) and new (storageConfig) paths using centralized config
+        let absolutePath = file.filePath;
+
+        if (!path.isAbsolute(absolutePath)) {
+          // Handle legacy paths using storageConfig
+          if (absolutePath.startsWith(storageConfig.publicUrlPrefix.substring(1))) {
+            absolutePath = path.join(process.cwd(), 'public', absolutePath);
+          } else if (absolutePath.startsWith('/uploads') || absolutePath.startsWith('uploads')) {
+            // Old legacy paths
+            const cleanPath = absolutePath.replace(/^\/?uploads/, '');
+            absolutePath = path.join(process.cwd(), storageConfig.publicRoot, cleanPath);
+          } else {
+            absolutePath = path.join(process.cwd(), absolutePath);
+          }
+        }
+
         await unlink(absolutePath);
       } catch (fileError) {
         console.warn(`Failed to delete physical file ${file.filePath}:`, fileError);

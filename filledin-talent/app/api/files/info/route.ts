@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { FileService, createFileResponse, createFileErrorResponse } from '@/lib/services/fileService';
+import { storageConfig } from '@/lib/config/storage';
 
 // GET - Get file information
 export async function GET(request: NextRequest) {
@@ -11,8 +12,9 @@ export async function GET(request: NextRequest) {
       return createFileErrorResponse('File parameter is required', 400);
     }
 
-    // Validate file path (basic security check)
-    if (!fileUrl.startsWith('/uploads/')) {
+    // Validate file path using storageConfig
+    const validPrefix = storageConfig.publicUrlPrefix;
+    if (!fileUrl.startsWith(validPrefix) && !fileUrl.startsWith('/uploads/')) {
       return createFileErrorResponse('Invalid file path', 400);
     }
 

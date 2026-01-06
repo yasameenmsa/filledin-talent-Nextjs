@@ -718,11 +718,11 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
-                              {job.company.logo ? (
+                              {job.company?.logo ? (
                                 <Image
                                   className="h-10 w-10 rounded object-cover"
                                   src={job.company.logo}
-                                  alt={job.company.name}
+                                  alt={job.company.name || 'Company Logo'}
                                   width={40}
                                   height={40}
                                 />
@@ -770,7 +770,7 @@ export default function AdminJobsPage({ params }: { params: Promise<{ lang: stri
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm font-medium text-gray-900">{job.company.name}</div>
+                          <div className="text-sm font-medium text-gray-900">{job.company?.name || 'N/A'}</div>
                           <div className="text-sm text-gray-500">{job.postedBy?.name || job.postedBy?.email}</div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">

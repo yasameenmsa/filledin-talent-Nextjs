@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
         const { status, note } = await req.json();
 
         // Validate status
-        const validStatuses = ['pending', 'interviews', 'accepted', 'rejected'];
+        const validStatuses = ['pending', 'interviews', 'accepted', 'rejected', 'offer-accepted', 'offer-rejected'];
         if (!validStatuses.includes(status)) {
             return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
         }

@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -169,6 +170,7 @@ function FormField({
 }
 
 export default function JobForm({ lang }: { lang: string }) {
+    const { data: session } = useSession();
     const { t } = useTranslation(lang);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -218,13 +220,19 @@ export default function JobForm({ lang }: { lang: string }) {
                 formData.append('file', imageFile);
                 formData.append('type', 'job-image');
 
+                if (session?.user?.id) {
+                    formData.append('userId', session.user.id);
+                    formData.append('uploadedBy', session.user.id);
+                }
+
                 const uploadRes = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData,
                 });
 
                 if (!uploadRes.ok) {
-                    throw new Error('Failed to upload image');
+                    const errorData = await uploadRes.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Failed to upload image');
                 }
 
                 const uploadData = await uploadRes.json();
@@ -538,7 +546,7 @@ export default function JobForm({ lang }: { lang: string }) {
                                 <span className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</span>
                                 <input
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/*,.svg"
                                     onChange={handleImageChange}
                                     className="hidden"
                                 />

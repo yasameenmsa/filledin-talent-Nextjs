@@ -86,6 +86,11 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
         en: 'Messages',
         ar: 'الرسائل',
         fr: 'Messages'
+      },
+      'dashboard.nav.dropCVs': {
+        en: 'Drop CVs',
+        ar: 'السير الذاتية المودعة',
+        fr: 'CVs Déposés'
       }
     };
 
@@ -107,6 +112,7 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
     { name: getText('dashboard.nav.jobs'), href: `/${lang}/admin/jobs`, icon: Briefcase },
     { name: getText('dashboard.nav.applications'), href: `/${lang}/admin/applications`, icon: FileText },
     { name: getText('dashboard.nav.messages'), href: `/${lang}/admin/messages`, icon: Mail },
+    { name: getText('dashboard.nav.dropCVs'), href: `/${lang}/admin/drop-cvs`, icon: FileText },
     { name: getText('dashboard.nav.analytics'), href: `/${lang}/admin/analytics`, icon: BarChart3 },
     { name: getText('dashboard.nav.settings'), href: `/${lang}/admin/settings`, icon: Settings },
   ];

@@ -3,6 +3,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import dbConnect from '@/lib/db/mongodb';
 import CV from '@/models/CV';
+import { storageConfig } from '@/lib/config/storage';
 
 export async function POST(request: NextRequest) {
     try {
@@ -52,7 +53,8 @@ export async function POST(request: NextRequest) {
         // Sanitize filename and add timestamp
         const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const filename = `${Date.now()}-${sanitizedFilename}`;
-        const uploadDir = path.join(process.cwd(), 'public/uploads/cvs');
+        // Use centralized storage configuration
+        const uploadDir = path.join(process.cwd(), storageConfig.privateRoot, 'cvs');
 
         try {
             await mkdir(uploadDir, { recursive: true });
@@ -71,7 +73,7 @@ export async function POST(request: NextRequest) {
             email,
             userId, // Save user ID
             originalName: file.name, // Save original filename
-            fileUrl: `/uploads/cvs/${filename}`,
+            fileUrl: filepath, // Store actual file path (not public URL)
             language
         });
 

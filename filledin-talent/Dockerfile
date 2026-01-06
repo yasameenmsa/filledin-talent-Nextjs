@@ -20,6 +20,15 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 EXPOSE 3000
 
+# Create private storage directory (NOT in public - secure file storage)
+RUN mkdir -p /app/storage/uploads/cvs \
+    && mkdir -p /app/storage/uploads/documents \
+    && mkdir -p /app/storage/uploads/profiles \
+    && mkdir -p /app/storage/uploads/jobs \
+    && mkdir -p /app/storage/uploads/companies \
+    && mkdir -p /app/storage/uploads/certificates \
+    && mkdir -p /app/storage/uploads/general
+
 # Copy production artifacts
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public

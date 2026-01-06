@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    volumes:
+      - file-storage:/app/storage
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -32,4 +34,6 @@ services:
 
 volumes:
   mongo-data:
+    driver: local
+  file-storage:
     driver: local

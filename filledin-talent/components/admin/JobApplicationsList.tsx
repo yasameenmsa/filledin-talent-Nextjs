@@ -21,7 +21,7 @@ interface Application {
         name: string;
         email: string;
     };
-    status: 'pending' | 'interviews' | 'accepted' | 'rejected';
+    status: 'pending' | 'interviews' | 'accepted' | 'rejected' | 'offer-accepted' | 'offer-rejected';
     cvUrl: string;
     coverLetter?: string;
     createdAt: string;
@@ -71,7 +71,21 @@ export default function JobApplicationsList({ jobId, initialApplications }: JobA
             case 'interviews': return 'bg-blue-100 text-blue-800';
             case 'accepted': return 'bg-green-100 text-green-800';
             case 'rejected': return 'bg-red-100 text-red-800';
+            case 'offer-accepted': return 'bg-emerald-100 text-emerald-800';
+            case 'offer-rejected': return 'bg-rose-100 text-rose-800';
             default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const getStatusLabel = (status: string) => {
+        switch (status) {
+            case 'pending': return 'Pending';
+            case 'interviews': return 'Interviews';
+            case 'accepted': return 'Accepted';
+            case 'rejected': return 'Rejected';
+            case 'offer-accepted': return 'Offer Accepted';
+            case 'offer-rejected': return 'Offer Rejected';
+            default: return status.charAt(0).toUpperCase() + status.slice(1);
         }
     };
 
@@ -128,7 +142,7 @@ export default function JobApplicationsList({ jobId, initialApplications }: JobA
                                     </TableCell>
                                     <TableCell>
                                         <Badge className={getStatusColor(app.status)}>
-                                            {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                            {getStatusLabel(app.status)}
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
@@ -139,12 +153,14 @@ export default function JobApplicationsList({ jobId, initialApplications }: JobA
                                                 <Select
                                                     value={app.status}
                                                     onChange={(e) => handleStatusChange(app._id, e.target.value)}
-                                                    className="w-[130px]"
+                                                    className="w-[160px]"
                                                 >
                                                     <option value="pending">Pending</option>
                                                     <option value="interviews">Interviews</option>
                                                     <option value="accepted">Accepted</option>
                                                     <option value="rejected">Rejected</option>
+                                                    <option value="offer-accepted">Offer Accepted</option>
+                                                    <option value="offer-rejected">Offer Rejected</option>
                                                 </Select>
                                             )}
                                         </div>

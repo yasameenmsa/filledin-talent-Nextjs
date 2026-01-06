@@ -26,7 +26,11 @@ const BusinessSection = () => {
         interviewTips: 'Interview tips',
         dropCV: 'Drop CV',
         aboutFINT: 'About FINT',
-        getInTouch: 'Get In Touch'
+        getInTouch: 'Get In Touch',
+        riskAverseTitle: 'A Risk-Averse, Partnership-Focused Model',
+        riskAverseDesc: 'We believe your satisfaction measures our success. Our transparent fee structure is designed to align with your goals and de-risk the hiring process:',
+        nonManagerialRoles: 'For Non-Managerial Roles: A simple, competitive fixed fee. You incur no cost until we successfully present a candidate you choose to interview.',
+        managerialRoles: 'For Managerial & Executive Roles: A competitive fee with a limited initial engagement fee, demonstrating our mutual commitment to finding your next leader.'
       },
       fr: {
         forBusinesses: 'Pour les entreprises',
@@ -45,7 +49,11 @@ const BusinessSection = () => {
         interviewTips: 'Conseils d\'entretien',
         dropCV: 'Déposer CV',
         aboutFINT: 'À propos de FINT',
-        getInTouch: 'Nous Contacter'
+        getInTouch: 'Nous Contacter',
+        riskAverseTitle: 'Un modèle axé sur le partenariat et sans risque',
+        riskAverseDesc: 'Nous croyons que votre satisfaction mesure notre succès. Notre structure tarifaire transparente est conçue pour s\'aligner sur vos objectifs et réduire les risques du processus d\'embauche :',
+        nonManagerialRoles: 'Pour les rôles non managériaux : Des frais fixes simples et compétitifs. Vous n\'engagez aucun frais tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'interviewer.',
+        managerialRoles: 'Pour les rôles managériaux et exécutifs : Des frais compétitifs avec des frais d\'engagement initial limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
       },
       ar: {
         forBusinesses: 'للشركات',
@@ -64,7 +72,11 @@ const BusinessSection = () => {
         interviewTips: 'نصائح المقابلة',
         dropCV: 'إرسال السيرة الذاتية',
         aboutFINT: 'عن FINT',
-        getInTouch: 'تواصل معنا'
+        getInTouch: 'تواصل معنا',
+        riskAverseTitle: 'نموذج يركز على الشراكة ويتجنب المخاطر',
+        riskAverseDesc: 'نحن نؤمن بأن رضاك هو مقياس نجاحنا. تم تصميم هيكل الرسوم الشفاف لدينا ليتوافق مع أهدافك ويقلل من مخاطر عملية التوظيف:',
+        nonManagerialRoles: 'للأدوار غير الإدارية: رسوم ثابتة بسيطة وتنافسية. لا تتحمل أي تكلفة حتى نقدم بنجاح مرشحًا تختار مقابلته.',
+        managerialRoles: 'للأدوار الإدارية والتنفيذية: رسوم تنافسية مع رسوم مشاركة أولية محدودة، مما يوضح التزامنا المتبادل بالعثور على قائدك التالي.'
       }
     };
     return translations[currentLanguage as keyof typeof translations] || translations.en;
@@ -80,7 +92,7 @@ const BusinessSection = () => {
     >
 
       {/* Main Content */}
-      <main className="container mx-auto px-8 py-12">
+      <main className="container mx-auto px-8 pt-12">
         <div className="flex gap-12 items-start">
           {/* Left Content */}
           <div className="flex-1">
@@ -98,40 +110,11 @@ const BusinessSection = () => {
               <p>{text.delivery}</p>
             </div>
 
-            {/* Promise Section */}
-            <div className="mt-12">
-              <h3 className="text-center text-2xl font-bold mb-8" style={{ color: '#000' }}>
-                {text.promiseTitle}
-              </h3>
 
-              <div className="flex gap-8 mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded flex items-center justify-center" style={{ backgroundColor: '#4682b4' }}>
-                    <Globe className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="font-bold text-lg" style={{ color: '#000' }}>{text.globalSourcing}</span>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded flex items-center justify-center" style={{ backgroundColor: '#90ee90' }}>
-                    <CheckCircle className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="font-bold text-lg" style={{ color: '#000' }}>{text.noSecondInterview}</span>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded flex items-center justify-center" style={{ backgroundColor: '#87ceeb' }}>
-                    <TrendingUp className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="font-bold text-lg" style={{ color: '#000' }}>{text.keyMetrics}</span>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-base" style={{ color: '#000' }}>
-                <p>{text.notTransactional}</p>
-              </div>
-            </div>
           </div>
+
 
           {/* Right Image */}
           <div className="flex-shrink-0 w-[450px] lg:w-[350px]">
@@ -144,6 +127,45 @@ const BusinessSection = () => {
               style={{ objectFit: 'cover' }}
             />
           </div>
+        </div>
+
+        {/* New Full Width Section */}
+        {/* Promise Section */}
+        <div className="mt-12">
+          <h3 className="text-center text-2xl font-bold mb-8" style={{ color: '#000' }}>
+            {text.promiseTitle}
+          </h3>
+
+          <div className="flex gap-8 mb-8 justify-center">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded flex items-center justify-center" style={{ backgroundColor: '#4682b4' }}>
+                <Globe className="w-7 h-7 text-white" />
+              </div>
+              <span className="font-bold text-lg" style={{ color: '#000' }}>{text.globalSourcing}</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded flex items-center justify-center" style={{ backgroundColor: '#90ee90' }}>
+                <CheckCircle className="w-7 h-7 text-white" />
+              </div>
+              <span className="font-bold text-lg" style={{ color: '#000' }}>{text.noSecondInterview}</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded flex items-center justify-center" style={{ backgroundColor: '#87ceeb' }}>
+                <TrendingUp className="w-7 h-7 text-white" />
+              </div>
+              <span className="font-bold text-lg" style={{ color: '#000' }}>{text.keyMetrics}</span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 space-y-6 text-base text-center mx-auto" style={{ color: '#000' }}>
+          <h3 className="text-2xl font-bold mb-4">{text.riskAverseTitle}</h3>
+          <p>{text.riskAverseDesc}</p>
+          <ul className="list-none space-y-3">
+            <li>• {text.nonManagerialRoles}</li>
+            <li>• {text.managerialRoles}</li>
+          </ul>
         </div>
       </main>
     </div>
