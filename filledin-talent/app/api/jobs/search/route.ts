@@ -59,8 +59,13 @@ export async function GET(request: NextRequest) {
         limit
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Job search error:', error);
+
+    if (error.name === 'MongooseServerSelectionError' || error.name === 'MongoNetworkError') {
+      return NextResponse.json({ error: 'Database Connection Error. Please try again later.' }, { status: 503 });
+    }
+
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

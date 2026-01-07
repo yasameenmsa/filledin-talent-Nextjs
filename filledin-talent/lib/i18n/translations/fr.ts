@@ -21,6 +21,7 @@ import { admin } from './fr/admin';
 import { imageBoxes } from './fr/imageBoxes';
 import { jobs } from './fr/jobs';
 import { applications } from './fr/applications';
+import { error } from './fr/error';
 
 export const fr = {
   common,
@@ -45,6 +46,7 @@ export const fr = {
   admin,
   imageBoxes,
   jobs,
-  applications
+  applications,
+  error
 };
 

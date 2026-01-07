@@ -21,8 +21,13 @@ export async function GET(
         await job.save();
 
         return NextResponse.json(job);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching job:', error);
+
+        if (error.name === 'MongooseServerSelectionError' || error.name === 'MongoNetworkError') {
+            return NextResponse.json({ error: 'Database Connection Error. Please try again later.' }, { status: 503 });
+        }
+
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
