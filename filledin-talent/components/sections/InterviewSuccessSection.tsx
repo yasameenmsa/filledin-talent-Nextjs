@@ -124,7 +124,7 @@ const InterviewSuccessSection = () => {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=800&h=900&fit=crop"
+                src="/images/home/succeed.jpeg"
                 alt="Successful Interview"
                 className="w-full h-auto"
                 style={{ aspectRatio: '500/650', objectFit: 'cover' }}

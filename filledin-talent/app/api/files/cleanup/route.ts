@@ -16,9 +16,9 @@ export async function POST(request: NextRequest) {
       return createFileErrorResponse('olderThanDays must be a positive number', 400);
     }
 
-    // Validate directory path using storageConfig
+    // Validate directory path using storageConfig (supports new storage paths only)
     const validPrefix = storageConfig.publicUrlPrefix;
-    if (!directory.startsWith(validPrefix) && !directory.startsWith('/uploads/') && !directory.startsWith('uploads/')) {
+    if (!directory.startsWith(validPrefix)) {
       return createFileErrorResponse('Invalid directory path', 400);
     }
 

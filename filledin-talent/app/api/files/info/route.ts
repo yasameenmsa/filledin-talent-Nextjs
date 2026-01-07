@@ -12,9 +12,10 @@ export async function GET(request: NextRequest) {
       return createFileErrorResponse('File parameter is required', 400);
     }
 
-    // Validate file path using storageConfig
+    // Validate file path using storageConfig (supports both new and legacy paths during migration)
     const validPrefix = storageConfig.publicUrlPrefix;
-    if (!fileUrl.startsWith(validPrefix) && !fileUrl.startsWith('/uploads/')) {
+    const validLegacyPrefix = '/storage/uploads';
+    if (!fileUrl.startsWith(validPrefix) && !fileUrl.startsWith(validLegacyPrefix)) {
       return createFileErrorResponse('Invalid file path', 400);
     }
 

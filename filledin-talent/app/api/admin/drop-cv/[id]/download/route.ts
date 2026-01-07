@@ -40,8 +40,20 @@ export async function GET(
 
         // Check if fileUrl is a full path or relative
         let filePath = cv.fileUrl;
-        // In the upload route, we stored the full path. 
-        // Ideally we should verify it is within the storage directory for security.
+
+        // Resolve path if not absolute
+        if (!path.isAbsolute(filePath)) {
+            if (filePath.startsWith('/') && !filePath.startsWith('/uploads')) {
+                // Likely relative to project root
+                filePath = path.join(process.cwd(), filePath);
+            } else if (filePath.startsWith('/uploads') || filePath.startsWith('uploads')) {
+                // Legacy public/uploads
+                filePath = path.join(process.cwd(), 'public', filePath.replace(/^\//, ''));
+            } else {
+                // Default fallback
+                filePath = path.join(process.cwd(), 'public', filePath);
+            }
+        }
 
         try {
             const fileBuffer = await readFile(filePath);

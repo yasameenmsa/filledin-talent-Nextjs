@@ -38,7 +38,7 @@ export default function Footer() {
                     <div className="flex items-center gap-3">
                         <Link href="/" className="flex items-center">
                             <Image
-                                src="/new-logo.png"
+                                src={currentLanguage === 'ar' ? "/images/arabiclogo.png" : "/new-logo.png"}
                                 alt="FilledIn Talent Logo"
                                 width={400}
                                 height={200}

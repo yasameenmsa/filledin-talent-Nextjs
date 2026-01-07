@@ -76,7 +76,7 @@ const InterviewTipsSection = () => {
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=900&fit=crop"
+                src="/images/home/Ourbesttips.jpeg"
                 alt="Job Interview"
                 className="w-full h-auto"
                 style={{ aspectRatio: '500/600', objectFit: 'cover' }}

@@ -84,7 +84,7 @@ const ExpertiseFooterSection = () => {
     <div className="relative w-full min-h-screen" dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}>
       {/* Background Image - positioned absolutely to fill container */}
       <Image
-        src="/public/home/OurExpertise"
+        src="/images/home/OurExpertise.png"
         alt="Expertise Background"
         fill
         className="object-cover"

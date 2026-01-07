@@ -9,7 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
 
-const JobSearchSection = () => {
+import { Select } from '@/components/ui/select';
+
+interface JobSearchSectionProps {
+  hideTitle?: boolean;
+}
+
+const JobSearchSection = ({ hideTitle = false }: JobSearchSectionProps) => {
   const { currentLanguage } = useLanguage();
   const router = useRouter();
 
@@ -31,7 +37,7 @@ const JobSearchSection = () => {
     router.push(`/${currentLanguage}/jobs?${params.toString()}`);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value
@@ -51,7 +57,21 @@ const JobSearchSection = () => {
         location: 'Location',
         search: 'Search Jobs',
         popularSearches: 'Popular Searches:',
-        popularTerms: ['Engineer', 'Project Manager', 'Renewable Energy', 'Oil & Gas']
+        popularTerms: ['Engineer', 'Project Manager', 'Renewable Energy', 'Oil & Gas'],
+        categories: {
+          technical: 'Technical',
+          hse: 'HSE',
+          corporate: 'Corporate',
+          executive: 'Executive',
+          operations: 'Operations',
+        },
+        workingTypes: {
+          'full-time': 'Full Time',
+          'part-time': 'Part Time',
+          contract: 'Contract',
+          remote: 'Remote',
+          hybrid: 'Hybrid',
+        }
       },
       fr: {
         title: 'Partenaire Mondial des Talents Énergétiques',
@@ -63,7 +83,21 @@ const JobSearchSection = () => {
         location: 'Emplacement',
         search: 'Rechercher des emplois',
         popularSearches: 'Recherches populaires:',
-        popularTerms: ['Ingénieur', 'Chef de Projet', 'Énergie Renouvelable', 'Pétrole et Gaz']
+        popularTerms: ['Ingénieur', 'Chef de Projet', 'Énergie Renouvelable', 'Pétrole et Gaz'],
+        categories: {
+          technical: 'Technique',
+          hse: 'HSE',
+          corporate: 'Entreprise',
+          executive: 'Exécutif',
+          operations: 'Opérations',
+        },
+        workingTypes: {
+          'full-time': 'Temps plein',
+          'part-time': 'Temps partiel',
+          contract: 'Contrat',
+          remote: 'À distance',
+          hybrid: 'Hybride',
+        }
       },
       ar: {
         title: 'شريك المواهب العالمية للطاقة',
@@ -75,7 +109,21 @@ const JobSearchSection = () => {
         location: 'الموقع',
         search: 'البحث عن وظائف',
         popularSearches: 'عمليات البحث الشائعة:',
-        popularTerms: ['مهندس', 'مدير مشروع', 'الطاقة المتجددة', 'النفط والغاز']
+        popularTerms: ['مهندس', 'مدير مشروع', 'الطاقة المتجددة', 'النفط والغاز'],
+        categories: {
+          technical: 'تقني',
+          hse: 'الصحة والسلامة والبيئة',
+          corporate: 'إداري',
+          executive: 'تنفيذي',
+          operations: 'عمليات',
+        },
+        workingTypes: {
+          'full-time': 'دوام كامل',
+          'part-time': 'دوام جزئي',
+          contract: 'عقد',
+          remote: 'عن بعد',
+          hybrid: 'هجين',
+        }
       }
     };
     return translations[currentLanguage as keyof typeof translations] || translations.en;
@@ -85,24 +133,26 @@ const JobSearchSection = () => {
 
   return (
     <div
-      className="pt-6 bg-[#f6f4ee]"
+      className={`${!hideTitle ? 'pt-6' : ''} bg-[#f6f4ee]`}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       {/* Title */}
-      <header className="text-center mb-12">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-3xl md:text-4xl font-bold italic text-gray-900"
-        >
-          {text.title}
-        </motion.h1>
-      </header>
+      {!hideTitle && (
+        <header className="text-center mb-12">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-3xl md:text-4xl font-bold italic text-gray-900"
+          >
+            {text.title}
+          </motion.h1>
+        </header>
+      )}
 
       <section
         className="relative py-16 min-h-[400px] flex items-center bg-cover bg-center"
         style={{
-          backgroundImage: 'url(https://res.cloudinary.com/dtpl6x0sk/image/upload/q_auto,f_auto,w_1200/v1759850669/s_1_f86nnk_wgfpmc.png)',
+          backgroundImage: "url('/images/home/homeBG.png')",
         }}
         aria-label="Job Search"
       >
@@ -139,26 +189,36 @@ const JobSearchSection = () => {
 
                 <div>
                   <label htmlFor="category" className="sr-only">{text.category}</label>
-                  <Input
-                    type="text"
+                  <Select
                     id="category"
-                    placeholder={text.category}
                     value={formData.category}
                     onChange={handleChange}
                     className={`bg-white/90 border-gray-300 text-black placeholder:text-gray-500 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
-                  />
+                  >
+                    <option value="">{text.category}</option>
+                    {Object.entries(text.categories).map(([key, value]) => (
+                      <option key={key} value={key}>
+                        {value}
+                      </option>
+                    ))}
+                  </Select>
                 </div>
 
                 <div>
                   <label htmlFor="workingType" className="sr-only">{text.workingType}</label>
-                  <Input
-                    type="text"
+                  <Select
                     id="workingType"
-                    placeholder={text.workingType}
                     value={formData.workingType}
                     onChange={handleChange}
                     className={`bg-white/90 border-gray-300 text-black placeholder:text-gray-500 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}
-                  />
+                  >
+                    <option value="">{text.workingType}</option>
+                    {Object.entries(text.workingTypes).map(([key, value]) => (
+                      <option key={key} value={key}>
+                        {value}
+                      </option>
+                    ))}
+                  </Select>
                 </div>
 
                 <div>
