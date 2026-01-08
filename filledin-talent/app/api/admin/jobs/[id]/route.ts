@@ -14,7 +14,7 @@ export async function PUT(
     const body = await request.json();
     const { status, featured, urgent } = body;
 
-    let updateData: any = {};
+    const updateData: any = {};
 
     if (status) {
       if (!['active', 'closed', 'draft'].includes(status)) {

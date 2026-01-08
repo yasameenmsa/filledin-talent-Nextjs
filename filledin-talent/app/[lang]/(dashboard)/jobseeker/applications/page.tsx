@@ -4,9 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatDate } from '@/lib/utils/formatters';
-import { 
-  Search, 
-  Eye, 
+import {
+  Search,
+  Eye,
   Calendar,
   MapPin,
   Building,
@@ -29,7 +29,7 @@ interface Application {
     };
     location: {
       city: string;
-      state: string;
+      state?: string;
       country: string;
     };
     jobType: string;
@@ -39,7 +39,7 @@ interface Application {
       currency: string;
     };
   };
-  status: string;
+  status: 'pending' | 'interviews' | 'accepted' | 'rejected';
   coverLetter?: string;
   cvUrl?: string;
   rating?: number;
@@ -47,11 +47,11 @@ interface Application {
   createdAt: string;
   updatedAt: string;
   interviewDetails?: {
-    scheduledAt: string;
-    type: string;
+    date: string;
+    type: 'phone' | 'video' | 'in-person';
     location?: string;
     notes?: string;
-  };
+  }[];
 }
 
 export default function JobSeekerApplicationsPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -251,20 +251,23 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     };
 
     const translation = translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
-    
+
     if (params) {
       return Object.keys(params).reduce((text, param) => {
         const value = params[param];
         return text.replace(`{${param}}`, value !== null && value !== undefined ? String(value) : '');
       }, translation);
     }
-    
+
     return translation;
   };
+
+  const [error, setError] = useState<string | null>(null);
 
   const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: '10',
@@ -273,15 +276,23 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
       });
 
       const response = await fetch(`/api/applications?${params}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch applications');
+      }
+
       const data = await response.json();
 
       if (data.success) {
         setApplications(data.applications);
         setTotalPages(data.pagination.totalPages);
         setStats(data.stats);
+      } else {
+        throw new Error(data.error || 'Failed to fetch applications');
       }
     } catch (error) {
       console.error('Error fetching applications:', error);
+      setError('Failed to load applications. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -391,6 +402,24 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
+        <div className="bg-red-50 p-4 rounded-full mb-4">
+          <AlertCircle className="h-12 w-12 text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h3>
+        <p className="text-gray-500 mb-6 max-w-md">{error}</p>
+        <button
+          onClick={() => fetchApplications()}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -471,28 +500,30 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
-                        <Link 
-                          href={`/${lang}/jobs/${application.job._id}`}
+                        <Link
+                          href={`/${lang}/jobs/${application.job?._id}`}
                           className="hover:text-blue-600"
                         >
-                          {application.job.title}
+                          {application.job?.title || 'Unknown Job Title'}
                         </Link>
                       </h3>
                       <div className="flex items-center text-sm text-gray-500 mt-1 space-x-4">
                         <div className="flex items-center">
                           <Building className="h-4 w-4 mr-1" />
-                          {application.job.company.name}
+                          {application.job?.company?.name || 'Unknown Company'}
                         </div>
                         <div className="flex items-center">
                           <MapPin className="h-4 w-4 mr-1" />
-                          {application.job.location.city}, {application.job.location.state}
+                          {application.job?.location ? `${application.job.location.city}, ${application.job.location.state}` : 'Location not available'}
                         </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {application.job.jobType}
-                        </div>
+                        {application.job?.jobType && (
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            {application.job.jobType}
+                          </div>
+                        )}
                       </div>
-                      {application.job.salary && (
+                      {application.job?.salary && (
                         <div className="text-sm text-gray-600 mt-1">
                           {formatSalary(application.job.salary.min, application.job.salary.max)}
                         </div>
@@ -507,20 +538,20 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                   </div>
 
                   {/* Interview Details */}
-                  {application.interviewDetails && (
+                  {application.interviewDetails && application.interviewDetails.length > 0 && (
                     <div className="bg-blue-50 p-3 rounded-lg mb-3">
                       <div className="flex items-center text-blue-800 mb-1">
                         <Calendar className="h-4 w-4 mr-1" />
                         <span className="font-medium">{getText('applications.interviewScheduled')}</span>
                       </div>
                       <div className="text-sm text-blue-700">
-                        <p>{getText('applications.date')}: {formatDateTime(application.interviewDetails.scheduledAt)}</p>
-                        <p>{getText('applications.type')}: {application.interviewDetails.type}</p>
-                        {application.interviewDetails.location && (
-                          <p>{getText('applications.location')}: {application.interviewDetails.location}</p>
+                        <p>{getText('applications.date')}: {formatDateTime(application.interviewDetails[0].date)}</p>
+                        <p>{getText('applications.type')}: {application.interviewDetails[0].type}</p>
+                        {application.interviewDetails[0].location && (
+                          <p>{getText('applications.location')}: {application.interviewDetails[0].location}</p>
                         )}
-                        {application.interviewDetails.notes && (
-                          <p>{getText('applications.notes')}: {application.interviewDetails.notes}</p>
+                        {application.interviewDetails[0].notes && (
+                          <p>{getText('applications.notes')}: {application.interviewDetails[0].notes}</p>
                         )}
                       </div>
                     </div>
@@ -548,9 +579,8 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                         {[...Array(5)].map((_, i) => (
                           <span
                             key={i}
-                            className={`text-sm ${
-                              i < application.rating! ? 'text-yellow-400' : 'text-gray-300'
-                            }`}
+                            className={`text-sm ${i < application.rating! ? 'text-yellow-400' : 'text-gray-300'
+                              }`}
                           >
                             ★
                           </span>

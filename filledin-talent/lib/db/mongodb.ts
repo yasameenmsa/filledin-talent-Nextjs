@@ -27,10 +27,22 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log('MongoDB connected successfully');
       return mongoose;
+    });
+
+    mongoose.connection.on('error', (err) => {
+      console.error('MongoDB connection error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      console.warn('MongoDB disconnected');
     });
   }
 
@@ -38,6 +50,13 @@ async function dbConnect() {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
+    console.error('Failed to establish MongoDB connection:', e);
+    // Ensure we disconnect if the connection failed, so we can retry cleanly
+    try {
+      await mongoose.disconnect();
+    } catch (disconnectError) {
+      console.error('Error disconnecting after connection failure:', disconnectError);
+    }
     throw e;
   }
 

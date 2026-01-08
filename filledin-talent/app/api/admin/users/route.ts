@@ -22,8 +22,10 @@ interface UserResponse {
   applicationsSubmitted?: number;
 }
 
+import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
+
 // GET - Fetch users with pagination and filters
-export async function GET(request: NextRequest) {
+export const GET = withAdminAuth(async (request) => {
   try {
     await connectDB();
 
@@ -130,10 +132,10 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 // PUT - Update user status (bulk operation)
-export async function PUT(request: NextRequest) {
+export const PUT = withAdminAuth(async (request) => {
   try {
     await connectDB();
 
@@ -187,4 +189,4 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

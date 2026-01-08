@@ -1,12 +1,14 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin, Briefcase, Clock, DollarSign, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JobSearchSection from '@/components/sections/JobSearchSection';
 import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import Application from '@/models/Application';
+import JobImage from '@/components/jobs/JobImage';
 
 export const metadata: Metadata = {
     title: 'Job Search | FilledIn Talent',
@@ -107,7 +109,7 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
 
     return (
         <div className="min-h-screen bg-gray-50 pb-12">
-            <JobSearchSection />
+            <JobSearchSection hideTitle={true} />
 
             <div className="container mx-auto px-4 mt-8">
                 <h1 className="text-2xl font-bold mb-6 text-gray-900">
@@ -123,15 +125,14 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                                 <div key={job._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                                     <div className="flex flex-col md:flex-row gap-6">
                                         {/* Job Image */}
-                                        {job.imageUrl && (
-                                            <div className="w-full md:w-48 h-32 flex-shrink-0">
-                                                <img
-                                                    src={job.imageUrl}
-                                                    alt={translatedJob.title}
-                                                    className="w-full h-full object-cover rounded-lg"
-                                                />
-                                            </div>
-                                        )}
+                                        <div className="w-full md:w-48 h-32 flex-shrink-0 relative">
+                                            <JobImage
+                                                src={job.imageUrl}
+                                                alt={translatedJob.title}
+                                                fill
+                                                className="object-cover rounded-lg"
+                                            />
+                                        </div>
 
                                         <div className="flex-1">
                                             <div className="flex items-start justify-between mb-2">
@@ -141,7 +142,7 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
                                                             {translatedJob.title}
                                                         </Link>
                                                     </h2>
-                                                    <p className="text-gray-600 font-medium">{job.company.name}</p>
+                                                    <p className="text-gray-600 font-medium">{job.company?.name || 'Confidential'}</p>
                                                 </div>
                                                 {job.featured && (
                                                     <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-semibold">

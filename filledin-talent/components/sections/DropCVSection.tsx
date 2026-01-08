@@ -8,7 +8,8 @@ const DropCVSection = () => {
     const { currentLanguage, isRTL } = useLanguage();
     const [dragActive, setDragActive] = useState(false);
     const [file, setFile] = useState<File | null>(null);
-    const [name, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -21,7 +22,8 @@ const DropCVSection = () => {
             joinNetwork: 'Join Our Talent Network',
             title: 'Drop Your CV',
             subtitle: 'Join our exclusive talent pool. Let the best opportunities find you.',
-            nameLabel: 'Full Name',
+            firstNameLabel: 'First Name',
+            lastNameLabel: 'Last Name',
             emailLabel: 'Email Address',
             dragDrop: 'Drag & drop your CV here',
             or: 'or',
@@ -41,7 +43,8 @@ const DropCVSection = () => {
             joinNetwork: 'Rejoignez notre réseau de talents',
             title: 'Déposez votre CV',
             subtitle: 'Rejoignez notre vivier de talents exclusif. Laissez les meilleures opportunités venir à vous.',
-            nameLabel: 'Nom complet',
+            firstNameLabel: 'Prénom',
+            lastNameLabel: 'Nom',
             emailLabel: 'Adresse e-mail',
             dragDrop: 'Glissez et déposez votre CV ici',
             or: 'ou',
@@ -61,7 +64,8 @@ const DropCVSection = () => {
             joinNetwork: 'انضم إلى شبكة المواهب لدينا',
             title: 'أرسل سيرتك الذاتية',
             subtitle: 'انضم إلى مجموعة المواهب الحصرية لدينا. دع أفضل الفرص تجدك.',
-            nameLabel: 'الاسم الكامل',
+            firstNameLabel: 'الاسم الأول',
+            lastNameLabel: 'الاسم الأخير',
             emailLabel: 'البريد الإلكتروني',
             dragDrop: 'اسحب وأفلت سيرتك الذاتية هنا',
             or: 'أو',
@@ -135,13 +139,14 @@ const DropCVSection = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!file || !name || !email) return;
+        if (!file || !firstName || !lastName || !email) return;
 
         setLoading(true);
         setUploadProgress(10); // Start progress
         const formData = new FormData();
+        const fullName = `${firstName} ${lastName}`.trim();
         formData.append('file', file);
-        formData.append('name', name);
+        formData.append('name', fullName);
         formData.append('email', email);
         formData.append('language', currentLanguage);
 
@@ -172,7 +177,8 @@ const DropCVSection = () => {
                 setTimeout(() => {
                     setStatus('success');
                     setFile(null);
-                    setName('');
+                    setFirstName('');
+                    setLastName('');
                     setEmail('');
                     setUploadProgress(0);
                 }, 500);
@@ -195,7 +201,8 @@ const DropCVSection = () => {
     const resetForm = () => {
         setStatus('idle');
         setFile(null);
-        setName('');
+        setFirstName('');
+        setLastName('');
         setEmail('');
         setMessage('');
         setLoading(false);
@@ -245,39 +252,56 @@ const DropCVSection = () => {
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="grid md:grid-cols-2 gap-8">
-                                    {/* Name Input */}
+                                    {/* First Name Input */}
                                     <div className="space-y-2">
-                                        <label htmlFor="name" className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
-                                            {t.nameLabel}
+                                        <label htmlFor="firstName" dir={isRTL ? 'rtl' : 'ltr'} className={`block text-sm font-semibold text-slate-700 `}>
+                                            {t.firstNameLabel}
                                         </label>
                                         <input
                                             type="text"
-                                            id="name"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
+                                            id="firstName"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
                                             required
-                                            className={`w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium text-left`}
-                                            placeholder={currentLanguage === 'ar' ? 'الاسم الكامل' : 'John Doe'}
-                                            dir="ltr"
+                                            className={`w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium ${isRTL ? 'text-right' : 'text-left'}`}
+                                            placeholder={currentLanguage === 'ar' ? 'الاسم الأول' : 'John'}
+                                            dir={isRTL ? 'rtl' : 'ltr'}
                                         />
                                     </div>
 
-                                    {/* Email Input */}
+                                    {/* Last Name Input */}
                                     <div className="space-y-2">
-                                        <label htmlFor="email" className={`block text-sm font-semibold text-slate-700 ${isRTL ? 'text-right' : 'text-left'}`}>
-                                            {t.emailLabel}
+                                        <label htmlFor="lastName" dir={isRTL ? 'rtl' : 'ltr'} className={`block text-sm font-semibold text-slate-700 `}>
+                                            {t.lastNameLabel}
                                         </label>
                                         <input
-                                            type="email"
-                                            id="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            type="text"
+                                            id="lastName"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
                                             required
-                                            className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium text-left"
-                                            placeholder="john@example.com"
-                                            dir="ltr"
+                                            className={`w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium ${isRTL ? 'text-right' : 'text-left'}`}
+                                            placeholder={currentLanguage === 'ar' ? 'الاسم الأخير' : 'Doe'}
+                                            dir={isRTL ? 'rtl' : 'ltr'}
                                         />
                                     </div>
+                                </div>
+
+                                {/* Email Input - Full Width */}
+                                <div className="space-y-2">
+                                    <label htmlFor="email" dir={isRTL ? 'rtl' : 'ltr'} className={`block text-sm font-semibold text-slate-700 `}>
+                                        {t.emailLabel}
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 font-medium text-left"
+                                        placeholder="john@example.com"
+                                        dir="ltr"
+                                    />
                                 </div>
 
                                 {/* File Upload Area */}
@@ -375,8 +399,8 @@ const DropCVSection = () => {
 
                                     <button
                                         type="submit"
-                                        disabled={loading || !file || !name || !email}
-                                        className={`w-full py-4 rounded-xl font-bold text-lg text-white transition-all transform hover:-translate-y-0.5 active:translate-y-0 ${loading || !file || !name || !email
+                                        disabled={loading || !file || !firstName || !lastName || !email}
+                                        className={`w-full py-4 rounded-xl font-bold text-lg text-white transition-all transform hover:-translate-y-0.5 active:translate-y-0 ${loading || !file || !firstName || !lastName || !email
                                             ? 'bg-slate-300 cursor-not-allowed shadow-none'
                                             : 'bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-xl hover:shadow-2xl'
                                             }`}

@@ -60,7 +60,22 @@ export async function DELETE(request: NextRequest) {
 
         // Delete file from filesystem
         try {
-            const filePath = path.join(process.cwd(), 'public', cv.fileUrl);
+            let filePath = cv.fileUrl;
+
+            // If path is not absolute, resolve it
+            if (!path.isAbsolute(filePath)) {
+                if (filePath.startsWith('/') && !filePath.startsWith('/uploads')) {
+                    // Likely relative to project root
+                    filePath = path.join(process.cwd(), filePath);
+                } else if (filePath.startsWith('/uploads') || filePath.startsWith('uploads')) {
+                    // Legacy public/uploads
+                    filePath = path.join(process.cwd(), 'public', filePath.replace(/^\//, ''));
+                } else {
+                    // Default fallback
+                    filePath = path.join(process.cwd(), 'public', filePath);
+                }
+            }
+
             await unlink(filePath);
         } catch (error) {
             console.error('Error deleting file:', error);

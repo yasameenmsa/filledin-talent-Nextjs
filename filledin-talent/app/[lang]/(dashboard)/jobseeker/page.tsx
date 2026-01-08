@@ -9,7 +9,8 @@ import {
   Search,
   Calendar,
   Clock,
-  Eye
+  Eye,
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -116,6 +117,11 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         ar: 'مقابلة',
         fr: 'Entretien'
       },
+      'applications.status.applied': {
+        en: 'Applied',
+        ar: 'تم التقديم',
+        fr: 'Postulé'
+      },
       'applications.status.rejected': {
         en: 'Rejected',
         ar: 'مرفوض',
@@ -210,25 +216,26 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
     appliedJobIds: []
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = React.useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
 
       // Fetch application statistics
       const applicationsResponse = await fetch('/api/applications?limit=5');
+      if (!applicationsResponse.ok) throw new Error('Failed to fetch applications');
       const applicationsData = await applicationsResponse.json();
 
       // Fetch recommended jobs
       const jobsResponse = await fetch('/api/jobs?limit=5');
+      if (!jobsResponse.ok) throw new Error('Failed to fetch jobs');
       const jobsData = await jobsResponse.json();
 
       // Fetch saved jobs count
       const savedJobsResponse = await fetch('/api/saved-jobs');
+      if (!savedJobsResponse.ok) throw new Error('Failed to fetch saved jobs');
       const savedJobsData = await savedJobsResponse.json();
 
       // Calculate stats from applications
@@ -247,10 +254,15 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setError('Failed to load dashboard data. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -284,8 +296,12 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
 
   if (loading) {
     return (
-      <div className="animate-pulse">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="animate-pulse space-y-8">
+        {/* Welcome Section Loading */}
+        <div className="h-48 bg-gray-200 rounded-xl w-full"></div>
+
+        {/* Stats Grid Loading */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="bg-white p-6 rounded-lg shadow-sm border">
               <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
@@ -293,6 +309,30 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
             </div>
           ))}
         </div>
+
+        {/* Recent Activity Loading */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white h-96 rounded-xl shadow-sm border"></div>
+          <div className="bg-white h-96 rounded-xl shadow-sm border"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
+        <div className="bg-red-50 p-4 rounded-full mb-4">
+          <AlertCircle className="h-12 w-12 text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h3>
+        <p className="text-gray-500 mb-6 max-w-md">{error}</p>
+        <button
+          onClick={() => fetchDashboardData()}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        >
+          Try Again
+        </button>
       </div>
     );
   }
@@ -393,7 +433,11 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
             {stats.recentApplications.length > 0 ? (
               <div className="space-y-4">
                 {stats.recentApplications.map((application) => (
-                  <div key={application._id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <Link
+                    href={`/${lang}/jobs/${application.job?._id}`}
+                    key={application._id}
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
                     <div>
                       <p className="text-sm font-medium text-gray-900">
                         {application.job?.title}
@@ -410,7 +454,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
                         {formatDate(new Date(application.createdAt), lang)}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : (

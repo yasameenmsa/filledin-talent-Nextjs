@@ -21,7 +21,7 @@ export async function PUT(
       );
     }
 
-    let updateData: any = {};
+    const updateData: any = {};
 
     if (status === 'active') {
       updateData.isEmailVerified = true;

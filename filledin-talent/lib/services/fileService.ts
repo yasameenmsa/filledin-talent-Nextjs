@@ -1,6 +1,7 @@
 import { stat, unlink, readdir, mkdir } from 'fs/promises';
 import path from 'path';
 import { NextResponse } from 'next/server';
+import { storageConfig } from '@/lib/config/storage';
 
 export interface FileInfo {
   name: string;
@@ -11,23 +12,33 @@ export interface FileInfo {
 }
 
 export class FileService {
-  private static readonly UPLOAD_BASE = path.join(process.cwd(), 'public/uploads');
+  // Use centralized storage configuration
+  private static readonly PUBLIC_UPLOAD_BASE = path.join(process.cwd(), storageConfig.publicRoot);
+  private static readonly PRIVATE_UPLOAD_BASE = path.join(process.cwd(), storageConfig.privateRoot);
 
   /**
    * Get the full filesystem path for a URL path
    */
-  static getFileSystemPath(urlPath: string): string {
-    // Remove leading slash and 'uploads' prefix if present
-    const relativePath = urlPath.replace(/^\/uploads\//, '').replace(/^\//, '');
-    return path.join(this.UPLOAD_BASE, relativePath);
+  static getFileSystemPath(urlPath: string, isPrivate = false): string {
+    // Handle storage URL prefix
+    const urlPrefix = storageConfig.publicUrlPrefix;
+    const relativePath = urlPath.replace(new RegExp(`^${urlPrefix}/`), '').replace(/^\//, '');
+    const baseDir = isPrivate ? this.PRIVATE_UPLOAD_BASE : this.PUBLIC_UPLOAD_BASE;
+    return path.join(baseDir, relativePath);
   }
 
   /**
    * Get the URL path for a filesystem path
    */
   static getUrlPath(fileSystemPath: string): string {
-    const relativePath = path.relative(this.UPLOAD_BASE, fileSystemPath);
-    return `/uploads/${relativePath.replace(/\\/g, '/')}`;
+    // Check if path is in public or private storage
+    if (fileSystemPath.includes(storageConfig.publicRoot)) {
+      const relativePath = path.relative(this.PUBLIC_UPLOAD_BASE, fileSystemPath);
+      return `${storageConfig.publicUrlPrefix}/${relativePath.replace(/\\/g, '/')}`;
+    }
+    // For private files, return API download path
+    const relativePath = path.relative(this.PRIVATE_UPLOAD_BASE, fileSystemPath);
+    return `/api/files/download/${relativePath.replace(/\\/g, '/')}`;
   }
 
   /**

@@ -14,6 +14,7 @@ export interface IJob extends Document {
       requirements?: {
         experience?: string;
         education?: string;
+        skills?: string[];
       };
     };
     ar?: {
@@ -23,6 +24,7 @@ export interface IJob extends Document {
       requirements?: {
         experience?: string;
         education?: string;
+        skills?: string[];
       };
     };
     fr?: {
@@ -32,6 +34,7 @@ export interface IJob extends Document {
       requirements?: {
         experience?: string;
         education?: string;
+        skills?: string[];
       };
     };
   };
@@ -102,6 +105,7 @@ const JobSchema = new Schema<IJob>({
       requirements: {
         experience: String,
         education: String,
+        skills: [String],
       },
     },
     ar: {
@@ -111,6 +115,7 @@ const JobSchema = new Schema<IJob>({
       requirements: {
         experience: String,
         education: String,
+        skills: [String],
       },
     },
     fr: {
@@ -120,13 +125,14 @@ const JobSchema = new Schema<IJob>({
       requirements: {
         experience: String,
         education: String,
+        skills: [String],
       },
     },
   },
   // Job image
   imageUrl: String,
   company: {
-    name: { type: String, required: true },
+    name: { type: String, required: false },
     logo: String,
     website: String,
     description: String,

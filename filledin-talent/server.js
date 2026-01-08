@@ -14,7 +14,7 @@ app.prepare().then(() => {
   server.get('/health', (_req, res) => res.status(200).send('OK'));
 
   // Let Next.js handle all other routes
-  server.all('*', (req, res) => handle(req, res));
+  server.all(/.*/, (req, res) => handle(req, res));
 
   server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);

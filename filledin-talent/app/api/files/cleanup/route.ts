@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { FileService, createFileResponse, createFileErrorResponse } from '@/lib/services/fileService';
+import { storageConfig } from '@/lib/config/storage';
 
 // POST - Cleanup old files (admin only operation)
 export async function POST(request: NextRequest) {
@@ -15,8 +16,9 @@ export async function POST(request: NextRequest) {
       return createFileErrorResponse('olderThanDays must be a positive number', 400);
     }
 
-    // Validate directory path (basic security check)
-    if (!directory.startsWith('/uploads/') && !directory.startsWith('uploads/')) {
+    // Validate directory path using storageConfig (supports new storage paths only)
+    const validPrefix = storageConfig.publicUrlPrefix;
+    if (!directory.startsWith(validPrefix)) {
       return createFileErrorResponse('Invalid directory path', 400);
     }
 

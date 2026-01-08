@@ -95,7 +95,7 @@ export default function Header() {
   };
 
   // Logo selection based on language
-  const logoSrc = '/new-logo.png';
+  const logoSrc = currentLanguage === 'ar' ? '/images/arabiclogo.png' : '/new-logo.png';
 
   const getRolePath = (role: string) => {
     if (role === 'job_seeker') return 'jobseeker';
@@ -116,7 +116,7 @@ export default function Header() {
       name: getText('nav.jobSeekers'),
       href: `/${currentLanguage}/job-seekers`,
       dropdown: [
-        { name: getText('nav.jobSearch'), href: `/${currentLanguage}/jobs` },
+        { name: getText('nav.jobSearch'), href: `/${currentLanguage}/jobs/search` },
         { name: getText('nav.interviewTips'), href: `/${currentLanguage}/interview-tips` },
         { name: getText('nav.dropCV'), href: `/${currentLanguage}/drop-cv` },
       ],

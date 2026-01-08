@@ -13,7 +13,8 @@ import {
   User,
   BookmarkPlus,
   Search,
-  X
+  X,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -80,6 +81,16 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
         en: 'Analytics',
         ar: 'التحليلات',
         fr: 'Analyses'
+      },
+      'dashboard.nav.messages': {
+        en: 'Messages',
+        ar: 'الرسائل',
+        fr: 'Messages'
+      },
+      'dashboard.nav.dropCVs': {
+        en: 'Drop CVs',
+        ar: 'السير الذاتية المودعة',
+        fr: 'CVs Déposés'
       }
     };
 
@@ -100,6 +111,8 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
     { name: getText('dashboard.nav.users'), href: `/${lang}/admin/users`, icon: Users },
     { name: getText('dashboard.nav.jobs'), href: `/${lang}/admin/jobs`, icon: Briefcase },
     { name: getText('dashboard.nav.applications'), href: `/${lang}/admin/applications`, icon: FileText },
+    { name: getText('dashboard.nav.messages'), href: `/${lang}/admin/messages`, icon: Mail },
+    { name: getText('dashboard.nav.dropCVs'), href: `/${lang}/admin/drop-cvs`, icon: FileText },
     { name: getText('dashboard.nav.analytics'), href: `/${lang}/admin/analytics`, icon: BarChart3 },
     { name: getText('dashboard.nav.settings'), href: `/${lang}/admin/settings`, icon: Settings },
   ];
@@ -142,8 +155,11 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
             </div>
             <nav className="mt-8 flex-1 space-y-1 px-2">
               {navigation.map((item) => {
-                const isActive = pathname === item.href ||
-                  (item.href !== `/${lang}/${userRole}` && pathname.startsWith(item.href));
+                const isRootPath = item.href === `/${lang}/jobseeker` || item.href === `/${lang}/admin`;
+
+                const isActive = isRootPath
+                  ? pathname === item.href
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
                 return (
                   <Link
@@ -151,7 +167,6 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
                     href={item.href}
                     className={cn(
                       'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors',
-                      isRTL && 'flex-row-reverse justify-end',
                       isActive
                         ? cn(
                           'bg-blue-50 text-blue-700 border-blue-700',
@@ -207,8 +222,11 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
           </div>
           <nav className="mt-4 flex-1 space-y-1 px-2 pb-4">
             {navigation.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== `/${lang}/${userRole}` && pathname.startsWith(item.href));
+              const isRootPath = item.href === `/${lang}/jobseeker` || item.href === `/${lang}/admin`;
+
+              const isActive = isRootPath
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
               return (
                 <Link
@@ -217,7 +235,6 @@ export default function DashboardSidebar({ isOpen, onClose, userRole, lang }: Da
                   onClick={onClose}
                   className={cn(
                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors',
-                    isRTL && 'flex-row-reverse justify-end',
                     isActive
                       ? cn(
                         'bg-blue-50 text-blue-700 border-blue-700',

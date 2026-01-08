@@ -22,6 +22,7 @@ import { admin } from './ar/admin';
 import { imageBoxes } from './ar/imageBoxes';
 import { jobs } from './ar/jobs';
 import { applications } from './ar/applications';
+import { error } from './ar/error';
 
 export const ar = {
   common,
@@ -47,6 +48,7 @@ export const ar = {
   admin,
   imageBoxes,
   jobs,
-  applications
+  applications,
+  error
 };
 

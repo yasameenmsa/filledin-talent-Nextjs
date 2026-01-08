@@ -53,28 +53,28 @@ const HRTrendsSection = () => {
       <div className="container mx-auto max-w-7xl">
         {/* HR Trends Section */}
         <div className="mb-16">
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
             {/* Left Content */}
             <div className="flex-1">
-              <h2 className="text-4xl font-bold mb-8" style={{ color: '#1e3a5f' }}>
+              <h2 className={`text-4xl font-bold mb-8 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`} style={{ color: '#1e3a5f' }}>
                 {text.hrTrendsTitle}
               </h2>
 
               <div className="space-y-6">
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className="text-gray-800 leading-relaxed text-base text-start">
+                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}>
                     {text.hrTrend1}
                   </p>
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className="text-gray-800 leading-relaxed text-base text-start">
+                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}>
                     {text.hrTrend2}
                   </p>
                 </div>
@@ -98,7 +98,7 @@ const HRTrendsSection = () => {
 
         {/* AI & Talent Acquisition Section */}
         <div>
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
             {/* Left Image */}
             <div className="flex-shrink-0 lg:w-[450px] order-2 lg:order-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -114,25 +114,25 @@ const HRTrendsSection = () => {
 
             {/* Right Content */}
             <div className="flex-1 order-1 lg:order-2">
-              <h2 className="text-4xl font-bold mb-8" style={{ color: '#1e3a5f' }}>
+              <h2 className={`text-4xl font-bold mb-8 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`} style={{ color: '#1e3a5f' }}>
                 {text.aiTalentTitle}
               </h2>
 
               <div className="space-y-6">
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className="text-gray-800 leading-relaxed text-base text-start">
+                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}>
                     <span className="font-bold">{text.filledInTalent}</span> {text.aiTalent1}
                   </p>
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">
+                  <div className="flex-shrink-0 mt-2">
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
-                  <p className="text-gray-800 leading-relaxed text-base text-start">
+                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}>
                     {text.aiTalent2}
                   </p>
                 </div>

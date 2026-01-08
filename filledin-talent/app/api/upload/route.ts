@@ -14,9 +14,9 @@ const FILE_CONFIGS = {
         extensions: ['.pdf', '.doc', '.docx']
     },
     'job-image': {
-        allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+        allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
         maxSize: 5 * 1024 * 1024, // 5MB
-        extensions: ['.jpg', '.jpeg', '.png', '.webp']
+        extensions: ['.jpg', '.jpeg', '.png', '.webp', '.svg']
     },
     'company-logo': {
         allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
@@ -92,6 +92,8 @@ function sanitizeFileName(fileName: string): string {
         .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
 }
 
+import { storageConfig } from '@/lib/config/storage';
+
 export async function POST(request: NextRequest) {
     try {
         const session = await auth();
@@ -153,53 +155,61 @@ export async function POST(request: NextRequest) {
         // Determine upload directory based on type and context
         let uploadDir: string;
         let urlPath: string;
+        let isPublicFile = false;
+
+        const publicRoot = storageConfig.publicRoot;
+        const privateRoot = storageConfig.privateRoot;
+        const publicUrlPrefix = storageConfig.publicUrlPrefix;
 
         switch (type) {
             case 'cv':
-                // CVs are stored per user
-                uploadDir = path.join(process.cwd(), `public/uploads/cvs/${userId || 'general'}`);
-                urlPath = `/uploads/cvs/${userId || 'general'}`;
+                // CVs are stored per user in private storage
+                uploadDir = path.join(process.cwd(), privateRoot, `cvs/${userId || 'general'}`);
+                urlPath = `/api/files/download`;
                 break;
 
             case 'job-image':
+                isPublicFile = true;
                 // Job images can be general or job-specific
                 if (jobId) {
-                    uploadDir = path.join(process.cwd(), `public/uploads/jobs/${jobId}/images`);
-                    urlPath = `/uploads/jobs/${jobId}/images`;
+                    uploadDir = path.join(process.cwd(), publicRoot, `jobs/${jobId}/images`);
+                    urlPath = `${publicUrlPrefix}/jobs/${jobId}/images`;
                 } else {
-                    uploadDir = path.join(process.cwd(), 'public/uploads/jobs/images');
-                    urlPath = '/uploads/jobs/images';
+                    uploadDir = path.join(process.cwd(), publicRoot, 'jobs/images');
+                    urlPath = `${publicUrlPrefix}/jobs/images`;
                 }
                 break;
 
             case 'company-logo':
+                isPublicFile = true;
                 // Company logos
-                uploadDir = path.join(process.cwd(), `public/uploads/companies/${companyId || 'general'}/logos`);
-                urlPath = `/uploads/companies/${companyId || 'general'}/logos`;
+                uploadDir = path.join(process.cwd(), publicRoot, `companies/${companyId || 'general'}/logos`);
+                urlPath = `${publicUrlPrefix}/companies/${companyId || 'general'}/logos`;
                 break;
 
             case 'profile-image':
+                isPublicFile = true;
                 // Profile images per user
-                uploadDir = path.join(process.cwd(), `public/uploads/users/${userId || 'general'}/profile`);
-                urlPath = `/uploads/users/${userId || 'general'}/profile`;
+                uploadDir = path.join(process.cwd(), publicRoot, `profiles/${userId || 'general'}`);
+                urlPath = `${publicUrlPrefix}/profiles/${userId || 'general'}`;
                 break;
 
             case 'document':
                 // General documents
-                uploadDir = path.join(process.cwd(), `public/uploads/documents/${userId || 'general'}`);
-                urlPath = `/uploads/documents/${userId || 'general'}`;
+                uploadDir = path.join(process.cwd(), privateRoot, `documents/${userId || 'general'}`);
+                urlPath = `/api/files/download`;
                 break;
 
             case 'certificate':
                 // Certificates per user
-                uploadDir = path.join(process.cwd(), `public/uploads/certificates/${userId || 'general'}`);
-                urlPath = `/uploads/certificates/${userId || 'general'}`;
+                uploadDir = path.join(process.cwd(), privateRoot, `certificates/${userId || 'general'}`);
+                urlPath = `/api/files/download`;
                 break;
 
             default:
                 // Fallback for unknown types
-                uploadDir = path.join(process.cwd(), 'public/uploads/general');
-                urlPath = '/uploads/general';
+                uploadDir = path.join(process.cwd(), privateRoot, 'general');
+                urlPath = '/api/files/download';
         }
 
         // Create directory if it doesn't exist
@@ -212,16 +222,26 @@ export async function POST(request: NextRequest) {
         const filepath = path.join(uploadDir, filename);
         await writeFile(filepath, buffer);
 
-        const fileUrl = `${urlPath}/${filename}`;
+        // Determine final URL
+        let finalUrl = '';
+        const isStoragePublic = publicRoot.startsWith('public/');
+
+        if (isPublicFile && isStoragePublic) {
+            finalUrl = `${urlPath}/${filename}`;
+        } else {
+            // If not in public directory or not a public file, logic handled after save or here
+            // But we can't get ID yet. 
+            // We will let the DB save block handle URL generation for API-served files
+        }
 
         // Save file metadata to database
-        let fileMetadata = null;
+        let fileMetadata: any = null;
         try {
             const fileDoc = new File({
                 filename,
                 originalName: file.name,
-                url: fileUrl,
-                filePath: filepath,
+                url: (isPublicFile && isStoragePublic) ? finalUrl : urlPath, // Temp URL, updated below
+                filePath: isPublicFile ? path.relative(process.cwd(), filepath) : filepath,
                 size: file.size,
                 mimeType: file.type,
                 fileType: type,
@@ -229,17 +249,27 @@ export async function POST(request: NextRequest) {
                 userId: userId,
                 jobId: jobId,
                 companyId: companyId,
-                isPublic: true, // Default to public, can be changed later
+                isPublic: isPublicFile,
             });
 
             fileMetadata = await fileDoc.save();
+
+            // Update the URL in the saved document with the actual ID for private files OR public files not in public folder
+            if (!isPublicFile || !isStoragePublic) {
+                fileMetadata.url = `/api/files/download/${fileMetadata._id}`;
+                await fileMetadata.save();
+                finalUrl = fileMetadata.url;
+            }
         } catch (dbError) {
             console.warn('Failed to save file metadata to database:', dbError);
-            // Continue with response even if DB save fails
+            // If DB save fails but file is written, we still return the URL if possible (only for static)
+            if (!finalUrl && isPublicFile && isStoragePublic) {
+                finalUrl = `${urlPath}/${filename}`;
+            }
         }
 
         return NextResponse.json({
-            url: fileUrl,
+            url: finalUrl,
             filename: filename,
             originalName: file.name,
             size: file.size,

@@ -45,7 +45,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
                             Apply for {job.title}
                         </h1>
                         <p className="text-gray-600">
-                            at {job.company.name}
+                            {job.company?.name ? `at ${job.company.name}` : ''}
                         </p>
                     </div>
 

@@ -11,9 +11,10 @@ interface TrendItemProps {
   imagePlaceholder: string;
   isReversed?: boolean;
   currentLanguage: string;
+  children?: React.ReactNode;
 }
 
-const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlaceholder, isReversed = false, currentLanguage }) => {
+const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlaceholder, isReversed = false, currentLanguage, children }) => {
   const isRTL = currentLanguage === 'ar';
 
   return (
@@ -44,6 +45,7 @@ const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlacehol
         <p className="text-gray-700 text-base lg:text-lg leading-relaxed">
           {description}
         </p>
+        {children}
       </div>
     </motion.div>
   );
@@ -124,24 +126,19 @@ const TrendsSection: React.FC = () => {
             imagePlaceholder={trend.imagePlaceholder}
             isReversed={index % 2 === 1}
             currentLanguage={currentLanguage}
-          />
+          >
+            {trend.id === 'industry-trends' && (
+              <div className="mt-4 space-y-2">
+                <p className="text-lg lg:text-xl text-gray-800 font-medium">
+                  {text.leverageKnowledgeText}
+                </p>
+                <p className="text-base lg:text-lg text-gray-600 italic">
+                  {text.leverageKnowledgeQuestion}
+                </p>
+              </div>
+            )}
+          </TrendItem>
         ))}
-
-        {/* Leverage Knowledge Section */}
-        <motion.div
-          className={`mt-16 text-center ${isRTL ? 'rtl' : 'ltr'}`}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-lg lg:text-xl text-gray-800 font-medium mb-2">
-            {text.leverageKnowledgeText}
-          </p>
-          <p className="text-base lg:text-lg text-gray-600 italic">
-            {text.leverageKnowledgeQuestion}
-          </p>
-        </motion.div>
       </div>
     </section>
   );

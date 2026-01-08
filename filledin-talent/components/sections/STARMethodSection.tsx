@@ -3,8 +3,15 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+
+
 const STARMethodSection = () => {
   const { currentLanguage } = useLanguage();
+  const [openQuestion, setOpenQuestion] = React.useState<number | null>(null);
+
+  const toggleQuestion = (index: number) => {
+    setOpenQuestion(openQuestion === index ? null : index);
+  };
 
   const getText = (lang: string) => {
     const translations = {
@@ -125,6 +132,39 @@ const STARMethodSection = () => {
 
   const text = getText(currentLanguage);
 
+  const questions = [
+    {
+      id: 1,
+      question: text.q1,
+      content: {
+        situation: text.q1Situation,
+        task: text.q1Task,
+        action: text.q1Action,
+        result: text.q1Result
+      }
+    },
+    {
+      id: 2,
+      question: text.q2,
+      content: {
+        situation: text.q2Situation,
+        task: text.q2Task,
+        action: text.q2Action,
+        result: text.q2Result
+      }
+    },
+    {
+      id: 3,
+      question: text.q3,
+      content: {
+        situation: text.q3Situation,
+        task: text.q3Task,
+        action: text.q3Action,
+        result: text.q3Result
+      }
+    }
+  ];
+
   return (
     <div
       className="py-12 px-4"
@@ -138,7 +178,7 @@ const STARMethodSection = () => {
         </h2>
 
         {/* STAR Diagram */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between mb-12 gap-4">
+        <div className={`flex flex-col items-stretch lg:items-center justify-between mb-12 gap-4 ${currentLanguage === 'ar' ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
           {/* S - Situation */}
           <div className="flex flex-col items-center flex-1">
             <div className="text-5xl lg:text-6xl font-bold mb-3" style={{ color: '#000' }}>{text.s}</div>
@@ -159,7 +199,7 @@ const STARMethodSection = () => {
           </div>
 
           {/* Arrow */}
-          <div className="hidden lg:flex justify-center items-center px-2">
+          <div className="hidden lg:flex justify-center items-center px-2 mt-20">
             <svg width="60" height="40" viewBox="0 0 60 40" style={{ opacity: 0.5 }}>
               <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0" />
             </svg>
@@ -185,7 +225,7 @@ const STARMethodSection = () => {
           </div>
 
           {/* Arrow */}
-          <div className="hidden lg:flex justify-center items-center px-2">
+          <div className="hidden lg:flex justify-center items-center px-2 mt-20">
             <svg width="60" height="40" viewBox="0 0 60 40" style={{ opacity: 0.5 }}>
               <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0" />
             </svg>
@@ -211,7 +251,7 @@ const STARMethodSection = () => {
           </div>
 
           {/* Arrow */}
-          <div className="hidden lg:flex justify-center items-center px-2">
+          <div className={`hidden lg:flex justify-center items-center px-2 mt-20 ${currentLanguage === 'ar' ? 'rotate-180' : ''}`}>
             <svg width="60" height="40" viewBox="0 0 60 40" style={{ opacity: 0.5 }}>
               <polygon points="0,15 40,15 40,0 60,20 40,40 40,25 0,25" fill="#a0a0a0" />
             </svg>
@@ -237,228 +277,74 @@ const STARMethodSection = () => {
           </div>
         </div>
 
-
-
-        {/* STAR Diagram */}
-        <div className="flex items-center justify-between mb-12 gap-4">
-          {/* S - Situation */}
-          <div className="flex flex-col items-center flex-1">
-            <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.s}</div>
-            <div
-              className="w-full rounded-2xl p-6 shadow-lg"
-              style={{
-                backgroundColor: '#5b8fd6',
-                minHeight: '180px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}
-            >
-              <h3 className="text-2xl font-bold text-white mb-3 italic">{text.situation}</h3>
-              <p className="text-white text-base leading-relaxed">• {text.situationDesc}</p>
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-6xl" style={{ color: '#a0a0a0' }}>➤</div>
-
-          {/* T - Task */}
-          <div className="flex flex-col items-center flex-1">
-            <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.t}</div>
-            <div
-              className="w-full rounded-2xl p-6 shadow-lg"
-              style={{
-                backgroundColor: '#5b8fd6',
-                minHeight: '180px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}
-            >
-              <h3 className="text-2xl font-bold text-white mb-3 italic">{text.task}</h3>
-              <p className="text-white text-base leading-relaxed">• {text.taskDesc}</p>
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-6xl" style={{ color: '#a0a0a0' }}>➤</div>
-
-          {/* A - Action */}
-          <div className="flex flex-col items-center flex-1">
-            <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.a}</div>
-            <div
-              className="w-full rounded-2xl p-6 shadow-lg"
-              style={{
-                backgroundColor: '#5b8fd6',
-                minHeight: '180px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}
-            >
-              <h3 className="text-2xl font-bold text-white mb-3 italic">{text.action}</h3>
-              <p className="text-white text-base leading-relaxed">• {text.actionDesc}</p>
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-6xl" style={{ color: '#a0a0a0' }}>➤</div>
-
-          {/* R - Result */}
-          <div className="flex flex-col items-center flex-1">
-            <div className="text-6xl font-bold mb-2" style={{ color: '#000' }}>{text.r}</div>
-            <div
-              className="w-full rounded-2xl p-6 shadow-lg"
-              style={{
-                backgroundColor: '#5b8fd6',
-                minHeight: '180px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}
-            >
-              <h3 className="text-2xl font-bold text-white mb-3 italic">{text.result}</h3>
-              <p className="text-white text-base leading-relaxed">• {text.resultDesc}</p>
-            </div>
-          </div>
-        </div>
-
         {/* Example Title */}
         <h3 className="text-2xl font-bold mb-8" style={{ color: '#000' }}>
           {text.exampleTitle}
         </h3>
 
-        {/* Three Examples in Grid */}
-        <div className="grid grid-cols-3 gap-6 mb-12">
-          {/* Example 1 */}
-          <div
-            className="rounded-lg p-6 shadow-lg"
-            style={{ backgroundColor: '#d4dce9' }}
-          >
+        {/* Accordion FAQ Style Examples */}
+        <div className="flex flex-col space-y-4 mb-12 max-w-4xl mx-auto">
+          {questions.map((q, index) => (
             <div
-              className="rounded-lg p-4 mb-4 text-center"
-              style={{ backgroundColor: '#5b8fd6' }}
+              key={q.id}
+              className={`bg-white rounded-xl transition-all duration-300 ${openQuestion === index ? 'shadow-md ring-1 ring-[#5b8fd6] ring-opacity-20' : 'shadow-sm border border-gray-100 hover:shadow-md'}`}
+              style={{
+                border: openQuestion === index ? '1px solid #5b8fd6' : '1px solid #e5e7eb'
+              }}
             >
-              <h4 className="text-xl font-bold text-white">{text.q1}</h4>
-            </div>
+              <button
+                onClick={() => toggleQuestion(index)}
+                className="w-full flex justify-between items-center p-5 md:p-6 text-left transition-colors duration-200"
+                style={{ direction: currentLanguage === 'ar' ? 'rtl' : 'ltr' }}
+              >
+                <h4 className={`text-lg md:text-xl font-bold transition-colors duration-200 ${openQuestion === index ? 'text-[#5b8fd6]' : 'text-gray-800'}`}>
+                  {q.question}
+                </h4>
+                <div
+                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transform transition-all duration-300 ml-4 ${currentLanguage === 'ar' ? 'mr-4 ml-0' : 'ml-4'} ${openQuestion === index ? 'rotate-180 bg-[#5b8fd6] text-white' : 'bg-gray-100 text-gray-500'}`}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </button>
 
-            <div className="space-y-4 text-sm">
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.situation}</p>
-                <p style={{ color: '#333' }}>{text.q1Situation}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.task}</p>
-                <p style={{ color: '#333' }}>{text.q1Task}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.action}</p>
-                <p style={{ color: '#333' }}>{text.q1Action}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.result}</p>
-                <p style={{ color: '#333' }}>{text.q1Result}</p>
-              </div>
-            </div>
-          </div>
+              {openQuestion === index && (
+                <div className="animate-fadeIn">
+                  <div className="px-6 pb-8 pt-2">
+                    <div className="block p-5 rounded-lg bg-[#f8fbff] border border-[#eef4fc]">
+                      <div className="grid gap-5">
+                        <div className="relative pl-4 border-l-4 border-[#5b8fd6] rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-4">
+                          <span className="block text-xs font-bold text-[#5b8fd6] uppercase tracking-wider mb-1">{text.situation}</span>
+                          <p className="text-gray-700 leading-relaxed text-[15px]">{q.content.situation}</p>
+                        </div>
 
-          {/* Example 2 */}
-          <div
-            className="rounded-lg p-6 shadow-lg"
-            style={{ backgroundColor: '#d4dce9' }}
-          >
-            <div
-              className="rounded-lg p-4 mb-4 text-center"
-              style={{ backgroundColor: '#5b8fd6' }}
-            >
-              <h4 className="text-xl font-bold text-white">{text.q2}</h4>
-            </div>
+                        <div className="relative pl-4 border-l-4 border-[#5b8fd6] rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-4">
+                          <span className="block text-xs font-bold text-[#5b8fd6] uppercase tracking-wider mb-1">{text.task}</span>
+                          <p className="text-gray-700 leading-relaxed text-[15px]">{q.content.task}</p>
+                        </div>
 
-            <div className="space-y-4 text-sm">
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.situation}</p>
-                <p style={{ color: '#333' }}>{text.q2Situation}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.task}</p>
-                <p style={{ color: '#333' }}>{text.q2Task}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.action}</p>
-                <p style={{ color: '#333' }}>{text.q2Action}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.result}</p>
-                <p style={{ color: '#333' }}>{text.q2Result}</p>
-              </div>
-            </div>
-          </div>
+                        <div className="relative pl-4 border-l-4 border-[#5b8fd6] rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-4">
+                          <span className="block text-xs font-bold text-[#5b8fd6] uppercase tracking-wider mb-1">{text.action}</span>
+                          <p className="text-gray-700 leading-relaxed text-[15px]">{q.content.action}</p>
+                        </div>
 
-          {/* Example 3 */}
-          <div
-            className="rounded-lg p-6 shadow-lg"
-            style={{ backgroundColor: '#d4dce9' }}
-          >
-            <div
-              className="rounded-lg p-4 mb-4 text-center"
-              style={{ backgroundColor: '#5b8fd6' }}
-            >
-              <h4 className="text-xl font-bold text-white">{text.q3}</h4>
+                        <div className="relative pl-4 border-l-4 border-[#5b8fd6] rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-4">
+                          <span className="block text-xs font-bold text-[#5b8fd6] uppercase tracking-wider mb-1">{text.result}</span>
+                          <p className="text-gray-700 leading-relaxed text-[15px]">{q.content.result}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-
-            <div className="space-y-4 text-sm">
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.situation}</p>
-                <p style={{ color: '#333' }}>{text.q3Situation}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.task}</p>
-                <p style={{ color: '#333' }}>{text.q3Task}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.action}</p>
-                <p style={{ color: '#333' }}>{text.q3Action}</p>
-              </div>
-              <div>
-                <p className="font-bold mb-1" style={{ color: '#000' }}>• {text.result}</p>
-                <p style={{ color: '#333' }}>{text.q3Result}</p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* Footer */}
-        <div className="flex justify-between items-center pt-8 border-t border-gray-300">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10" style={{ color: '#1e3a5f' }}>
-              <svg viewBox="0 0 100 100" fill="currentColor">
-                <circle cx="50" cy="30" r="8" />
-                <path d="M50 38 L50 70 M35 50 L65 50 M40 60 L60 60" stroke="currentColor" strokeWidth="6" fill="none" />
-                <circle cx="35" cy="85" r="6" />
-                <circle cx="65" cy="85" r="6" />
-                <path d="M35 85 L35 70 M65 85 L65 70 M35 70 L65 70" stroke="currentColor" strokeWidth="4" fill="none" />
-              </svg>
-            </div>
-            <div>
-              <div className="font-bold text-xl" style={{ color: '#6b8e23' }}>{text.footerName}</div>
-              <div className="text-sm italic" style={{ color: '#4682b4' }}>{text.footerTagline}</div>
-            </div>
-          </div>
-
-          {/* Social Media */}
-          <div className="flex items-center gap-8">
-            <span className="text-xl font-bold" style={{ color: '#000' }}>{text.followUs}</span>
-            <button className="text-2xl font-bold" style={{ color: '#000' }}>{text.linkedIn}</button>
-            <button className="text-2xl font-bold" style={{ color: '#000' }}>{text.instagram}</button>
-            <button className="text-2xl font-bold" style={{ color: '#000' }}>{text.youtube}</button>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
-
-
 
 export default STARMethodSection

@@ -15,7 +15,9 @@ interface ActivityItem {
   };
 }
 
-export async function GET(request: NextRequest) {
+import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
+
+export const GET = withAdminAuth(async (request) => {
   try {
     await connectDB();
 
@@ -120,4 +122,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

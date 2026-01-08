@@ -38,8 +38,10 @@ interface JobResponse {
   updatedAt: string;
 }
 
+import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
+
 // GET - Fetch jobs with pagination and filters
-export async function GET(request: NextRequest) {
+export const GET = withAdminAuth(async (request) => {
   try {
     await connectDB();
 
@@ -146,10 +148,10 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 // PUT - Bulk operations on jobs
-export async function PUT(request: NextRequest) {
+export const PUT = withAdminAuth(async (request) => {
   try {
     await connectDB();
 
@@ -223,4 +225,4 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

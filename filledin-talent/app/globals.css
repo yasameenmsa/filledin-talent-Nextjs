@@ -112,10 +112,29 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Browser Autofill Styling Override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset ;
+  -webkit-text-fill-color: var(--foreground) ;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset ;
+  -webkit-text-fill-color: var(--foreground) ;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -226,19 +245,19 @@
   }
 
   /* RTL Space Utilities */
-  [dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]) {
+  [dir="rtl"] .space-x-1> :not([hidden])~ :not([hidden]) {
     --tw-space-x-reverse: 1;
   }
 
-  [dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  [dir="rtl"] .space-x-2> :not([hidden])~ :not([hidden]) {
     --tw-space-x-reverse: 1;
   }
 
-  [dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  [dir="rtl"] .space-x-4> :not([hidden])~ :not([hidden]) {
     --tw-space-x-reverse: 1;
   }
 
-  [dir="rtl"] .space-x-8 > :not([hidden]) ~ :not([hidden]) {
+  [dir="rtl"] .space-x-8> :not([hidden])~ :not([hidden]) {
     --tw-space-x-reverse: 1;
   }
 
@@ -297,6 +316,7 @@
       transform: translateX(-100%);
       opacity: 0;
     }
+
     to {
       transform: translateX(0);
       opacity: 1;
@@ -308,6 +328,7 @@
       transform: translateX(100%);
       opacity: 0;
     }
+
     to {
       transform: translateX(0);
       opacity: 1;

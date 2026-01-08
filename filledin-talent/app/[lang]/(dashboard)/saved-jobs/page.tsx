@@ -3,6 +3,8 @@ import dbConnect from '@/lib/db/mongodb';
 import SavedJob from '@/models/SavedJob';
 import Job from '@/models/Job';
 import Link from 'next/link';
+import Image from 'next/image';
+import JobImage from '@/components/jobs/JobImage';
 import { redirect } from 'next/navigation';
 import { MapPin, Briefcase, Clock, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -44,15 +46,14 @@ export default async function SavedJobsPage({ params }: { params: Promise<{ lang
                             <div key={item._id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow relative">
                                 <div className="flex flex-col md:flex-row gap-6">
                                     {/* Job Image */}
-                                    {job.imageUrl && (
-                                        <div className="w-full md:w-48 h-32 flex-shrink-0">
-                                            <img
-                                                src={job.imageUrl}
-                                                alt={translatedJob.title}
-                                                className="w-full h-full object-cover rounded-lg"
-                                            />
-                                        </div>
-                                    )}
+                                    <div className="w-full md:w-48 h-32 flex-shrink-0 relative">
+                                        <JobImage
+                                            src={job.imageUrl}
+                                            alt={translatedJob.title}
+                                            fill
+                                            className="object-cover rounded-lg"
+                                        />
+                                    </div>
 
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start">
