@@ -1,35 +1,69 @@
-version: '3.9'
+version: '3.8'
+
+networks:
+  # 1. Create a secure, isolated network
+  filledin_secure_net:
+    internal: true # Blocks outbound internet for services on this network
+    name: filledin_secure_net
+
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+      # Args usually not needed for runtime envs, but keeping if your build needs them
+      args:
+        MONGODB_URI: "mongodb://mongo:27017/filledin-talent"
+        MONGODB_DB: "filledin-talent"
+    container_name: filledin_web
+    restart: unless-stopped
+    
+    # Environment variables
     environment:
       NODE_ENV: production
       PORT: 3000
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: "aGCNRhYNhc0H3avDv+oYTEPfemDBD8yCZuOV1Elf48Q="
-      MONGODB_URI: "mongodb+srv://filledin-talent:filledin-talent@cluster0.j4qqmxz.mongodb.net/filledin-talent?retryWrites=true&w=majority&appName=Cluster0"
+      NEXTAUTH_URL: https://filledintalent.com
+      # Switch URI to the local container name 'mongo'
+      MONGODB_URI: "mongodb://mongo:27017/filledin-talent"
       MONGODB_DB: "filledin-talent"
-    # Uncomment if you want hot-reload style volume mounts for dev
-    # volumes:
-    #   - .:/app
-    #   - /app/node_modules
+      # Keep your secret here or in .env
+      NEXTAUTH_SECRET: "aGCNRhYNhc0H3avDv+oYTEPfemDBD8yCZuOV1Elf48Q="
 
-  # Optional local MongoDB for development
-  # mongo:
-  #   image: mongo:6
-  #   restart: unless-stopped
-  #   ports:
-  #     - "27017:27017"
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: example
-  #   volumes:
-  #     - mongo-data:/data/db
+    # 2. Mounts (Bind mounts to host directory)
+    volumes:
+      - ./public:/app/public
 
-volumes:
-  mongo-data:
-    driver: local
+    # 3. Network Isolation
+    networks:
+      - filledin_secure_net
+
+    # 4. Traefik Configuration
+    labels:
+      - "traefik.enable=true"
+      # Traefik must use the internal network to reach this container
+      - "traefik.docker.network=filledin_secure_net"
+      
+      # HTTP Router
+      - "traefik.http.routers.filledin-http.entrypoints=http"
+      - "traefik.http.routers.filledin-http.rule=Host(`filledintalent.com`)"
+      - "traefik.http.routers.filledin-http.middlewares=https-redirect@file"
+
+      # HTTPS Router
+      - "traefik.http.routers.filledin-https.entrypoints=https"
+      - "traefik.http.routers.filledin-https.rule=Host(`filledintalent.com`)"
+      - "traefik.http.routers.filledin-https.tls=true"
+      - "traefik.http.routers.filledin-https.tls.certresolver=le"
+      - "traefik.http.services.filledin.loadbalancer.server.port=3000"
+
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6
+    container_name: filledin_mongo
+    restart: unless-stopped
+    # Mount data to local folder in current directory
+    volumes:
+      - ./mongo-data:/data/db
+    networks:
+      - filledin_secure_net
