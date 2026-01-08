@@ -1,5 +1,5 @@
 import JobSeekersSection from '@/components/sections/JobSeekersSection';
-
+import InterviewTipsSection from '@/components/sections/InterviewTipsSection';
 export default function SearchPage() {
   return (
     <div>
@@ -7,7 +7,8 @@ export default function SearchPage() {
 
    
       <JobSeekersSection />
-    
+          <InterviewTipsSection />
+
     </div>
   );
 }

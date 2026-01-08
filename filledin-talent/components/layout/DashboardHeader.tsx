@@ -115,12 +115,17 @@ export default function DashboardHeader({ onMenuClick, user, lang }: DashboardHe
     }
   };
 
+  const getRolePath = (role: string) => {
+    if (role === 'job_seeker') return 'jobseeker';
+    return role;
+  };
+
   const getProfileUrl = () => {
-    return `/${lang}/${user.role}/profile`;
+    return `/${lang}/${getRolePath(user.role)}/profile`;
   };
 
   const getSettingsUrl = () => {
-    return `/${lang}/${user.role}/settings`;
+    return `/${lang}/${getRolePath(user.role)}/settings`;
   };
 
   const getUserDisplayName = () => {

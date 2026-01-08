@@ -203,6 +203,21 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
         ar: 'فشل في سحب الطلب',
         fr: 'Échec du retrait de la candidature'
       },
+      'applications.delete': {
+        en: 'Delete',
+        ar: 'حذف',
+        fr: 'Supprimer'
+      },
+      'applications.deleteConfirmation': {
+        en: 'Are you sure you want to delete this application? The job no longer exists.',
+        ar: 'هل أنت متأكد من حذف هذا الطلب؟ الوظيفة لم تعد موجودة.',
+        fr: 'Êtes-vous sûr de vouloir supprimer cette candidature? L\'emploi n\'existe plus.'
+      },
+      'applications.jobDeleted': {
+        en: 'Job Deleted',
+        ar: 'الوظيفة محذوفة',
+        fr: 'Emploi Supprimé'
+      },
       'applications.noApplicationsYet': {
         en: 'No Applications Yet',
         ar: 'لا توجد طلبات بعد',
@@ -614,14 +629,31 @@ export default function JobSeekerApplicationsPage({ params }: { params: Promise<
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Link
-                        href={`/${lang}/jobs/${application.job._id}`}
-                        className="inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        {getText('applications.viewJob')}
-                      </Link>
-                      {application.status === 'pending' && (
+                      {application.job?._id && (
+                        <Link
+                          href={`/${lang}/jobs/${application.job._id}`}
+                          className="inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          {getText('applications.viewJob')}
+                        </Link>
+                      )}
+                      {/* Show delete for orphaned applications (deleted jobs) */}
+                      {!application.job?._id && (
+                        <button
+                          onClick={() => {
+                            if (confirm(getText('applications.deleteConfirmation'))) {
+                              handleWithdrawApplication(application._id);
+                            }
+                          }}
+                          className="inline-flex items-center px-3 py-1 text-sm bg-red-100 text-red-600 hover:bg-red-200 rounded-lg"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          {getText('applications.delete')}
+                        </button>
+                      )}
+                      {/* Show withdraw for pending applications */}
+                      {application.job?._id && application.status === 'pending' && (
                         <button
                           onClick={() => handleWithdrawApplication(application._id)}
                           className="inline-flex items-center px-3 py-1 text-sm text-red-600 hover:text-red-700"

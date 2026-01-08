@@ -88,7 +88,7 @@ const AboutFilledInTalent: React.FC = () => {
                 }}
               >
                 <Image
-                  src="/images/about/ArabWomen.png"
+                  src="/images/about/ArabWomen.jpeg"
                   alt={text.imageCaption}
                   fill
                   className="object-cover"

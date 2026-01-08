@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
+import Application from '@/models/Application';
+import SavedJob from '@/models/SavedJob';
 
 // PUT - Update user status
 export async function PUT(
@@ -68,7 +70,7 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete user
+// DELETE - Delete user and all related applications and saved jobs
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -78,7 +80,8 @@ export async function DELETE(
     const resolvedParams = await params;
     const userId = resolvedParams.id;
 
-    const user = await User.findByIdAndDelete(userId);
+    // First check if the user exists
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json(
@@ -87,8 +90,21 @@ export async function DELETE(
       );
     }
 
+    // Delete all applications by this user
+    const deletedApplications = await Application.deleteMany({ applicant: userId });
+    console.log(`Deleted ${deletedApplications.deletedCount} applications for user ${userId}`);
+
+    // Delete all saved jobs by this user
+    const deletedSavedJobs = await SavedJob.deleteMany({ userId: userId });
+    console.log(`Deleted ${deletedSavedJobs.deletedCount} saved jobs for user ${userId}`);
+
+    // Now delete the user
+    await User.findByIdAndDelete(userId);
+
     return NextResponse.json({
-      message: 'User deleted successfully',
+      message: 'User and all related data deleted successfully',
+      deletedApplicationsCount: deletedApplications.deletedCount,
+      deletedSavedJobsCount: deletedSavedJobs.deletedCount,
     });
   } catch (error) {
     console.error('Error deleting user:', error);

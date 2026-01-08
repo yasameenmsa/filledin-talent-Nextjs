@@ -20,14 +20,17 @@ export async function GET(_req: NextRequest) {
             .sort({ createdAt: -1 })
             .lean();
 
-        const savedJobs = savedJobsDocs.map((doc: any) => ({
-            _id: doc._id,
-            job: {
-                ...doc.jobId,
-                postedAt: doc.jobId.createdAt // Map createdAt to postedAt
-            },
-            savedAt: doc.createdAt,
-        }));
+        // Filter out saved jobs where the job has been deleted (jobId is null)
+        const savedJobs = savedJobsDocs
+            .filter((doc: any) => doc.jobId !== null)
+            .map((doc: any) => ({
+                _id: doc._id,
+                job: {
+                    ...doc.jobId,
+                    postedAt: doc.jobId?.createdAt || doc.createdAt // Map createdAt to postedAt
+                },
+                savedAt: doc.createdAt,
+            }));
 
         return NextResponse.json({ savedJobs }, { status: 200 });
     } catch (error) {

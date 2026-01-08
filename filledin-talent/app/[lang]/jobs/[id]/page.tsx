@@ -35,28 +35,36 @@ export default async function JobDetailsPage({
     params: Promise<{ lang: string; id: string }>;
 }) {
     const { lang, id } = await params;
-    const job = await getJob(id);
     const session = await auth();
+
+    // Fetch job first - if it doesn't exist, return 404 early
+    const job = await getJob(id);
+    if (!job) {
+        notFound();
+    }
 
     let hasApplied = false;
     let hasSaved = false;
-    if (session?.user?.id) {
-        await dbConnect();
-        const existingApplication = await Application.findOne({
-            job: id,
-            applicant: session.user.id
-        });
-        hasApplied = !!existingApplication;
 
-        const existingSavedJob = await SavedJob.findOne({
-            jobId: id,
-            userId: session.user.id
-        });
-        hasSaved = !!existingSavedJob;
-    }
+    // Only check application/saved status if user is logged in and id is valid
+    if (session?.user?.id && id && id !== 'undefined' && /^[a-fA-F0-9]{24}$/.test(id)) {
+        try {
+            await dbConnect();
+            const existingApplication = await Application.findOne({
+                job: id,
+                applicant: session.user.id
+            });
+            hasApplied = !!existingApplication;
 
-    if (!job) {
-        notFound();
+            const existingSavedJob = await SavedJob.findOne({
+                jobId: id,
+                userId: session.user.id
+            });
+            hasSaved = !!existingSavedJob;
+        } catch (error) {
+            console.error('Error checking application status:', error);
+            // Continue without the status - user can still view the job
+        }
     }
 
     // Import helper dynamically
