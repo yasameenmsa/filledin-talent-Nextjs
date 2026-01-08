@@ -4,7 +4,6 @@ import STARMethodSection from '@/components/sections/STARMethodSection';
 export default function TrendsPage() {
   return (
     <div>
-      <InterviewTipsSection />
  
       <InterviewSuccessSection />
  

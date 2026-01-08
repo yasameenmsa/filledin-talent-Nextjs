@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
 const applicationSchema = z.object({
-    coverLetter: z.string().min(50, 'Cover letter must be at least 50 characters'),
+    coverLetter: z.string().optional(),
     cvUrl: z.string().min(1, 'CV is required'),
 });
 
@@ -30,6 +31,7 @@ export default function ApplicationForm({ jobId, lang }: ApplicationFormProps) {
     const [uploadedFile, setUploadedFile] = useState<{ name: string; url: string } | null>(null);
     const { toast } = useToast();
     const router = useRouter();
+    const { t } = useTranslation(lang);
 
     const {
         register,
@@ -181,7 +183,7 @@ export default function ApplicationForm({ jobId, lang }: ApplicationFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="coverLetter">Cover Letter</Label>
+                <Label htmlFor="coverLetter">{t('applications.form.coverLetter')}</Label>
                 <Textarea
                     id="coverLetter"
                     placeholder="Tell us why you're a great fit for this role..."

@@ -2,7 +2,7 @@ export const applications = {
     title: "Postuler à l'emploi",
     form: {
         cv: 'Télécharger le CV',
-        coverLetter: 'Lettre de motivation',
+        coverLetter: 'Lettre de motivation (Optionnel)',
         cancel: 'Annuler',
         submit: 'Soumettre la candidature',
         submitting: 'Envoi en cours...',

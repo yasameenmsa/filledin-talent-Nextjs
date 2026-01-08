@@ -193,7 +193,9 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
         const data = await response.json();
         setSavedJobs(data.savedJobs || []);
       } else {
-        throw new Error('Failed to fetch saved jobs');
+        // Handle any error (401, 403, 500, etc.) gracefully - show empty list
+        console.warn('Could not fetch saved jobs, status:', response.status);
+        setSavedJobs([]);
       }
     } catch (error) {
       console.error('Error fetching saved jobs:', error);
@@ -219,7 +221,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
 
   const filteredJobs = savedJobs.filter(savedJob => {
     const matchesSearch = savedJob.job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      savedJob.job.company.name.toLowerCase().includes(searchTerm.toLowerCase());
+      savedJob.job.company?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesFilter = filterType === 'all' ||
       (filterType === 'active' && savedJob.job.isActive) ||
@@ -238,7 +240,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
       case 'title':
         return a.job.title.localeCompare(b.job.title);
       case 'company':
-        return a.job.company.name.localeCompare(b.job.company.name);
+        return (a.job.company?.name || '').localeCompare(b.job.company?.name || '');
       default:
         return 0;
     }
@@ -420,7 +422,7 @@ export default function SavedJobsPage({ params }: { params: Promise<{ lang: stri
                           </h3>
                           <div className="flex items-center text-gray-600 mb-2">
                             <Building className="w-4 h-4 mr-2" />
-                            <span className="font-medium">{savedJob.job.company.name}</span>
+                            <span className="font-medium">{savedJob.job.company?.name || getText('savedJobs.companyName')}</span>
                           </div>
                           <div className="flex items-center text-gray-600 mb-2">
                             <MapPin className="w-4 h-4 mr-2" />

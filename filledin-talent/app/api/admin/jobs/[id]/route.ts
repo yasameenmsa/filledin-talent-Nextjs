@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Job from '@/models/Job';
+import Application from '@/models/Application';
+import SavedJob from '@/models/SavedJob';
 
 // PUT - Update job status
 export async function PUT(
@@ -66,7 +68,7 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete job
+// DELETE - Delete job and all related applications and saved jobs
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -76,7 +78,8 @@ export async function DELETE(
     const resolvedParams = await params;
     const jobId = resolvedParams.id;
 
-    const job = await Job.findByIdAndDelete(jobId);
+    // First check if the job exists
+    const job = await Job.findById(jobId);
 
     if (!job) {
       return NextResponse.json(
@@ -85,8 +88,21 @@ export async function DELETE(
       );
     }
 
+    // Delete all applications for this job
+    const deletedApplications = await Application.deleteMany({ job: jobId });
+    console.log(`Deleted ${deletedApplications.deletedCount} applications for job ${jobId}`);
+
+    // Delete all saved jobs for this job
+    const deletedSavedJobs = await SavedJob.deleteMany({ jobId: jobId });
+    console.log(`Deleted ${deletedSavedJobs.deletedCount} saved jobs for job ${jobId}`);
+
+    // Now delete the job itself
+    await Job.findByIdAndDelete(jobId);
+
     return NextResponse.json({
-      message: 'Job deleted successfully',
+      message: 'Job and all related applications deleted successfully',
+      deletedApplicationsCount: deletedApplications.deletedCount,
+      deletedSavedJobsCount: deletedSavedJobs.deletedCount,
     });
   } catch (error) {
     console.error('Error deleting job:', error);

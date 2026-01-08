@@ -2,7 +2,7 @@ export const applications = {
     title: 'التقدم للوظيفة',
     form: {
         cv: 'تحميل السيرة الذاتية',
-        coverLetter: 'رسالة التغطية',
+        coverLetter: 'رسالة التغطية (اختياري)',
         cancel: 'إلغاء',
         submit: 'إرسال الطلب',
         submitting: 'جاري الإرسال...',

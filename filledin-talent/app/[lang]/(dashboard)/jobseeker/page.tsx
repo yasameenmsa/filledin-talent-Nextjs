@@ -233,10 +233,17 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
       if (!jobsResponse.ok) throw new Error('Failed to fetch jobs');
       const jobsData = await jobsResponse.json();
 
-      // Fetch saved jobs count
-      const savedJobsResponse = await fetch('/api/saved-jobs');
-      if (!savedJobsResponse.ok) throw new Error('Failed to fetch saved jobs');
-      const savedJobsData = await savedJobsResponse.json();
+      // Fetch saved jobs count - handle gracefully if it fails
+      let savedJobsCount = 0;
+      try {
+        const savedJobsResponse = await fetch('/api/saved-jobs');
+        if (savedJobsResponse.ok) {
+          const savedJobsData = await savedJobsResponse.json();
+          savedJobsCount = savedJobsData.savedJobs?.length || 0;
+        }
+      } catch (savedJobsError) {
+        console.warn('Could not fetch saved jobs:', savedJobsError);
+      }
 
       // Calculate stats from applications
       const applications = applicationsData.applications || [];
@@ -247,7 +254,7 @@ export default function JobSeekerDashboard({ params }: { params: Promise<{ lang:
         totalApplications: applicationsData.stats?.totalApplications || applications.length,
         pendingApplications: pendingCount,
         interviewsScheduled: interviewCount,
-        savedJobs: savedJobsData.savedJobs?.length || 0,
+        savedJobs: savedJobsCount,
         recentApplications: applications,
         recommendedJobs: jobsData.jobs || [],
         appliedJobIds: applications.map((app: Application) => app.job?._id || app.job).filter(Boolean)

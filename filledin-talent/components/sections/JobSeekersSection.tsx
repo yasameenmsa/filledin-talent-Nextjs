@@ -187,7 +187,7 @@ const JobSeekersSection = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col justify-center py-12"
+      className="min-h-[70vh] flex flex-col justify-center py-8"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
@@ -197,7 +197,7 @@ const JobSeekersSection = () => {
           {text.forJobSeekers}
         </h1>
 
-        <div className="flex flex-col lg:flex-row gap-12 items-start">
+        <div className="flex flex-col lg:flex-row gap-12 items-center">
           {/* Left - Search Form */}
           <div className="flex-1 w-full">
             <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 gap-6" noValidate>

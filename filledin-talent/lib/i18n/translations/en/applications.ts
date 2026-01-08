@@ -2,7 +2,7 @@ export const applications = {
     title: 'Apply for Job',
     form: {
         cv: 'Upload CV / Resume',
-        coverLetter: 'Cover Letter',
+        coverLetter: 'Cover Letter (Optional)',
         cancel: 'Cancel',
         submit: 'Submit Application',
         submitting: 'Submitting...',
