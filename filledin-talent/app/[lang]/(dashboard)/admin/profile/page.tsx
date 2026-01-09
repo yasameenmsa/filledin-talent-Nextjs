@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { 
-  User, 
-  Shield, 
+import {
+  User,
+  Shield,
   Mail,
   Phone,
   MapPin,
@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-export default function AdminProfilePage({ params }: { params: Promise<{ lang: string }> }) {
+export default function AdminProfilePage({ params: _params }: { params: Promise<{ lang: string }> }) {
   const { userData, updateProfile } = useAuth();
   // const resolvedParams = React.use(params);
   const { currentLanguage } = useLanguage();
@@ -34,7 +34,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  
+
   const [formData, setFormData] = useState({
     firstName: userData?.profile?.firstName || '',
     lastName: userData?.profile?.lastName || '',
@@ -370,11 +370,10 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
 
         {/* Message */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            message.type === 'success' 
-              ? 'bg-green-50 text-green-800 border border-green-200' 
+          <div className={`mb-6 p-4 rounded-lg ${message.type === 'success'
+              ? 'bg-green-50 text-green-800 border border-green-200'
               : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
+            }`}>
             {message.text}
           </div>
         )}
@@ -389,11 +388,10 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${
-                      activeTab === tab.id
+                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === tab.id
                         ? 'border-red-500 text-red-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     <Icon className="w-4 h-4 mr-2" />
                     {tab.label}
@@ -409,7 +407,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
           {activeTab === 'profile' && (
             <div className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">{getText('profile.information')}</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="firstName">{getText('profile.firstName')}</Label>
@@ -421,7 +419,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     placeholder={getText('profile.enterFirstName')}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="lastName">{getText('profile.lastName')}</Label>
                   <Input
@@ -432,7 +430,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     placeholder={getText('profile.enterLastName')}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="email">{getText('profile.emailAddress')}</Label>
                   <Input
@@ -443,7 +441,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                   />
                   <p className="text-xs text-gray-500 mt-1">{getText('profile.emailCannotChange')}</p>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="phone">{getText('profile.phoneNumber')}</Label>
                   <Input
@@ -454,7 +452,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     placeholder={getText('profile.enterPhoneNumber')}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="position">{getText('profile.position')}</Label>
                   <Input
@@ -465,7 +463,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     placeholder={getText('profile.enterPosition')}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="location">{getText('profile.location')}</Label>
                   <Input
@@ -477,7 +475,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                   />
                 </div>
               </div>
-              
+
               <div className="mt-6">
                 <Label htmlFor="bio">{getText('profile.bio')}</Label>
                 <Textarea
@@ -495,7 +493,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
           {activeTab === 'security' && (
             <div className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">{getText('profile.security')}</h2>
-              
+
               <div className="space-y-6">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <div className="flex items-center">
@@ -506,7 +504,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     {getText('profile.passwordChangeNote')}
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {adminStats.map((stat, index) => {
                     const Icon = stat.icon;
@@ -528,7 +526,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
           {activeTab === 'system' && (
             <div className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">{getText('profile.systemAccessPermissions')}</h2>
-              
+
               <div className="space-y-6">
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <div className="flex items-center">
@@ -539,7 +537,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     {getText('profile.fullAdminAccess')}
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
@@ -548,7 +546,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     </div>
                     <p className="text-xs text-green-700 mt-1">{getText('profile.fullAccessUsers')}</p>
                   </div>
-                  
+
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
@@ -556,7 +554,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     </div>
                     <p className="text-xs text-green-700 mt-1">{getText('profile.manageAllJobs')}</p>
                   </div>
-                  
+
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
@@ -564,7 +562,7 @@ export default function AdminProfilePage({ params }: { params: Promise<{ lang: s
                     </div>
                     <p className="text-xs text-green-700 mt-1">{getText('profile.configureSystem')}</p>
                   </div>
-                  
+
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-2" />

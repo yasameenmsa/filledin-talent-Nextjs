@@ -23,7 +23,7 @@ async function getJob(id: string) {
         const job = await Job.findById(id).select('title company');
         if (!job) return null;
         return JSON.parse(JSON.stringify(job));
-    } catch (error) {
+    } catch (_error) {
         return null;
     }
 }

@@ -8,7 +8,6 @@ import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -20,7 +19,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { currentLanguage, isRTL } = useLanguage();
+  const { currentLanguage, isRTL: _isRTL } = useLanguage();
 
   // Inline translation function
   const getText = (key: string): string => {

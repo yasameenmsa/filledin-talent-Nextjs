@@ -180,7 +180,7 @@ export default function AdminMessagesPage() {
                                 <Mail className="h-8 w-8 text-gray-400" />
                             </div>
                             <h3 className="text-lg font-medium text-gray-900">No messages found</h3>
-                            <p className="text-gray-500">You haven't received any messages yet.</p>
+                            <p className="text-gray-500">You haven&apos;t received any messages yet.</p>
                         </div>
                     ) : (
                         <div className="divide-y divide-gray-100">

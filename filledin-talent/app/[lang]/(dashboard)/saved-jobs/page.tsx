@@ -3,10 +3,9 @@ import dbConnect from '@/lib/db/mongodb';
 import SavedJob from '@/models/SavedJob';
 import Job from '@/models/Job';
 import Link from 'next/link';
-import Image from 'next/image';
 import JobImage from '@/components/jobs/JobImage';
 import { redirect } from 'next/navigation';
-import { MapPin, Briefcase, Clock, Trash2 } from 'lucide-react';
+import { MapPin, Briefcase, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getJobTranslation } from '@/lib/utils/getJobTranslation';
 

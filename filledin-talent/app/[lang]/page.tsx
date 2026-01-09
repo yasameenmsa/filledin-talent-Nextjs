@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function HomePage({ params }: Props) {
-  const { lang: currentLanguage } = await params;
+  const { lang: _currentLanguage } = await params;
   return (
     <main>
       <JobSearchSection />

@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
-import { MapPin, Briefcase, Clock, DollarSign, Calendar, Building } from 'lucide-react';
+import { MapPin, Briefcase, Clock, DollarSign, Building } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import JobImage from '@/components/jobs/JobImage';
 import SaveJobButton from '@/components/jobs/SaveJobButton';
 import { auth } from '@/auth';

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Clock, Construction } from 'lucide-react';
+import { Construction } from 'lucide-react';
 
 export default function JobSeekerSettingsPage({ params }: { params: Promise<{ lang: string }> }) {
-    const { lang } = React.use(params);
+    const { lang: _lang } = React.use(params);
     const { currentLanguage } = useLanguage();
 
     const getText = (key: string) => {

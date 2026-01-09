@@ -1,7 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { MapPin, Briefcase, Clock, DollarSign, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JobSearchSection from '@/components/sections/JobSearchSection';

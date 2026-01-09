@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { logger } from '@/lib/utils/logger';
@@ -37,9 +38,9 @@ export default function Error({
                     <Button onClick={() => reset()} size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
                         {t('error.tryAgain')}
                     </Button>
-                    <a href="/" className={buttonVariants({ variant: 'outline', size: 'lg', className: 'border-blue-600 text-blue-600 hover:bg-blue-50' })}>
+                    <Link href="/" className={buttonVariants({ variant: 'outline', size: 'lg', className: 'border-blue-600 text-blue-600 hover:bg-blue-50' })}>
                         {t('error.goHome')}
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

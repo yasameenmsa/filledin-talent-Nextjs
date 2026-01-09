@@ -4,7 +4,7 @@ import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import Notification from '@/models/Notification';
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
     try {
         const session = await auth();
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Rocket, Clock, Construction } from 'lucide-react';
+import { Rocket, Construction } from 'lucide-react';
 
 interface ComingSoonProps {
     title?: string;
