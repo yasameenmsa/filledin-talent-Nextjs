@@ -22,6 +22,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      AUTH_TRUST_HOST: "true"
+      AUTH_URL: https://filledintalent.com
       NEXTAUTH_URL: https://filledintalent.com
       # Switch URI to the local container name 'mongo'
       MONGODB_URI: "mongodb://mongo:27017/filledin-talent"
