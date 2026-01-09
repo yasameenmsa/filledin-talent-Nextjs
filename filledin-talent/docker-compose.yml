@@ -31,7 +31,7 @@ services:
 
     # 2. Mounts (Bind mounts to host directory)
     volumes:
-      - ./public:/app/public
+      - ./storage/upload:/app/upload
 
     # 3. Network Isolation
     networks:
