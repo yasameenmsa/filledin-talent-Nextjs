@@ -3,9 +3,10 @@ import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import SavedJob from '@/models/SavedJob';
 import Job from '@/models/Job';
+import type { Job as JobType } from '@/lib/types/models';
 
 // GET: Fetch all saved jobs for the logged-in user
-export async function GET(_req: NextRequest) {
+export async function GET() {
     try {
         const session = await auth();
 
@@ -22,12 +23,12 @@ export async function GET(_req: NextRequest) {
 
         // Filter out saved jobs where the job has been deleted (jobId is null)
         const savedJobs = savedJobsDocs
-            .filter((doc: any) => doc.jobId !== null)
-            .map((doc: any) => ({
+            .filter((doc): doc is typeof doc & { jobId: NonNullable<typeof doc.jobId> } => doc.jobId !== null)
+            .map((doc) => ({
                 _id: doc._id,
                 job: {
-                    ...doc.jobId,
-                    postedAt: doc.jobId?.createdAt || doc.createdAt // Map createdAt to postedAt
+                    ...(doc.jobId as JobType),
+                    postedAt: (doc.jobId as JobType)?.createdAt || doc.createdAt // Map createdAt to postedAt
                 },
                 savedAt: doc.createdAt,
             }));

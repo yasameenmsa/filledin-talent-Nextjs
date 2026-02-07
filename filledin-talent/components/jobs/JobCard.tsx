@@ -6,9 +6,10 @@ import { MapPin, Briefcase, Clock, DollarSign, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import JobImage from '@/components/jobs/JobImage';
 import { getJobTranslation } from '@/lib/utils/getJobTranslation';
+import type { Job } from '@/lib/types/models';
 
 interface JobCardProps {
-    job: any;
+    job: Job;
     lang: string;
     isApplied?: boolean;
 }
@@ -17,9 +18,9 @@ const JobCard = ({ job, lang, isApplied = false }: JobCardProps) => {
     const translatedJob = getJobTranslation(job, lang);
 
     // Helper to safely format date
-    const formatDate = (dateString: string) => {
+    const formatDate = (date: string | Date) => {
         try {
-            return new Date(dateString).toLocaleDateString();
+            return new Date(date).toLocaleDateString();
         } catch {
             return '';
         }

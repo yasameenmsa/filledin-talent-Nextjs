@@ -6,12 +6,12 @@ import { withAdminAuth, AuthenticatedRequest, AuthenticatedUser } from '@/lib/au
 async function patchHandler(
     req: AuthenticatedRequest,
     _user: AuthenticatedUser,
-    context?: { params: Promise<{ id: string }> }
+    context?: Record<string, unknown>
 ) {
     try {
         await dbConnect();
 
-        const params = await context?.params;
+        const params = await context?.params as { id?: string } | undefined;
         const id = params?.id;
 
         if (!id) {
@@ -57,12 +57,12 @@ async function patchHandler(
 async function deleteHandler(
     req: AuthenticatedRequest,
     _user: AuthenticatedUser,
-    context?: { params: Promise<{ id: string }> }
+    context?: Record<string, unknown>
 ) {
     try {
         await dbConnect();
 
-        const params = await context?.params;
+        const params = await context?.params as { id?: string } | undefined;
         const id = params?.id;
 
         if (!id) {
@@ -91,5 +91,5 @@ async function deleteHandler(
     }
 }
 
-export const PATCH = withAdminAuth(patchHandler as any);
-export const DELETE = withAdminAuth(deleteHandler as any);
+export const PATCH = withAdminAuth(patchHandler);
+export const DELETE = withAdminAuth(deleteHandler);

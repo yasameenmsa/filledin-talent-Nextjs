@@ -25,7 +25,7 @@ const DataDrivenSection = () => {
         scorecards: 'Candidate Scorecards: Objective ratings and insights on every shortlisted candidate.',
         talentMapping: 'Talent Mapping: Gain a comprehensive overview of the available talent in your market.',
         efficiency: 'Efficiency Metrics: Benefit from a streamlined process with competitive times for selection and a faster time-to-hire, getting your people in place quicker.',
-        protectionTitle: 'Your Investment is Protected',
+        protectionTitle: 'Your investment is protected',
         protectionDesc: 'We stand behind our placements. Our service includes a 3-month replacement guarantee, giving you peace of mind that your investment is secure.',
         ctaTitle: 'Ready to Hire with Confidence?'
       },
@@ -44,7 +44,7 @@ const DataDrivenSection = () => {
         scorecards: 'Fiches d\'Évaluation des Candidats : Évaluations objectives et informations sur chaque candidat présélectionné.',
         talentMapping: 'Cartographie des Talents : Obtenez une vue d\'ensemble complète des talents disponibles sur votre marché.',
         efficiency: 'Indicateurs d\'Efficacité : Bénéficiez d\'un processus rationalisé avec des délais compétitifs pour la sélection et un délai d\'embauche plus rapide, permettant de mettre vos collaborateurs en place plus rapidement.',
-        protectionTitle: 'Votre Investissement est Protégé',
+        protectionTitle: 'Votre investissement est protégé',
         protectionDesc: 'Nous soutenons nos placements. Notre service comprend une garantie de remplacement de 3 mois, vous offrant la tranquillité d\'esprit que votre investissement est sécurisé.',
         ctaTitle: 'Prêt à Recruter en Toute Confiance ?'
       },
@@ -191,11 +191,11 @@ const DataDrivenSection = () => {
 
       {/* Your Advantage */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>
+        <h3 className="text-2xl font-bold mb-6 " style={{ color: '#000' }}>
           {text.advantageTitle}
         </h3>
 
-        <p className="text-base leading-relaxed mb-4 text-center" style={{ color: '#000' }}>
+        <p className="text-base leading-relaxed space-y-2 mb-3 max-w-3xl mx-auto text-start" style={{ color: '#000' }}>
           {text.advantageIntro}
         </p>
       </div>
@@ -227,11 +227,11 @@ const DataDrivenSection = () => {
           {text.protectionTitle}
         </h3>
 
-        <p className="text-base leading-relaxed" style={{ color: '#000' }}>
-          {text.protectionDesc}
-        </p>
-      </div>
 
+      </div>
+      <p className="text-center leading-relaxed mx-6 px-2" style={{ color: '#000' }}>
+        {text.protectionDesc}
+      </p>
     </div>
   );
 };

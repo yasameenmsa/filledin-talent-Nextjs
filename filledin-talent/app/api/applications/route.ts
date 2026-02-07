@@ -1,9 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import Application from '@/models/Application';
 import Job from '@/models/Job';
+import type { ApplicationStatus } from '@/lib/types/models';
+
+interface ApplicationQuery {
+    applicant: Types.ObjectId;
+    status?: ApplicationStatus;
+    job?: { $in: Types.ObjectId[] };
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -73,10 +80,10 @@ export async function GET(req: NextRequest) {
         const search = searchParams.get('search');
 
         // Build base query
-        const query: any = { applicant: session.user.id };
+        const query: ApplicationQuery = { applicant: new Types.ObjectId(session.user.id) };
 
         if (status && status !== 'all') {
-            query.status = status;
+            query.status = status as ApplicationStatus;
         }
 
         // Search logic
@@ -92,21 +99,35 @@ export async function GET(req: NextRequest) {
             query.job = { $in: jobIds };
         }
 
-        // Execute query
-        const [applications, total] = await Promise.all([
-            Application.find(query)
-                .sort({ createdAt: -1 })
-                .skip(skip)
-                .limit(limit)
-                .populate({
-                    path: 'job',
-                    populate: { path: 'company' }
-                })
-                .lean(),
+        // Execute query with aggregation to avoid N+1 query issues
+        const [applicationsResult, totalCount] = await Promise.all([
+            Application.aggregate([
+                { $match: query },
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                // Join with Job collection in a single query
+                {
+                    $lookup: {
+                        from: 'jobs',
+                        localField: 'job',
+                        foreignField: '_id',
+                        as: 'job',
+                    }
+                },
+                { $unwind: { path: '$job', preserveNullAndEmptyArrays: true } },
+            ]),
             Application.countDocuments(query)
         ]);
 
-        console.log(`[API] Found ${total} applications for user ${session.user.id}`);
+        // Convert _id back to string for consistent serialization
+        const applications = applicationsResult.map((app: Record<string, unknown>) => ({
+            ...app,
+            _id: (app._id as { toString: () => string }).toString(),
+            job: app.job ? { ...(app.job as Record<string, unknown>), _id: ((app.job as Record<string, unknown>)._id as { toString: () => string }).toString() } : null,
+        }));
+
+        console.log(`[API] Found ${totalCount} applications for user ${session.user.id}`);
 
         // Calculate stats
         // Mongoose aggregation requires explicit ObjectId casting
@@ -142,10 +163,10 @@ export async function GET(req: NextRequest) {
             success: true,
             applications,
             pagination: {
-                total,
+                total: totalCount,
                 page,
                 limit,
-                totalPages: Math.ceil(total / limit)
+                totalPages: Math.ceil(totalCount / limit)
             },
             stats: {
                 totalApplications: stats.totalApplications,

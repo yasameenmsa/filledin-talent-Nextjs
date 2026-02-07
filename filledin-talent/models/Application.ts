@@ -94,4 +94,10 @@ const ApplicationSchema = new Schema<IApplication>({
 // Compound index to prevent duplicate applications
 ApplicationSchema.index({ job: 1, applicant: 1 }, { unique: true });
 
+// Performance indexes for common queries
+ApplicationSchema.index({ status: 1 });
+ApplicationSchema.index({ applicant: 1, createdAt: -1 });
+ApplicationSchema.index({ job: 1, status: 1 });
+ApplicationSchema.index({ createdAt: -1 });
+
 export default mongoose.models.Application || mongoose.model<IApplication>('Application', ApplicationSchema);

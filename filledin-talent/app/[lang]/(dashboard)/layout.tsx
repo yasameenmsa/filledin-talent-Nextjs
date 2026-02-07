@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { currentLanguage, isRTL: _isRTL } = useLanguage();
+  const { currentLanguage } = useLanguage();
 
   // Inline translation function
   const getText = (key: string): string => {

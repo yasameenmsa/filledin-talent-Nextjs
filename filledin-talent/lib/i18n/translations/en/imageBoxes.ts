@@ -3,7 +3,7 @@ export const imageBoxes = {
   subtitle: 'Explore the latest trends and developments in the energy sector',
   hrTrends: {
     title: 'HR Trends',
-    description: 'In 2025, HR Leaders must redefine their strategies by developing managers, creating a strategic workforce planning, and optimising HR technology and data analytics. Moving beyond traditional leadership seminars to foster peer connections and embed learning opportunities into daily work allows managers to build stronger leadership skills and prepare for future demands.'
+    description: 'In 2026, HR Leaders must redefine their strategies by developing managers, creating a strategic workforce planning, and optimising HR technology and data analytics. Moving beyond traditional leadership seminars to foster peer connections and embed learning opportunities into daily work allows managers to build stronger leadership skills and prepare for future demands.'
   },
   aiTalent: {
     title: 'AI & Talent Acquisition',
@@ -16,7 +16,7 @@ export const imageBoxes = {
   boxes: {
     hrTrends: {
       title: 'HR Trends',
-      description: 'In 2025, HR Leaders must redefine their strategies by developing managers, creating a strategic workforce planning, and optimising HR technology and data analytics. Moving beyond traditional leadership seminars to foster peer connections and embed learning opportunities into daily work allows managers to build stronger leadership skills and prepare for future demands.',
+      description: 'In 2026, HR Leaders must redefine their strategies by developing managers, creating a strategic workforce planning, and optimising HR technology and data analytics. Moving beyond traditional leadership seminars to foster peer connections and embed learning opportunities into daily work allows managers to build stronger leadership skills and prepare for future demands.',
       category: 'Human Resources'
     },
     aiTalent: {

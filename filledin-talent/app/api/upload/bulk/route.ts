@@ -204,7 +204,7 @@ export async function POST(request: NextRequest) {
                 await writeFile(filepath, buffer);
 
                 // Save file metadata to database
-                let fileMetadata: any = null;
+                let fileMetadata: Record<string, unknown> | null = null;
                 try {
                     const fileDoc = new File({
                         filename,
@@ -221,11 +221,14 @@ export async function POST(request: NextRequest) {
                         isPublic: ['job-image', 'company-logo', 'profile-image'].includes(type),
                     });
 
-                    fileMetadata = await fileDoc.save();
+                    const savedDoc = await fileDoc.save();
 
                     // Update URL with actual file ID
-                    fileMetadata.url = `/api/files/download/${fileMetadata._id}`;
-                    await fileMetadata.save();
+                    if (savedDoc && typeof savedDoc === 'object' && '_id' in savedDoc) {
+                        (savedDoc as Record<string, unknown>).url = `/api/files/download/${String(savedDoc._id)}`;
+                        await ('save' in savedDoc && typeof savedDoc.save === 'function' ? savedDoc.save() : Promise.resolve());
+                    }
+                    fileMetadata = savedDoc;
                 } catch (dbError) {
                     console.warn(`Failed to save file metadata for ${filename}:`, dbError);
                 }

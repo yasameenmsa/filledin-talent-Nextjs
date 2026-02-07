@@ -79,10 +79,12 @@ export async function GET(req: NextRequest) {
                 limit,
             },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching jobs:', error);
 
-        if (error.name === 'MongooseServerSelectionError' || error.name === 'MongoNetworkError') {
+        if (error instanceof Error && ('name' in error) && (
+            error.name === 'MongooseServerSelectionError' || error.name === 'MongoNetworkError'
+        )) {
             return NextResponse.json({ error: 'Database Connection Error. Please try again later.' }, { status: 503 });
         }
 

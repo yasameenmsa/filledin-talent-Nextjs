@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Job from '@/models/Job';
-import User from '@/models/User';
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const format = searchParams.get('format') || 'csv';
 
     // Build query (same as main jobs route)
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (search) {
       query.$or = [
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     // Format data for export
     const jobsForExport = jobs.map(job => ({
-      id: (job._id as any).toString(),
+      id: (job._id as { toString: () => string }).toString(),
       title: job.title,
       description: job.description || '',
       companyName: job.company.name,

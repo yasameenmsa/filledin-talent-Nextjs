@@ -1,10 +1,10 @@
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import Notification from '@/models/Notification';
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
     try {
         const session = await auth();
 
@@ -37,7 +37,7 @@ export async function GET(_req: NextRequest) {
     }
 }
 
-export async function PUT(req: NextRequest) {
+export async function PUT() {
     try {
         const session = await auth();
 

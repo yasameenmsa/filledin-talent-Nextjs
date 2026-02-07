@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     let actionDescription = '';
 
     if (action === 'activate') {

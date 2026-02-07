@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { motion } from 'framer-motion';
+import { FadeIn } from '@/components/ui/animate-on-scroll';
 
 import { Select } from '@/components/ui/select';
 
@@ -139,13 +139,11 @@ const JobSearchSection = ({ hideTitle = false }: JobSearchSectionProps) => {
       {/* Title */}
       {!hideTitle && (
         <header className="text-center mb-12">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-4xl font-bold italic text-gray-900"
-          >
-            {text.title}
-          </motion.h1>
+          <FadeIn duration={0.6}>
+            <h1 className="text-3xl md:text-4xl font-bold italic text-gray-900">
+              {text.title}
+            </h1>
+          </FadeIn>
         </header>
       )}
 
@@ -159,18 +157,16 @@ const JobSearchSection = ({ hideTitle = false }: JobSearchSectionProps) => {
         {/* Content */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
-                {text.heading}
-              </h2>
-              <p className="text-lg mb-8 text-gray-700">
-                {text.subheading}
-              </p>
-            </motion.div>
+            <FadeIn delay={0.2} duration={0.5}>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
+                  {text.heading}
+                </h2>
+                <p className="text-lg mb-8 text-gray-700">
+                  {text.subheading}
+                </p>
+              </div>
+            </FadeIn>
 
             {/* Search Form - 2x2 Grid */}
             <form onSubmit={handleSearch} role="search" aria-label="Job search form" className="mb-10">

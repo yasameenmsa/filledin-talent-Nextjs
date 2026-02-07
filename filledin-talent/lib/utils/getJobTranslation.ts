@@ -1,11 +1,12 @@
-import { IJob } from '@/models/Job';
+import type { IJob } from '@/models/Job';
+import type { Job as JobType } from '@/lib/types/models';
 
 /**
  * Helper function to extract job data in the requested language
  * Falls back to English if the requested language is not available
  * Falls back to default fields if no i18n data is available
  */
-export function getJobTranslation(job: IJob, lang: string = 'en') {
+export function getJobTranslation(job: IJob | JobType, lang: string = 'en') {
     const supportedLangs = ['en', 'ar', 'fr'];
     const targetLang = supportedLangs.includes(lang) ? lang : 'en';
 
@@ -14,7 +15,7 @@ export function getJobTranslation(job: IJob, lang: string = 'en') {
         return {
             title: job.title,
             description: job.description,
-            responsibilities: job.responsibilities,
+            responsibilities: job.responsibilities || [],
             requirements: {
                 experience: job.requirements.experience,
                 education: job.requirements.education,
@@ -31,7 +32,7 @@ export function getJobTranslation(job: IJob, lang: string = 'en') {
     return {
         title: i18nData.title || job.title,
         description: i18nData.description || job.description,
-        responsibilities: i18nData.responsibilities || job.responsibilities,
+        responsibilities: i18nData.responsibilities || job.responsibilities || [],
         requirements: {
             experience: i18nData.requirements?.experience || job.requirements.experience,
             education: i18nData.requirements?.education || job.requirements.education,

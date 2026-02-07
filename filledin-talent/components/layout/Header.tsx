@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, memo, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -9,93 +9,97 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { MobileLocaleSwitcher } from './MobileLocaleSwitcher';
-import { motion, AnimatePresence } from 'framer-motion';
+import { DropdownMenu, CollapsibleMenu } from '@/components/ui/dropdown-menu';
 
-export default function Header() {
+// Move translations outside component to avoid recreation
+const translations: Record<string, Record<string, string>> = {
+  'nav.businesses': {
+    en: 'Businesses',
+    ar: 'الشركات',
+    fr: 'Entreprises'
+  },
+  'nav.trends': {
+    en: 'Trends',
+    ar: 'الاتجاهات',
+    fr: 'Tendances'
+  },
+  'nav.expertise': {
+    en: 'Expertise',
+    ar: 'الخبرة',
+    fr: 'Expertise'
+  },
+  'nav.engagement': {
+    en: 'Engagement',
+    ar: 'المشاركة',
+    fr: 'Engagement'
+  },
+  'nav.jobSeekers': {
+    en: 'Job seekers',
+    ar: 'الباحثون عن عمل',
+    fr: 'Chercheurs d\'emploi'
+  },
+  'nav.jobSearch': {
+    en: 'Job Search',
+    ar: 'البحث عن وظيفة',
+    fr: 'Recherche d\'emploi'
+  },
+  'nav.interviewTips': {
+    en: 'Interview tips',
+    ar: 'نصائح المقابلة',
+    fr: 'Conseils d\'entretien'
+  },
+  'nav.dropCV': {
+    en: 'Drop CV',
+    ar: 'إسقاط السيرة الذاتية',
+    fr: 'Déposer CV'
+  },
+  'nav.aboutFINT': {
+    en: 'About FINT',
+    ar: 'عن فينت',
+    fr: 'À propos de FINT'
+  },
+  'ui.dashboard': {
+    en: 'Dashboard',
+    ar: 'لوحة التحكم',
+    fr: 'Tableau de bord'
+  },
+  'ui.profile': {
+    en: 'Profile',
+    ar: 'الملف الشخصي',
+    fr: 'Profil'
+  },
+  'ui.logout': {
+    en: 'Logout',
+    ar: 'تسجيل الخروج',
+    fr: 'Déconnexion'
+  },
+  'ui.login': {
+    en: 'Login',
+    ar: ' تسجيل الدخول',
+    fr: 'Connexion'
+  },
+  'ui.register': {
+    en: 'Register',
+    ar: 'التسجيل',
+    fr: 'S\'inscrire'
+  }
+};
+
+function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const { user, userData, logout } = useAuth();
   const { currentLanguage, isRTL } = useLanguage();
 
-  const getText = (key: string) => {
-    const translations: Record<string, Record<string, string>> = {
-      'nav.businesses': {
-        en: 'Businesses',
-        ar: 'الشركات',
-        fr: 'Entreprises'
-      },
-      'nav.trends': {
-        en: 'Trends',
-        ar: 'الاتجاهات',
-        fr: 'Tendances'
-      },
-      'nav.expertise': {
-        en: 'Expertise',
-        ar: 'الخبرة',
-        fr: 'Expertise'
-      },
-      'nav.engagement': {
-        en: 'Engagement',
-        ar: 'المشاركة',
-        fr: 'Engagement'
-      },
-      'nav.jobSeekers': {
-        en: 'Job seekers',
-        ar: 'الباحثون عن عمل',
-        fr: 'Chercheurs d\'emploi'
-      },
-      'nav.jobSearch': {
-        en: 'Job Search',
-        ar: 'البحث عن وظيفة',
-        fr: 'Recherche d\'emploi'
-      },
-      'nav.interviewTips': {
-        en: 'Interview tips',
-        ar: 'نصائح المقابلة',
-        fr: 'Conseils d\'entretien'
-      },
-      'nav.dropCV': {
-        en: 'Drop CV',
-        ar: 'إسقاط السيرة الذاتية',
-        fr: 'Déposer CV'
-      },
-      'nav.aboutFINT': {
-        en: 'About FINT',
-        ar: 'عن فينت',
-        fr: 'À propos de FINT'
-      },
-      'ui.dashboard': {
-        en: 'Dashboard',
-        ar: 'لوحة التحكم',
-        fr: 'Tableau de bord'
-      },
-      'ui.profile': {
-        en: 'Profile',
-        ar: 'الملف الشخصي',
-        fr: 'Profil'
-      },
-      'ui.logout': {
-        en: 'Logout',
-        ar: 'تسجيل الخروج',
-        fr: 'Déconnexion'
-      },
-      'ui.login': {
-        en: 'Login',
-        ar: ' تسجيل الدخول',
-        fr: 'Connexion'
-      },
-      'ui.register': {
-        en: 'Register',
-        ar: 'التسجيل',
-        fr: 'S\'inscrire'
-      }
-    };
-
+  // Memoize the getText function to avoid recreation
+  const getText = useCallback((key: string) => {
     return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
-  };
+  }, [currentLanguage]);
 
-  // Logo selection based on language
-  const logoSrc = currentLanguage === 'ar' ? '/images/arabiclogo.png' : '/new-logo.png';
+  // Memoize logo source
+  const logoSrc = useMemo(() => {
+    return currentLanguage === 'ar' ? '/images/arabiclogo.png' : '/new-logo.png';
+  }, [currentLanguage]);
 
   const getRolePath = (role: string) => {
     if (role === 'job_seeker') return 'jobseeker';
@@ -160,30 +164,23 @@ export default function Header() {
                       <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
                     </button>
 
-                    <AnimatePresence>
-                      {dropdownOpen === item.name && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 max-h-[80vh] overflow-y-auto ${isRTL ? 'right-0 left-auto' : 'left-0 right-auto'
+                    <DropdownMenu
+                      isOpen={dropdownOpen === item.name}
+                      animation="slide"
+                      className={`absolute top-full mt-2 w-56 bg-white rounded-lg shadow-xl py-2 max-h-[80vh] overflow-y-auto ${isRTL ? 'right-0 left-auto' : 'left-0 right-auto'}`}
+                    >
+                      {item.dropdown.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.href}
+                          className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 transition-colors ${isRTL ? 'text-right' : 'text-left'
                             }`}
-                          style={{ maxWidth: 'calc(100vw - 2rem)' }}
+                          onClick={() => setDropdownOpen(null)}
                         >
-                          {item.dropdown.map((subItem) => (
-                            <Link
-                              key={subItem.name}
-                              href={subItem.href}
-                              className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 transition-colors ${isRTL ? 'text-right' : 'text-left'
-                                }`}
-                              onClick={() => setDropdownOpen(null)}
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </DropdownMenu>
                   </>
                 ) : (
                   <Link
@@ -211,44 +208,37 @@ export default function Header() {
                   <span>{userData?.profile?.firstName}</span>
                 </button>
 
-                <AnimatePresence>
-                  {dropdownOpen === 'user' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 max-h-[80vh] overflow-y-auto ${isRTL ? 'left-0 right-auto' : 'right-0 left-auto'
-                        }`}
-                      style={{ maxWidth: 'calc(100vw - 2rem)' }}
-                    >
-                      {userData?.role && (
-                        <>
-                          <Link
-                            href={`/${currentLanguage}/${getRolePath(userData.role)}`}
-                            className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
-                              }`}
-                          >
-                            {getText('ui.dashboard')}
-                          </Link>
-                          <Link
-                            href={`/${currentLanguage}/${getRolePath(userData.role)}/profile`}
-                            className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
-                              }`}
-                          >
-                            {getText('ui.profile')}
-                          </Link>
-                        </>
-                      )}
-                      <button
-                        onClick={logout}
-                        className={`block w-full px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
+                <DropdownMenu
+                  isOpen={dropdownOpen === 'user'}
+                  animation="slide"
+                  className={`absolute mt-2 w-48 bg-white rounded-lg shadow-xl py-2 max-h-[80vh] overflow-y-auto ${isRTL ? 'left-0 right-auto' : 'right-0 left-auto'}`}
+                >
+                  {userData?.role && (
+                    <>
+                      <Link
+                        href={`/${currentLanguage}/${getRolePath(userData.role)}`}
+                        className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
                           }`}
                       >
-                        {getText('ui.logout')}
-                      </button>
-                    </motion.div>
+                        {getText('ui.dashboard')}
+                      </Link>
+                      <Link
+                        href={`/${currentLanguage}/${getRolePath(userData.role)}/profile`}
+                        className={`block px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
+                          }`}
+                      >
+                        {getText('ui.profile')}
+                      </Link>
+                    </>
                   )}
-                </AnimatePresence>
+                  <button
+                    onClick={logout}
+                    className={`block w-full px-4 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 ${isRTL ? 'text-right' : 'text-left'
+                      }`}
+                  >
+                    {getText('ui.logout')}
+                  </button>
+                </DropdownMenu>
               </div>
             ) : (
               <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-4' : 'space-x-4'}`}>
@@ -278,15 +268,7 @@ export default function Header() {
         </div>
 
         {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className={`md:hidden bg-white shadow-lg rounded-b-lg py-2 mobile-menu ${isRTL ? 'rtl' : 'ltr'}`}
-            >
+        <CollapsibleMenu isOpen={isOpen} className={`md:hidden bg-white shadow-lg rounded-b-lg py-2 mobile-menu ${isRTL ? 'rtl' : 'ltr'}`}>
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 {navigation.map((item) => (
                   <div key={item.name}>
@@ -300,32 +282,25 @@ export default function Header() {
                           <span>{item.name}</span>
                           <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
                         </button>
-                        <AnimatePresence>
-                          {dropdownOpen === item.name && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.2, ease: "easeInOut" }}
-                              className={`py-1 space-y-1 ${isRTL ? 'pr-5 pl-2' : 'pl-5 pr-2'}`}
+                        <CollapsibleMenu
+                          isOpen={dropdownOpen === item.name}
+                          className={`py-1 space-y-1 ${isRTL ? 'pr-5 pl-2' : 'pl-5 pr-2'}`}
+                        >
+                          {item.dropdown.map((subItem) => (
+                            <Link
+                              key={subItem.name}
+                              href={subItem.href}
+                              className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                                }`}
+                              onClick={() => {
+                                setIsOpen(false);
+                                setDropdownOpen(null);
+                              }}
                             >
-                              {item.dropdown.map((subItem) => (
-                                <Link
-                                  key={subItem.name}
-                                  href={subItem.href}
-                                  className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
-                                    }`}
-                                  onClick={() => {
-                                    setIsOpen(false);
-                                    setDropdownOpen(null);
-                                  }}
-                                >
-                                  {subItem.name}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </CollapsibleMenu>
                       </>
                     ) : (
                       <Link
@@ -401,10 +376,10 @@ export default function Header() {
                   </div>
                 )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </CollapsibleMenu>
       </nav>
     </header>
   );
 }
+
+export default memo(Header);

@@ -10,13 +10,13 @@ const CommitmentSection = () => {
     const translations = {
       en: {
         mainTitle: 'Our commitment to your service',
-        subtitle: 'Precision Recruitment for Energy Experts',
+        subtitle: 'Precision recruitment for energy experts',
         intro1: 'We don\'t just fill roles; we deliver the specialised talent that powers your projects and drives your business forward.',
         intro2: 'At FINT, we combine deep sector expertise with a modern recruitment model to solve your most critical hiring challenges.',
         intro3: 'Our commitment is to save you time, reduce risk, and connect you with exceptional professionals who are ready to perform from day one.',
         partnershipTitle: 'A Risk-Averse, Partnership-Focused Model',
         partnershipIntro: 'We believe your satisfaction measures our success. Our transparent fee structure is designed to align with your goals and de-risk the hiring process:',
-        nonManagerial: 'For Non-Managerial Roles: A simple, competitive fixed fee. You incur no cost until we successfully present a candidate you choose to interview.',
+        nonManagerial: 'For Non-Managerial Roles: A simple, competitive fixed fee. You incur no cost until we successfully present a candidate you choose to hire.',
         managerial: 'For Managerial & Executive Roles: A competitive fee with a limited initial engagement fee, demonstrating our mutual commitment to finding your next leader.'
       },
       fr: {
@@ -27,7 +27,7 @@ const CommitmentSection = () => {
         intro3: 'Notre engagement est de vous faire gagner du temps, de réduire les risques et de vous mettre en contact avec des professionnels exceptionnels prêts à performer dès le premier jour.',
         partnershipTitle: 'Un Modèle Axé sur le Partenariat et la Réduction des Risques',
         partnershipIntro: 'Nous croyons que votre satisfaction mesure notre succès. Notre structure de frais transparente est conçue pour s\'aligner sur vos objectifs et réduire les risques du processus d\'embauche :',
-        nonManagerial: 'Pour les Postes Non-Cadres : Un forfait fixe simple et compétitif. Vous n\'encourez aucun coût tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'interviewer.',
+        nonManagerial: 'Pour les Postes Non-Cadres : Un forfait fixe simple et compétitif. Vous n\'encourez aucun coût tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'embaucher.',
         managerial: 'Pour les Postes de Cadres et Dirigeants : Un tarif compétitif avec des frais d\'engagement initiaux limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
       },
       ar: {
@@ -38,7 +38,7 @@ const CommitmentSection = () => {
         intro3: 'التزامنا هو توفير وقتك وتقليل المخاطر وربطك بمحترفين استثنائيين جاهزين للأداء من اليوم الأول.',
         partnershipTitle: 'نموذج يركز على الشراكة وتجنب المخاطر',
         partnershipIntro: 'نحن نؤمن بأن رضاك يقيس نجاحنا. هيكل الرسوم الشفاف لدينا مصمم للتوافق مع أهدافك وتقليل مخاطر عملية التوظيف:',
-        nonManagerial: 'للأدوار غير الإدارية: رسوم ثابتة بسيطة وتنافسية. لا تتحمل أي تكلفة حتى نقدم بنجاح مرشحاً تختار مقابلته.',
+        nonManagerial: 'للأدوار غير الإدارية: رسوم ثابتة بسيطة وتنافسية. لا تتحمل أي تكلفة حتى نقدم بنجاح مرشحاً تختار توظيفه.',
         managerial: 'للأدوار الإدارية والتنفيذية: رسوم تنافسية مع رسوم مشاركة أولية محدودة، مما يثبت التزامنا المتبادل بإيجاد قائدك القادم.'
       }
     };
@@ -49,18 +49,18 @@ const CommitmentSection = () => {
 
   return (
     <div
-      className="py-16 px-4"
+      className="pt-16 px-4"
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="container mx-auto max-w-7xl">
         {/* Main Title */}
-        <h2 className="text-2xl font-bold mb-12" style={{ color: '#000' }}>
+        <h2 className="text-3xl font-bold mb-12 uppercase" style={{ color: '#1E3A5F' }}>
           {text.mainTitle}
         </h2>
 
         {/* Top Section - Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 ">
           {/* Left Column - Text Content */}
           <div>
             <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>

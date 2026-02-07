@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-export default function AdminProfilePage({ params: _params }: { params: Promise<{ lang: string }> }) {
+export default function AdminProfilePage() {
   const { userData, updateProfile } = useAuth();
   // const resolvedParams = React.use(params);
   const { currentLanguage } = useLanguage();
@@ -371,8 +371,8 @@ export default function AdminProfilePage({ params: _params }: { params: Promise<
         {/* Message */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${message.type === 'success'
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
+            ? 'bg-green-50 text-green-800 border border-green-200'
+            : 'bg-red-50 text-red-800 border border-red-200'
             }`}>
             {message.text}
           </div>
@@ -389,8 +389,8 @@ export default function AdminProfilePage({ params: _params }: { params: Promise<
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === tab.id
-                        ? 'border-red-500 text-red-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-red-500 text-red-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
                   >
                     <Icon className="w-4 h-4 mr-2" />

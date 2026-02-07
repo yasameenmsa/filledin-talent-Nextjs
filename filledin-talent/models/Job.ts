@@ -215,5 +215,8 @@ JobSchema.index({ title: 'text', description: 'text' });
 JobSchema.index({ 'location.country': 1, 'location.city': 1 });
 JobSchema.index({ category: 1, sector: 1 });
 JobSchema.index({ status: 1, createdAt: -1 });
+JobSchema.index({ postedBy: 1 });
+JobSchema.index({ featured: 1, urgent: 1, status: 1 });
+JobSchema.index({ createdAt: -1 }); // For sorting by newest
 
 export default mongoose.models.Job || mongoose.model<IJob>('Job', JobSchema);

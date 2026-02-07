@@ -1,10 +1,10 @@
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import Notification from '@/models/Notification';
 
-export async function POST(_req: NextRequest) {
+export async function POST() {
     try {
         const session = await auth();
 

@@ -5,20 +5,7 @@ import connectDB from '@/lib/db/mongodb';
 import File from '@/models/File';
 import { auth } from '@/auth';
 
-// MIME type to extension mapping for Content-Type header
-const MIME_TYPES: Record<string, string> = {
-    'application/pdf': 'pdf',
-    'application/msword': 'doc',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-    'application/vnd.ms-excel': 'xls',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-    'image/jpeg': 'jpg',
-    'image/jpg': 'jpg',
-    'image/png': 'png',
-    'image/webp': 'webp',
-    'image/svg+xml': 'svg',
-    'text/plain': 'txt',
-};
+
 
 interface RouteParams {
     params: Promise<{ id: string }>;

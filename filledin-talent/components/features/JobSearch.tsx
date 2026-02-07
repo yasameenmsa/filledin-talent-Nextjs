@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Search, MapPin, Briefcase, Clock, Filter } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -28,7 +28,86 @@ interface JobFilters {
   salaryMax?: number;
 }
 
-export default function JobSearch() {
+// Move translations outside component
+const translations: Record<string, Record<string, string>> = {
+  'jobs.keywordsPlaceholder': {
+    en: 'Job title, keywords, or company',
+    ar: 'المسمى الوظيفي أو الكلمات المفتاحية أو الشركة',
+    fr: 'Titre du poste, mots-clés ou entreprise'
+  },
+  'jobs.allLocations': {
+    en: 'All Locations',
+    ar: 'جميع المواقع',
+    fr: 'Tous les emplacements'
+  },
+  'jobs.allCategories': {
+    en: 'All Categories',
+    ar: 'جميع الفئات',
+    fr: 'Toutes les catégories'
+  },
+  'jobs.technical': {
+    en: 'Technical',
+    ar: 'تقني',
+    fr: 'Technique'
+  },
+  'jobs.hse': {
+    en: 'HSE',
+    ar: 'الصحة والسلامة والبيئة',
+    fr: 'HSE'
+  },
+  'jobs.corporate': {
+    en: 'Corporate',
+    ar: 'شركات',
+    fr: 'Entreprise'
+  },
+  'jobs.executive': {
+    en: 'Executive',
+    ar: 'تنفيذي',
+    fr: 'Exécutif'
+  },
+  'jobs.operations': {
+    en: 'Operations',
+    ar: 'عمليات',
+    fr: 'Opérations'
+  },
+  'jobs.search': {
+    en: 'Search',
+    ar: 'بحث',
+    fr: 'Rechercher'
+  },
+  'jobs.showAdvancedFilters': {
+    en: 'Show Advanced Filters',
+    ar: 'إظهار المرشحات المتقدمة',
+    fr: 'Afficher les filtres avancés'
+  },
+  'jobs.hideAdvancedFilters': {
+    en: 'Hide Advanced Filters',
+    ar: 'إخفاء المرشحات المتقدمة',
+    fr: 'Masquer les filtres avancés'
+  },
+  'jobs.advancedFilters': {
+    en: 'Advanced Filters',
+    ar: 'المرشحات المتقدمة',
+    fr: 'Filtres avancés'
+  },
+  'jobs.apply': {
+    en: 'Apply',
+    ar: 'قدم الآن',
+    fr: 'Postuler'
+  },
+  'jobs.noResults': {
+    en: 'No jobs found',
+    ar: 'لم يتم العثور على وظائف',
+    fr: 'Aucun emploi trouvé'
+  },
+  'jobs.loading': {
+    en: 'Loading jobs...',
+    ar: 'جاري تحميل الوظائف...',
+    fr: 'Chargement des emplois...'
+  }
+};
+
+function JobSearch() {
   const [filters, setFilters] = useState<JobFilters>({
     keywords: '',
     location: '',
@@ -44,148 +123,10 @@ export default function JobSearch() {
   const debouncedKeywords = useDebounce(filters.keywords, 500);
   const { currentLanguage } = useLanguage();
 
-  // Inline translation function
-  const getText = (key: string): string => {
-    const translations: Record<string, Record<string, string>> = {
-      'jobs.keywordsPlaceholder': {
-        en: 'Job title, keywords, or company',
-        ar: 'المسمى الوظيفي أو الكلمات المفتاحية أو الشركة',
-        fr: 'Titre du poste, mots-clés ou entreprise'
-      },
-      'jobs.allLocations': {
-        en: 'All Locations',
-        ar: 'جميع المواقع',
-        fr: 'Tous les emplacements'
-      },
-      'jobs.allCategories': {
-        en: 'All Categories',
-        ar: 'جميع الفئات',
-        fr: 'Toutes les catégories'
-      },
-      'jobs.technical': {
-        en: 'Technical',
-        ar: 'تقني',
-        fr: 'Technique'
-      },
-      'jobs.hse': {
-        en: 'HSE',
-        ar: 'الصحة والسلامة والبيئة',
-        fr: 'HSE'
-      },
-      'jobs.corporate': {
-        en: 'Corporate',
-        ar: 'شركات',
-        fr: 'Entreprise'
-      },
-      'jobs.executive': {
-        en: 'Executive',
-        ar: 'تنفيذي',
-        fr: 'Exécutif'
-      },
-      'jobs.operations': {
-        en: 'Operations',
-        ar: 'عمليات',
-        fr: 'Opérations'
-      },
-      'jobs.search': {
-        en: 'Search',
-        ar: 'بحث',
-        fr: 'Rechercher'
-      },
-      'jobs.showAdvancedFilters': {
-        en: 'Show Advanced Filters',
-        ar: 'إظهار المرشحات المتقدمة',
-        fr: 'Afficher les filtres avancés'
-      },
-      'jobs.hideAdvancedFilters': {
-        en: 'Hide Advanced Filters',
-        ar: 'إخفاء المرشحات المتقدمة',
-        fr: 'Masquer les filtres avancés'
-      },
-      'jobs.workingType': {
-        en: 'Working Type',
-        ar: 'نوع العمل',
-        fr: 'Type de travail'
-      },
-      'jobs.fullTime': {
-        en: 'Full Time',
-        ar: 'دوام كامل',
-        fr: 'Temps plein'
-      },
-      'jobs.partTime': {
-        en: 'Part Time',
-        ar: 'دوام جزئي',
-        fr: 'Temps partiel'
-      },
-      'jobs.contract': {
-        en: 'Contract',
-        ar: 'عقد',
-        fr: 'Contrat'
-      },
-      'jobs.remote': {
-        en: 'Remote',
-        ar: 'عن بُعد',
-        fr: 'À distance'
-      },
-      'jobs.hybrid': {
-        en: 'Hybrid',
-        ar: 'مختلط',
-        fr: 'Hybride'
-      },
-      'jobs.sector': {
-        en: 'Sector',
-        ar: 'القطاع',
-        fr: 'Secteur'
-      },
-      'jobs.oilGas': {
-        en: 'Oil & Gas',
-        ar: 'النفط والغاز',
-        fr: 'Pétrole et gaz'
-      },
-      'jobs.renewable': {
-        en: 'Renewable Energy',
-        ar: 'الطاقة المتجددة',
-        fr: 'Énergie renouvelable'
-      },
-      'jobs.both': {
-        en: 'Both',
-        ar: 'كلاهما',
-        fr: 'Les deux'
-      },
-      'jobs.minSalary': {
-        en: 'Min Salary',
-        ar: 'الحد الأدنى للراتب',
-        fr: 'Salaire minimum'
-      },
-      'jobs.maxSalary': {
-        en: 'Max Salary',
-        ar: 'الحد الأقصى للراتب',
-        fr: 'Salaire maximum'
-      },
-      'jobs.loading': {
-        en: 'Loading jobs...',
-        ar: 'جاري تحميل الوظائف...',
-        fr: 'Chargement des emplois...'
-      },
-      'jobs.viewDetails': {
-        en: 'View Details',
-        ar: 'عرض التفاصيل',
-        fr: 'Voir les détails'
-      },
-      'jobs.posted': {
-        en: 'Posted',
-        ar: 'تم النشر',
-        fr: 'Publié'
-      },
-      'jobs.noJobsFound': {
-        en: 'No jobs found matching your criteria.',
-        ar: 'لم يتم العثور على وظائف تطابق معاييرك.',
-        fr: 'Aucun emploi trouvé correspondant à vos critères.'
-      }
-    };
-
+  // Memoize getText function
+  const getText = useCallback((key: string): string => {
     return translations[key]?.[currentLanguage] || translations[key]?.['en'] || key;
-  };
+  }, [currentLanguage]);
 
   const fetchJobs = useCallback(async () => {
     setLoading(true);
@@ -356,3 +297,5 @@ export default function JobSearch() {
     </div>
   );
 }
+
+export default memo(JobSearch);

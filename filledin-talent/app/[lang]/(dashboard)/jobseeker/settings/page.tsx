@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Construction } from 'lucide-react';
 
 export default function JobSeekerSettingsPage({ params }: { params: Promise<{ lang: string }> }) {
-    const { lang: _lang } = React.use(params);
+    React.use(params);
     const { currentLanguage } = useLanguage();
 
     const getText = (key: string) => {

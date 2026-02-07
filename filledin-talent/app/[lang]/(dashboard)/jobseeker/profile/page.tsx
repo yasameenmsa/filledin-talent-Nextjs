@@ -24,11 +24,43 @@ import {
   BookOpen
 } from 'lucide-react';
 
+interface UserData {
+  _id: string;
+  email: string;
+  role: string;
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    location?: string;
+    bio?: string;
+    website?: string;
+    skills?: string[];
+    experience?: Array<{
+      company: string;
+      position: string;
+      startDate: string;
+      endDate?: string;
+      description?: string;
+    }>;
+    education?: Array<{
+      institution: string;
+      degree: string;
+      field: string;
+      year: string;
+    }>;
+    company?: string;
+    position?: string;
+    profileImage?: string;
+    cvUrl?: string;
+  };
+}
+
 export default function JobseekerProfilePage() {
   const { userData: sessionData } = useAuth();
   const { currentLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<'profile' | 'cv'>('profile');
-  const [fullProfile, setFullProfile] = useState<any>(null);
+  const [fullProfile, setFullProfile] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -239,7 +271,7 @@ export default function JobseekerProfilePage() {
     },
   ];
 
-  const completionPercentage = displayData ? calculateProfileCompletion(displayData) : 0;
+  const completionPercentage = displayData ? calculateProfileCompletion(displayData as UserData) : 0;
 
   // Profile View Component (Read-only mode)
   const ProfileViewMode = () => (
@@ -436,7 +468,7 @@ export default function JobseekerProfilePage() {
         <div className="p-6">
           {displayData?.profile?.education && displayData.profile.education.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {displayData.profile.education.map((edu: { institution: string; degree: string; field: string; year: string }, index: number) => (
+              {displayData.profile.education.map((edu: { degree?: string; field?: string; institution?: string; year?: string }, index: number) => (
                 <div key={index} className="p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-blue-100 rounded-lg">
@@ -657,7 +689,7 @@ export default function JobseekerProfilePage() {
             <div className="transition-all duration-300">
               {isEditing ? (
                 <ProfileForm
-                  initialData={fullProfile}
+                  initialData={fullProfile || undefined}
                   onSuccess={async () => {
                     const res = await fetch('/api/user/profile');
                     if (res.ok) {
@@ -724,7 +756,7 @@ export default function JobseekerProfilePage() {
 }
 
 // Helper function to calculate profile completion percentage
-function calculateProfileCompletion(userData: { email: string; profile?: { firstName?: string; lastName?: string; phone?: string; position?: string; company?: string; location?: string; bio?: string; website?: string; skills?: string[]; experience?: Array<{ company: string; position: string; startDate: string; endDate?: string; description?: string; }>; cvUrl?: string; profileImage?: string; } }): number {
+function calculateProfileCompletion(userData: UserData): number {
   const fields = [
     userData.profile?.firstName,
     userData.profile?.lastName,

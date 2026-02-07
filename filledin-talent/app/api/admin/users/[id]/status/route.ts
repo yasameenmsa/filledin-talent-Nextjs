@@ -21,7 +21,7 @@ export async function PUT(
       );
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
 
     if (status === 'active') {
       updateData.isEmailVerified = true;

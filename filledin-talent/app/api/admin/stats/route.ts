@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import Job from '@/models/Job';
@@ -6,7 +6,7 @@ import Application from '@/models/Application';
 
 import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
 
-export const GET = withAdminAuth(async (request) => {
+export const GET = withAdminAuth(async () => {
   try {
     await connectDB();
 
@@ -14,8 +14,7 @@ export const GET = withAdminAuth(async (request) => {
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
     const startOfThisWeek = new Date(now);
     startOfThisWeek.setDate(now.getDate() - now.getDay());
 

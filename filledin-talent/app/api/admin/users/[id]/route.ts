@@ -4,6 +4,11 @@ import User from '@/models/User';
 import Application from '@/models/Application';
 import SavedJob from '@/models/SavedJob';
 
+
+interface UserStatusUpdateData {
+  isEmailVerified: boolean;
+}
+
 // PUT - Update user status
 export async function PUT(
   request: NextRequest,
@@ -23,7 +28,7 @@ export async function PUT(
       );
     }
 
-    const updateData: any = {};
+    const updateData: UserStatusUpdateData = {} as UserStatusUpdateData;
 
     if (status === 'active') {
       updateData.isEmailVerified = true;

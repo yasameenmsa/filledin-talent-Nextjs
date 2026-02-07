@@ -3,90 +3,79 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Globe, CheckCircle, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
+import { useMemo, memo } from 'react';
+
+// Move translations outside component to avoid recreation on every render
+const translations = {
+  en: {
+    forBusinesses: 'For businesses',
+    hireFutureTalent: 'Hire your future talent today',
+    intro: 'FilledIn Talent is committed to you and to provide you with future-Ready recruitment for the Energy Workforce of tomorrow.',
+    partnership: 'We partner with employers like you to build long-term teams with the right skills for a rapidly evolving non-renewable and renewable energy industry. We also propose a flexible workforce to keep critical projects moving.',
+    skillsMapping: 'We identify emerging skills i.e AI, Renewables, Automation, Digital, through future Skills Mapping to keep your business ahead.',
+    delivery: 'At FINT, we deliver top talent at reduced cost through AI-powered automation.',
+    promiseTitle: 'Our promise to you',
+    globalSourcing: 'Global Sourcing',
+    noSecondInterview: 'No Second Interview, No Fee',
+    keyMetrics: 'Key Recruitment Metrics',
+    notTransactional: 'We are not a transactional agency. We are your strategic partner in talent acquisition, dedicated to providing a seamless, efficient, and effective service that delivers lasting value.',
+    jobSeekers: 'Job seekers',
+    jobSearch: 'Job search',
+    interviewTips: 'Interview tips',
+    dropCV: 'Drop CV',
+    aboutFINT: 'About FINT',
+    getInTouch: 'Get In Touch',
+  },
+  fr: {
+    forBusinesses: 'Pour les entreprises',
+    hireFutureTalent: 'Recrutez vos futurs talents dès aujourd\'hui',
+    intro: 'FilledIn Talent s\'engage envers vous à vous fournir un recrutement prêt pour l\'avenir pour la main-d\'œuvre énergétique de demain.',
+    partnership: 'Nous nous associons à des employeurs comme vous pour constituer des équipes à long terme avec les bonnes compétences pour une industrie énergétique non renouvelable et renouvelable en évolution rapide. Nous proposons également une main-d\'œuvre flexible pour maintenir les projets critiques en mouvement.',
+    skillsMapping: 'Nous identifions les compétences émergentes, c\'est-à-dire l\'IA, les énergies renouvelables, l\'automatisation, le numérique, grâce à la cartographie des compétences futures pour garder votre entreprise en avance.',
+    delivery: 'Chez FINT, nous livrons les meilleurs talents à coût réduit grâce à l\'automatisation alimentée par l\'IA',
+    promiseTitle: 'Notre promesse envers vous',
+    globalSourcing: 'Sourcing Mondial',
+    noSecondInterview: 'Pas de Deuxième Entretien, Pas de Frais',
+    keyMetrics: 'Indicateurs Clés de Recrutement',
+    notTransactional: 'Nous ne sommes pas une agence transactionnelle. Nous sommes votre partenaire stratégique en acquisition de talents, dédiés à fournir un service fluide, efficace et performant qui offre une valeur durable.',
+    jobSeekers: 'Chercheurs d\'emploi',
+    jobSearch: 'Recherche d\'emploi',
+    interviewTips: 'Conseils d\'entretien',
+    dropCV: 'Déposer CV',
+    aboutFINT: 'À propos de FINT',
+    getInTouch: 'Nous Contacter',
+  },
+  ar: {
+    forBusinesses: 'للشركات',
+    hireFutureTalent: 'وظف مواهب المستقبل اليوم',
+    intro: 'FilledIn Talent ملتزمة تجاهك وبتزويدك بتوظيف جاهز للمستقبل للقوى العاملة في مجال الطاقة في الغد.',
+    partnership: 'نحن نتعاون مع أصحاب العمل مثلك لبناء فرق طويلة الأجل بالمهارات المناسبة لصناعة الطاقة غير المتجددة والمتجددة سريعة التطور. كما نقترح قوة عاملة مرنة للحفاظ على تحرك المشاريع الحيوية.',
+    skillsMapping: 'نحدد المهارات الناشئة أي الذكاء الاصطناعي والطاقات المتجددة والأتمتة والرقمية من خلال تخطيط المهارات المستقبلية للحفاظ على تقدم عملك.',
+    delivery: 'في FINT، نقدم أفضل المواهب بتكلفة مخفضة من خلال الأتمتة المدعومة بالذكاء الاصطناعي',
+    promiseTitle: 'وعدنا لك',
+    globalSourcing: 'التوظيف العالمي',
+    noSecondInterview: 'لا مقابلة ثانية، بدون رسوم',
+    keyMetrics: 'مقاييس التوظيف الرئيسية',
+    notTransactional: 'نحن لسنا وكالة معاملات. نحن شريكك الاستراتيجي في اكتساب المواهب، ملتزمون بتقديم خدمة سلسة وفعالة وناجحة تقدم قيمة دائمة.',
+    jobSeekers: 'الباحثون عن عمل',
+    jobSearch: 'البحث عن وظيفة',
+    interviewTips: 'نصائح المقابلة',
+    dropCV: 'إرسال السيرة الذاتية',
+    aboutFINT: 'عن FINT',
+    getInTouch: 'تواصل معنا',
+  }
+};
 
 const BusinessSection = () => {
   const { currentLanguage } = useLanguage();
 
-  const getText = (currentLanguage: string) => {
-    const translations = {
-      en: {
-        forBusinesses: 'For businesses',
-        hireFutureTalent: 'Hire your future talent today',
-        intro: 'FilledIn Talent is committed to you and to provide you with future-Ready recruitment for the Energy Workforce of tomorrow.',
-        partnership: 'We partner with employers like you to build long-term teams with the right skills for a rapidly evolving non-renewable and renewable energy industry. We also propose a flexible workforce to keep critical projects moving.',
-        skillsMapping: 'We identify emerging skills i.e AI, Renewables, Automation, Digital, through future Skills Mapping to keep your business ahead.',
-        delivery: 'At FINT, we deliver top talent at reduced cost through AI-powered automation.',
-        promiseTitle: 'Our promise to you',
-        globalSourcing: 'Global Sourcing',
-        noSecondInterview: 'No Second Interview, No Fee',
-        keyMetrics: 'Key Recruitment Metrics',
-        notTransactional: 'We are not a transactional agency. We are your strategic partner in talent acquisition, dedicated to providing a seamless, efficient, and effective service that delivers lasting value.',
-        jobSeekers: 'Job seekers',
-        jobSearch: 'Job search',
-        interviewTips: 'Interview tips',
-        dropCV: 'Drop CV',
-        aboutFINT: 'About FINT',
-        getInTouch: 'Get In Touch',
-        riskAverseTitle: 'A Risk-Averse, Partnership-Focused Model',
-        riskAverseDesc: 'We believe your satisfaction measures our success. Our transparent fee structure is designed to align with your goals and de-risk the hiring process:',
-        nonManagerialRoles: 'For Non-Managerial Roles: A simple, competitive fixed fee. You incur no cost until we successfully present a candidate you choose to interview.',
-        managerialRoles: 'For Managerial & Executive Roles: A competitive fee with a limited initial engagement fee, demonstrating our mutual commitment to finding your next leader.'
-      },
-      fr: {
-        forBusinesses: 'Pour les entreprises',
-        hireFutureTalent: 'Recrutez vos futurs talents dès aujourd\'hui',
-        intro: 'FilledIn Talent s\'engage envers vous à vous fournir un recrutement prêt pour l\'avenir pour la main-d\'œuvre énergétique de demain.',
-        partnership: 'Nous nous associons à des employeurs comme vous pour constituer des équipes à long terme avec les bonnes compétences pour une industrie énergétique non renouvelable et renouvelable en évolution rapide. Nous proposons également une main-d\'œuvre flexible pour maintenir les projets critiques en mouvement.',
-        skillsMapping: 'Nous identifions les compétences émergentes, c\'est-à-dire l\'IA, les énergies renouvelables, l\'automatisation, le numérique, grâce à la cartographie des compétences futures pour garder votre entreprise en avance.',
-        delivery: 'Chez FINT, nous livrons les meilleurs talents à coût réduit grâce à l\'automatisation alimentée par l\'IA',
-        promiseTitle: 'Notre promesse envers vous',
-        globalSourcing: 'Sourcing Mondial',
-        noSecondInterview: 'Pas de Deuxième Entretien, Pas de Frais',
-        keyMetrics: 'Indicateurs Clés de Recrutement',
-        notTransactional: 'Nous ne sommes pas une agence transactionnelle. Nous sommes votre partenaire stratégique en acquisition de talents, dédiés à fournir un service fluide, efficace et performant qui offre une valeur durable.',
-        jobSeekers: 'Chercheurs d\'emploi',
-        jobSearch: 'Recherche d\'emploi',
-        interviewTips: 'Conseils d\'entretien',
-        dropCV: 'Déposer CV',
-        aboutFINT: 'À propos de FINT',
-        getInTouch: 'Nous Contacter',
-        riskAverseTitle: 'Un modèle axé sur le partenariat et sans risque',
-        riskAverseDesc: 'Nous croyons que votre satisfaction mesure notre succès. Notre structure tarifaire transparente est conçue pour s\'aligner sur vos objectifs et réduire les risques du processus d\'embauche :',
-        nonManagerialRoles: 'Pour les rôles non managériaux : Des frais fixes simples et compétitifs. Vous n\'engagez aucun frais tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'interviewer.',
-        managerialRoles: 'Pour les rôles managériaux et exécutifs : Des frais compétitifs avec des frais d\'engagement initial limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
-      },
-      ar: {
-        forBusinesses: 'للشركات',
-        hireFutureTalent: 'وظف مواهب المستقبل اليوم',
-        intro: 'FilledIn Talent ملتزمة تجاهك وبتزويدك بتوظيف جاهز للمستقبل للقوى العاملة في مجال الطاقة في الغد.',
-        partnership: 'نحن نتعاون مع أصحاب العمل مثلك لبناء فرق طويلة الأجل بالمهارات المناسبة لصناعة الطاقة غير المتجددة والمتجددة سريعة التطور. كما نقترح قوة عاملة مرنة للحفاظ على تحرك المشاريع الحيوية.',
-        skillsMapping: 'نحدد المهارات الناشئة أي الذكاء الاصطناعي والطاقات المتجددة والأتمتة والرقمية من خلال تخطيط المهارات المستقبلية للحفاظ على تقدم عملك.',
-        delivery: 'في FINT، نقدم أفضل المواهب بتكلفة مخفضة من خلال الأتمتة المدعومة بالذكاء الاصطناعي',
-        promiseTitle: 'وعدنا لك',
-        globalSourcing: 'التوظيف العالمي',
-        noSecondInterview: 'لا مقابلة ثانية، بدون رسوم',
-        keyMetrics: 'مقاييس التوظيف الرئيسية',
-        notTransactional: 'نحن لسنا وكالة معاملات. نحن شريكك الاستراتيجي في اكتساب المواهب، ملتزمون بتقديم خدمة سلسة وفعالة وناجحة تقدم قيمة دائمة.',
-        jobSeekers: 'الباحثون عن عمل',
-        jobSearch: 'البحث عن وظيفة',
-        interviewTips: 'نصائح المقابلة',
-        dropCV: 'إرسال السيرة الذاتية',
-        aboutFINT: 'عن FINT',
-        getInTouch: 'تواصل معنا',
-        riskAverseTitle: 'نموذج يركز على الشراكة ويتجنب المخاطر',
-        riskAverseDesc: 'نحن نؤمن بأن رضاك هو مقياس نجاحنا. تم تصميم هيكل الرسوم الشفاف لدينا ليتوافق مع أهدافك ويقلل من مخاطر عملية التوظيف:',
-        nonManagerialRoles: 'للأدوار غير الإدارية: رسوم ثابتة بسيطة وتنافسية. لا تتحمل أي تكلفة حتى نقدم بنجاح مرشحًا تختار مقابلته.',
-        managerialRoles: 'للأدوار الإدارية والتنفيذية: رسوم تنافسية مع رسوم مشاركة أولية محدودة، مما يوضح التزامنا المتبادل بالعثور على قائدك التالي.'
-      }
-    };
+  const text = useMemo(() => {
     return translations[currentLanguage as keyof typeof translations] || translations.en;
-  };
-
-  const text = getText(currentLanguage);
+  }, [currentLanguage]);
 
   return (
     <div
-      className="min-h-screen"
+      className=""
       style={{ backgroundColor: '#f6f4ee' }}
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
@@ -159,17 +148,10 @@ const BusinessSection = () => {
             </div>
           </div>
         </div>
-        <div className="mt-12 space-y-6 text-base text-center mx-auto" style={{ color: '#000' }}>
-          <h3 className="text-2xl font-bold mb-4">{text.riskAverseTitle}</h3>
-          <p>{text.riskAverseDesc}</p>
-          <ul className="list-none space-y-3">
-            <li>• {text.nonManagerialRoles}</li>
-            <li>• {text.managerialRoles}</li>
-          </ul>
-        </div>
+
       </main>
     </div>
   );
 };
 
-export default BusinessSection;
+export default memo(BusinessSection);

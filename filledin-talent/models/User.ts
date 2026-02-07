@@ -274,6 +274,12 @@ UserSchema.methods.resetLoginAttempts = async function (): Promise<IUser> {
   });
 };
 
+// Performance indexes
+UserSchema.index({ role: 1 });
+UserSchema.index({ isEmailVerified: 1 });
+UserSchema.index({ createdAt: -1 });
+UserSchema.index({ 'skills': 1 }); // For skill-based searches
+
 // Create and export the model
 const User = (mongoose.models && mongoose.models.User) || mongoose.model<IUser>('User', UserSchema);
 export default User;

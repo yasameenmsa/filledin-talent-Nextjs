@@ -2,16 +2,15 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useRouter } from 'next/navigation';
 import { Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from "@/components/ui/select";
 import JobCard from '@/components/jobs/JobCard';
+import type { Job } from '@/lib/types/models';
 
 const JobSeekersSection = () => {
   const { currentLanguage } = useLanguage();
-  const router = useRouter();
 
   const [formData, setFormData] = useState({
     keywords: '',
@@ -21,7 +20,7 @@ const JobSeekersSection = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
   const [page, setPage] = useState(1);
