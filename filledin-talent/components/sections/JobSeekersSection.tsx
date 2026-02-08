@@ -192,7 +192,7 @@ const JobSeekersSection = () => {
     >
       {/* Main Content */}
       <main className="container mx-auto px-8">
-        <h1 className="text-5xl font-bold mb-16 text-gray-900">
+        <h1 className="text-3xl font-bold my-5 text-blue-900">
           {text.forJobSeekers}
         </h1>
 

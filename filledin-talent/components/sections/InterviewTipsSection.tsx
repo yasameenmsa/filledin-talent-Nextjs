@@ -13,7 +13,7 @@ const InterviewTipsSection = () => {
         intro1: 'To master your interview , you must be prepared, execute and follow-up.',
         intro2: 'Approach it as a professional conversation not as an interrogation.',
         exampleTitle: 'Example of competency-based questions:',
-        question1: '1- Tell me about time you successfully led a team?',
+        question1: '1- Tell me about a time you successfully led a team?',
         question2: '2- Can you give an example of how you solved a difficult problem?',
         question3: '3- Describe a time when you had to resolve a conflict at work'
       },

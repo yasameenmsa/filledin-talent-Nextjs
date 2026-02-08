@@ -22,7 +22,7 @@ const HRTrendsSection = () => {
       fr: {
         hrTrendsTitle: 'Tendances RH',
         hrTrend1: 'En 2026, les dirigeants RH doivent redéfinir leurs stratégies et aller au-delà des séminaires de leadership traditionnels pour favoriser les connexions entre pairs et intégrer des opportunités d\'apprentissage dans le travail quotidien, permettant aux managers de développer des compétences de leadership plus solides et de se préparer aux demandes futures. Grâce aux plateformes d\'apprentissage personnalisées alimentées par l\'IA, les candidats et les employés peuvent accéder à des programmes de formation adaptés qui correspondent à leurs besoins uniques et à leur rythme d\'apprentissage.',
-        hrTrend2: 'Alors que les dirigeants d\'entreprise prévoient d\'investir davantage dans l\'IA, les organisations RH redéfiniront leurs stratégies pour l\'intégrer dans leurs processus RH. Les organisations les plus performantes tireront parti de l\'IA pour l\'efficacité tout en permettant aux professionnels RH de se concentrer sur ce qui compte vraiment : les Personnes.',
+        hrTrend2: 'Alors que les dirigeants d\'entreprise prévoient d\'investir davantage dans l\'IA, les organisations RH redéfiniront leurs stratégies pour l\'intégrer dans leurs processus RH. Les organisations les plus performantes tireront parti de l\'IA pour l\'efficacité tout en permettant aux professionnels RH de se concentrer sur ce qui compte vraiment: les Personnes.',
         aiTalentTitle: 'IA et Acquisition de Talents',
         aiTalent1: 'travaille sans relâche pour combiner l\'expertise humaine avec des informations basées sur l\'IA afin de garantir que chaque candidat est le bon choix pour un succès à long terme. Nous connectons les meilleurs talents avec des employeurs avant-gardistes, en combinant l\'expertise humaine, les informations basées sur l\'IA et une approche axée sur les compétences.',
         aiTalent2: 'FINT a combiné le recrutement traditionnel et la nouvelle technologie. L\'avenir du recrutement n\'est pas IA ou Humain, c\'est IA et Humain. En les combinant stratégiquement, FINT crée un processus plus efficace, basé sur les données et équitable qui permet aux talents et aux employés de se connecter et de conduire à d\'excellents recrutements.',
@@ -78,7 +78,7 @@ const HRTrendsSection = () => {
                     <div className="w-2 h-2 rounded-full bg-black"></div>
                   </div>
 
-                    <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}>
+                  <p className={`text-gray-800 leading-relaxed text-base ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`}>
                     {text.hrTrend2}
                   </p>
                 </div>
@@ -120,9 +120,9 @@ const HRTrendsSection = () => {
             <div className="flex-1 order-1 lg:order-2">
               <Link href={`/${currentLanguage}/businesses/trends`} className="block hover:opacity-80 transition-opacity">
 
-              <h2 className={`text-4xl font-bold mb-8 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`} style={{ color: '#1e3a5f' }}>
-                {text.aiTalentTitle}
-              </h2>
+                <h2 className={`text-4xl font-bold mb-8 ${currentLanguage === 'ar' ? 'text-right' : 'text-left'}`} style={{ color: '#1e3a5f' }}>
+                  {text.aiTalentTitle}
+                </h2>
               </Link>
               <div className="space-y-6">
                 <div className="flex gap-3">

@@ -21,14 +21,14 @@ const CommitmentSection = () => {
       },
       fr: {
         mainTitle: 'Notre engagement envers votre service',
-        subtitle: 'Recrutement de Précision pour les Experts en Énergie',
+        subtitle: 'Recrutement de précision pour des experts en énergie',
         intro1: 'Nous ne nous contentons pas de pourvoir des postes ; nous fournissons les talents spécialisés qui alimentent vos projets et font avancer votre entreprise.',
         intro2: 'Chez FINT, nous combinons une expertise sectorielle approfondie avec un modèle de recrutement moderne pour résoudre vos défis d\'embauche les plus critiques.',
         intro3: 'Notre engagement est de vous faire gagner du temps, de réduire les risques et de vous mettre en contact avec des professionnels exceptionnels prêts à performer dès le premier jour.',
-        partnershipTitle: 'Un Modèle Axé sur le Partenariat et la Réduction des Risques',
+        partnershipTitle: 'Un modèle axé sur le partenariat et une limitation des risques',
         partnershipIntro: 'Nous croyons que votre satisfaction mesure notre succès. Notre structure de frais transparente est conçue pour s\'aligner sur vos objectifs et réduire les risques du processus d\'embauche :',
-        nonManagerial: 'Pour les Postes Non-Cadres : Un forfait fixe simple et compétitif. Vous n\'encourez aucun coût tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'embaucher.',
-        managerial: 'Pour les Postes de Cadres et Dirigeants : Un tarif compétitif avec des frais d\'engagement initiaux limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
+        nonManagerial: 'Pour les postes non-cadres : un forfait fixe simple et compétitif. Vous n\'encourez aucun coût tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'embaucher.',
+        managerial: 'Pour les postes de cadres et de dirigeants : un tarif compétitif, avec des frais d\'engagement initiaux limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
       },
       ar: {
         mainTitle: 'التزامنا تجاه خدمتك',

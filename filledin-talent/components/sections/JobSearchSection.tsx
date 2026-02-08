@@ -74,7 +74,7 @@ const JobSearchSection = ({ hideTitle = false }: JobSearchSectionProps) => {
         }
       },
       fr: {
-        title: 'Partenaire Mondial des Talents Énergétiques',
+        title: 'Partenaire mondiale des Talents pour l’énergie',
         heading: 'Prêt pour votre prochaine carrière ?',
         subheading: 'Trouvez l\'emploi parfait dans le secteur de l\'énergie dans le monde entier',
         keywords: 'Mots-clés, Titre du poste',
