@@ -34,7 +34,7 @@ const translations = {
     skillsMapping: 'Nous identifions les compétences émergentes, tel que l\'IA, les énergies renouvelables, l\'automatisation, le numérique, grâce à la cartographie des compétences futures pour garder votre entreprise en avance.',
     delivery: 'Chez FINT, nous livrons les meilleurs talents à coût réduit grâce à l\'automatisation alimentée par l\'IA',
     promiseTitle: 'Notre promesse envers vous',
-    globalSourcing: 'Source Mondial',
+    globalSourcing: 'Source Mondiale',
     noSecondInterview: 'Pas de deuxième entretien, pas de frais',
     keyMetrics: 'Indicateurs clés de recrutement',
     notTransactional: 'Nous ne sommes pas une agence transactionnelle. Nous sommes votre partenaire stratégique en acquisition de talents, dédiés à fournir un service fluide, efficace et performant qui offre une valeur durable.',
@@ -82,7 +82,7 @@ const BusinessSection = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-8 pt-12">
-        <div className="flex gap-12 items-start">
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
           {/* Left Content */}
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-6" style={{ color: '#1e3a5f' }}>
@@ -106,7 +106,7 @@ const BusinessSection = () => {
 
 
           {/* Right Image */}
-          <div className="flex-shrink-0 w-[450px] lg:w-[350px]">
+          <div className="flex-shrink-0 w-full lg:w-[350px]">
             <Image
               src="/images/business/ForBusinesses.png"
               alt="Business Meeting"

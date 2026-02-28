@@ -23,12 +23,12 @@ const InterviewSuccessSection = () => {
       fr: {
         title: 'Comment réussir vos entretiens ?',
         intro: 'Réussir un entretien d\'embauche va au-delà de simplement se présenter; il s\'agit d\'une préparation approfondie et de montrer votre meilleur côté. Voici comment vous démarquer:',
-        tip1: 'Connaître l\'entreprise : Plongez en profondeur dans le profil de l\'entreprise, sa culture, son turnover et ses stratégies à court et à long terme. Comprendre ce qui motive l\'organisation vous aide à aligner vos objectifs avec les leurs.',
-        tip2: 'Réfléchir sur le rôle : Prenez le temps d\'analyser la description du poste et d\'évaluer votre motivation personnelle pour le poste. Pourquoi êtes-vous le candidat parfait ?',
+        tip1: 'Connaître l\'entreprise : plongez en profondeur dans le profil de l\'entreprise, sa culture, son turnover et ses stratégies à court et à long terme. Comprendre ce qui motive l\'organisation vous aide à aligner vos objectifs avec les leurs.',
+        tip2: 'Réfléchir sur le rôle : prenez le temps d\'analyser la description du poste et d\'évaluer votre motivation personnelle pour le poste. Pourquoi êtes-vous le candidat parfait ?',
         tip3: 'Préparez vos "Histoires" qui démontrent des compétences clés telles que le "Leadership", la "Résolution de problèmes".',
         tip4: 'Apprenez votre CV sur le bout des doigts.',
         tip5: 'Préparez des questions réfléchies à poser.',
-        tip6: 'Maîtriser les techniques éprouvées : Préparez-vous aux questions basées sur les compétences en utilisant la méthode STAR - un cadre éprouvé qui vous aide à fournir des réponses claires et convaincantes.',
+        tip6: 'Maîtriser les techniques éprouvées : préparez-vous aux questions basées sur les compétences en utilisant la méthode STAR - un cadre qui vous aide à fournir des réponses claires et convaincantes.',
         conclusion: 'En combinant la recherche d\'entreprise, l\'auto-réflexion et des réponses structurées utilisant la technique STAR, vous serez prêt à laisser une impression durable sur votre intervieweur.',
         cta: 'Êtes-vous prêt à porter votre préparation au niveau supérieur ? Commencez aujourd\'hui !'
       },
@@ -58,16 +58,17 @@ const InterviewSuccessSection = () => {
     >
       <div className="container mx-auto max-w-7xl">
         {/* Main Content */}
+        <h2 className="text-3xl font-bold mb-6" style={{ color: '#000' }}>
+          {text.title}
+        </h2>
+
+        <p className="text-lg leading-relaxed mb-8" style={{ color: '#000' }}>
+          {text.intro}
+        </p>
         <div className="flex flex-col lg:flex-row gap-12 items-start mb-12">
           {/* Left Content */}
           <div className="flex-1">
-            <h2 className="text-3xl font-bold mb-6" style={{ color: '#000' }}>
-              {text.title}
-            </h2>
 
-            <p className="text-lg leading-relaxed mb-8" style={{ color: '#000' }}>
-              {text.intro}
-            </p>
 
             <ul className="space-y-6 text-base leading-relaxed" style={{ color: '#000' }}>
               <li className="flex gap-3">
@@ -127,7 +128,7 @@ const InterviewSuccessSection = () => {
                 src="/images/home/succeed.jpeg"
                 alt="Successful Interview"
                 className="w-full h-auto"
-                style={{ aspectRatio: '3/4', objectFit: 'cover', maxWidth: '350px', margin: '0 auto' }}
+                style={{ aspectRatio: '4/3', objectFit: 'cover' }}
                 onError={(e) => {
                   e.currentTarget.src = 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&h=900&fit=crop';
                 }}

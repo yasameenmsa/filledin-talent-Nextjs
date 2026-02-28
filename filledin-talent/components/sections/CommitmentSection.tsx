@@ -98,7 +98,7 @@ const CommitmentSection = () => {
             {text.partnershipTitle}
           </h3>
 
-          <p className="text-base leading-relaxed mb-6 text-center" style={{ color: '#000' }}>
+          <p className="text-base leading-relaxed mb-6 " style={{ color: '#000' }}>
             {text.partnershipIntro}
           </p>
 

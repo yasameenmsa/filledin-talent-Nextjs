@@ -82,7 +82,7 @@ const TrendsSection: React.FC = () => {
         aiTalentDescription: 'Les solutions émergentes, telles que l\'IA générative, ont le potentiel de transformer les opérations RH en rationalisant les processus, en améliorant la prise de décision et en améliorant l\'expérience des employés.',
         industryTrendsTitle: 'Tendances de l\'Industrie',
         industryTrendsDescription: 'FINT, spécialiste dans le secteur de l’énergie, fournit des talents mondiaux dans les secteurs du pétrole et du gaz ou des énergies renouvelables en connectant des experts du réservoir à la raffinerie ou de la source au réseau.',
-        leverageKnowledgeText: 'Tirez parti de vos propres connaissances avec les tendances mondiales FilledIn :',
+        leverageKnowledgeText: 'Enrichissez vos connaissances avec FilledIn Talent Global Trends :',
         leverageKnowledgeQuestion: '"Que se passe-t-il dans le secteur de l\'énergie et quels sont les nouveaux défis complexes ?"'
       },
       ar: {

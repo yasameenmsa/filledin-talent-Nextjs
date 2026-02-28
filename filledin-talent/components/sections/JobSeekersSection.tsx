@@ -290,7 +290,7 @@ const JobSeekersSection = () => {
           </div>
 
           {/* Right - Image */}
-          <div className="flex-shrink-0 w-full lg:w-[600px]">
+          <div className="flex-shrink-0 w-full lg:w-[400px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/home/RecruitmentandSelectionPolicy.png"
