@@ -150,15 +150,14 @@ function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className={`hidden md:flex items-center ${isRTL ? 'space-x-reverse space-x-8' : 'space-x-8'}`}>
+          <div className="hidden md:flex items-center gap-8">
             {navigation.map((item) => (
               <div key={item.name} className="relative">
                 {item.dropdown ? (
                   <>
                     <button
                       onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
-                      className={`flex items-center text-blue-900 hover:text-blue-600 transition-colors ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'
-                        }`}
+                      className="flex items-center text-blue-900 hover:text-blue-600 transition-colors gap-1"
                     >
                       <span>{item.name}</span>
                       <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
@@ -201,8 +200,7 @@ function Header() {
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(dropdownOpen === 'user' ? null : 'user')}
-                  className={`flex items-center text-blue-900 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'
-                    }`}
+                  className="flex items-center text-blue-900 gap-2"
                 >
                   <User className="w-5 h-5" />
                   <span>{userData?.profile?.firstName}</span>
@@ -241,7 +239,7 @@ function Header() {
                 </DropdownMenu>
               </div>
             ) : (
-              <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-4' : 'space-x-4'}`}>
+              <div className="flex items-center gap-4">
                 <Link
                   href={`/${currentLanguage}/login`}
                   className="text-blue-900 hover:text-blue-600 transition-colors"
@@ -269,114 +267,114 @@ function Header() {
 
         {/* Mobile Navigation */}
         <CollapsibleMenu isOpen={isOpen} className={`md:hidden bg-white shadow-lg rounded-b-lg py-2 mobile-menu ${isRTL ? 'rtl' : 'ltr'}`}>
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                {navigation.map((item) => (
-                  <div key={item.name}>
-                    {item.dropdown ? (
-                      <>
-                        <button
-                          onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
-                          className={`flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
-                            }`}
-                        >
-                          <span>{item.name}</span>
-                          <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
-                        </button>
-                        <CollapsibleMenu
-                          isOpen={dropdownOpen === item.name}
-                          className={`py-1 space-y-1 ${isRTL ? 'pr-5 pl-2' : 'pl-5 pr-2'}`}
-                        >
-                          {item.dropdown.map((subItem) => (
-                            <Link
-                              key={subItem.name}
-                              href={subItem.href}
-                              className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
-                                }`}
-                              onClick={() => {
-                                setIsOpen(false);
-                                setDropdownOpen(null);
-                              }}
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </CollapsibleMenu>
-                      </>
-                    ) : (
-                      <Link
-                        href={item.href}
-                        className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
-                          }`}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    )}
-                  </div>
-                ))}
-
-                {/* Mobile Language Switcher */}
-                <div className="border-t border-gray-200 pt-2 mt-2">
-                  <div className="px-3 py-2">
-                    <MobileLocaleSwitcher />
-                  </div>
-                </div>
-
-                {user ? (
-                  <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
-                    {userData?.role && (
-                      <>
-                        <Link
-                          href={`/${currentLanguage}/${getRolePath(userData.role)}`}
-                          className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
-                            }`}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {getText('ui.dashboard')}
-                        </Link>
-                        <Link
-                          href={`/${currentLanguage}/${getRolePath(userData.role)}/profile`}
-                          className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
-                            }`}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {getText('ui.profile')}
-                        </Link>
-                      </>
-                    )}
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {navigation.map((item) => (
+              <div key={item.name}>
+                {item.dropdown ? (
+                  <>
                     <button
-                      onClick={() => {
-                        logout();
-                        setIsOpen(false);
-                      }}
-                      className={`block w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                      onClick={() => setDropdownOpen(dropdownOpen === item.name ? null : item.name)}
+                      className={`flex items-center justify-between w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
                         }`}
                     >
-                      {getText('ui.logout')}
+                      <span>{item.name}</span>
+                      <ChevronDown className={`w-4 h-4 ${isRTL ? 'chevron-right' : ''}`} />
                     </button>
-                  </div>
+                    <CollapsibleMenu
+                      isOpen={dropdownOpen === item.name}
+                      className={`py-1 space-y-1 ${isRTL ? 'pr-5 pl-2' : 'pl-5 pr-2'}`}
+                    >
+                      {item.dropdown.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.href}
+                          className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                            }`}
+                          onClick={() => {
+                            setIsOpen(false);
+                            setDropdownOpen(null);
+                          }}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </CollapsibleMenu>
+                  </>
                 ) : (
-                  <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
+                  <Link
+                    href={item.href}
+                    className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                      }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </div>
+            ))}
+
+            {/* Mobile Language Switcher */}
+            <div className="border-t border-gray-200 pt-2 mt-2">
+              <div className="px-3 py-2">
+                <MobileLocaleSwitcher />
+              </div>
+            </div>
+
+            {user ? (
+              <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
+                {userData?.role && (
+                  <>
                     <Link
-                      href={`/${currentLanguage}/login`}
+                      href={`/${currentLanguage}/${getRolePath(userData.role)}`}
                       className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
                         }`}
                       onClick={() => setIsOpen(false)}
                     >
-                      {getText('ui.login')}
+                      {getText('ui.dashboard')}
                     </Link>
                     <Link
-                      href={`/${currentLanguage}/register`}
-                      className={`block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                      href={`/${currentLanguage}/${getRolePath(userData.role)}/profile`}
+                      className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
                         }`}
                       onClick={() => setIsOpen(false)}
                     >
-                      {getText('ui.register')}
+                      {getText('ui.profile')}
                     </Link>
-                  </div>
+                  </>
                 )}
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsOpen(false);
+                  }}
+                  className={`block w-full px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                    }`}
+                >
+                  {getText('ui.logout')}
+                </button>
               </div>
-            </CollapsibleMenu>
+            ) : (
+              <div className="border-t border-gray-200 pt-2 mt-2 flex justify-end">
+                <Link
+                  href={`/${currentLanguage}/login`}
+                  className={`block px-3 py-2 text-blue-900 hover:bg-blue-50 hover:text-blue-600 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                    }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {getText('ui.login')}
+                </Link>
+                <Link
+                  href={`/${currentLanguage}/register`}
+                  className={`block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md ${isRTL ? 'text-right' : 'text-left'
+                    }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {getText('ui.register')}
+                </Link>
+              </div>
+            )}
+          </div>
+        </CollapsibleMenu>
       </nav>
     </header>
   );

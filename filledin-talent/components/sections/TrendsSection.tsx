@@ -36,7 +36,8 @@ const TrendItem: React.FC<TrendItemProps> = ({ title, description, imagePlacehol
         </div>
 
         {/* Text Content */}
-        <div className={`w-full lg:w-1/2 space-y-4 ${isRTL ? 'text-right' : 'text-left'}`}>
+
+        <div className={`w-full lg:w-1/2 space-y-4 text-left`}>
           {link ? (
             <Link href={link} className="inline-block hover:opacity-80 transition-opacity">
               <h2 className="text-2xl lg:text-3xl font-bold text-blue-900 underline decoration-blue-900 decoration-2 underline-offset-4">
