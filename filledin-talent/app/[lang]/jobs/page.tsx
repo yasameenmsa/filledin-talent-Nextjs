@@ -1,7 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { MapPin, Briefcase, Clock, DollarSign, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JobSearchSection from '@/components/sections/JobSearchSection';
@@ -9,6 +8,7 @@ import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import Application from '@/models/Application';
 import JobImage from '@/components/jobs/JobImage';
+import { Job as IJob } from '@/lib/types/models';
 
 export const metadata: Metadata = {
     title: 'Job Search | FilledIn Talent',
@@ -118,7 +118,7 @@ export default async function JobsPage({ params, searchParams }: JobsPageProps) 
 
                 <div className="grid grid-cols-1 gap-6">
                     {jobs.length > 0 ? (
-                        jobs.map((job: any) => {
+                        jobs.map((job: IJob) => {
                             const translatedJob = getJobTranslation(job, lang);
 
                             return (

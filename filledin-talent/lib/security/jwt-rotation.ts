@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { NextRequest } from 'next/server';
+
 
 export interface JWTSecretConfig {
   currentSecret: string;
@@ -213,7 +213,7 @@ export const jwtRotation = new JWTSecretRotation();
  * Middleware to check and handle JWT rotation
  */
 export function jwtRotationMiddleware() {
-  return async (_request: NextRequest) => {
+  return async () => {
     const rotationCheck = jwtRotation.checkRotationNeeded();
 
     if (rotationCheck.shouldRotate) {

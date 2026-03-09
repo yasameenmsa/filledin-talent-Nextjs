@@ -3,12 +3,17 @@ import dbConnect from '@/lib/db/mongodb';
 import SavedJob from '@/models/SavedJob';
 import Job from '@/models/Job';
 import Link from 'next/link';
-import Image from 'next/image';
 import JobImage from '@/components/jobs/JobImage';
 import { redirect } from 'next/navigation';
-import { MapPin, Briefcase, Clock, Trash2 } from 'lucide-react';
+import { MapPin, Briefcase, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getJobTranslation } from '@/lib/utils/getJobTranslation';
+import type { Job as IJob, SavedJob as ISavedJob } from '@/lib/types/models';
+
+
+interface SavedJobWithJob extends Omit<ISavedJob, 'jobId'> {
+    jobId: IJob | null;
+}
 
 async function getSavedJobs(userId: string) {
     await dbConnect();
@@ -20,7 +25,7 @@ async function getSavedJobs(userId: string) {
         })
         .sort({ createdAt: -1 });
 
-    return savedJobs;
+    return savedJobs as SavedJobWithJob[];
 }
 
 export default async function SavedJobsPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -36,7 +41,7 @@ export default async function SavedJobsPage({ params }: { params: Promise<{ lang
 
             <div className="grid grid-cols-1 gap-6">
                 {savedJobs.length > 0 ? (
-                    savedJobs.map((item: any) => {
+                    savedJobs.map((item: SavedJobWithJob) => {
                         const job = item.jobId;
                         if (!job) return null; // Handle deleted jobs
 

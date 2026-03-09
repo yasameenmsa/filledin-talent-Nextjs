@@ -5,6 +5,24 @@ import connectDB from '@/lib/db/mongodb';
 
 import File from '@/models/File';
 import { auth } from '@/auth';
+import type { Document } from 'mongoose';
+
+interface FileMetadata {
+  _id: string;
+  filename: string;
+  originalName: string;
+  url: string;
+  size: number;
+  mimeType: string;
+  fileType: string;
+  uploadedBy?: string;
+  userId?: string;
+  jobId?: string;
+  companyId?: string;
+  isPublic: boolean;
+}
+
+type FileDocument = FileMetadata & Document;
 
 // File type configurations
 const FILE_CONFIGS = {
@@ -235,7 +253,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Save file metadata to database
-        let fileMetadata: any = null;
+        let fileMetadata: FileDocument | null = null;
         try {
             const fileDoc = new File({
                 filename,
@@ -256,9 +274,11 @@ export async function POST(request: NextRequest) {
 
             // Update the URL in the saved document with the actual ID for private files OR public files not in public folder
             if (!isPublicFile || !isStoragePublic) {
-                fileMetadata.url = `/api/files/download/${fileMetadata._id}`;
-                await fileMetadata.save();
-                finalUrl = fileMetadata.url;
+                if (fileMetadata) {
+                    fileMetadata.url = `/api/files/download/${fileMetadata._id}`;
+                    await fileMetadata.save();
+                    finalUrl = fileMetadata.url;
+                }
             }
         } catch (dbError) {
             console.warn('Failed to save file metadata to database:', dbError);

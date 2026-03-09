@@ -159,6 +159,7 @@ const authConfig = {
     strategy: 'jwt' as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  trustHost: true,
 };
 
 // NextAuth v5 type workaround - the default export is callable but TypeScript bundler resolution has issues

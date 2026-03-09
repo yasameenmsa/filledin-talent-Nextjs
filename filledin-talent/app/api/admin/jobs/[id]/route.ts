@@ -3,6 +3,13 @@ import connectDB from '@/lib/db/mongodb';
 import Job from '@/models/Job';
 import Application from '@/models/Application';
 import SavedJob from '@/models/SavedJob';
+import type { JobStatus } from '@/lib/types/models';
+
+interface JobUpdateData {
+  status?: JobStatus;
+  featured?: boolean;
+  urgent?: boolean;
+}
 
 // PUT - Update job status
 export async function PUT(
@@ -16,7 +23,7 @@ export async function PUT(
     const body = await request.json();
     const { status, featured, urgent } = body;
 
-    const updateData: any = {};
+    const updateData: JobUpdateData = {};
 
     if (status) {
       if (!['active', 'closed', 'draft'].includes(status)) {
@@ -52,7 +59,7 @@ export async function PUT(
     return NextResponse.json({
       message: 'Job updated successfully',
       job: {
-        id: (job._id as any).toString(),
+        id: (job._id as { toString: () => string }).toString(),
         title: job.title,
         status: job.status,
         featured: job.featured,

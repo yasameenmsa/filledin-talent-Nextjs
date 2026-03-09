@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const format = searchParams.get('format') || 'csv';
 
     // Build query (same as main users route)
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (search) {
       query.$or = [
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
           await Application.countDocuments({ userId: user._id }) : 0;
 
         return {
-          id: (user._id as any).toString(),
+          id: (user._id as { toString: () => string }).toString(),
           name: user.name || user.email.split('@')[0],
           email: user.email,
           phone: user.phone || '',

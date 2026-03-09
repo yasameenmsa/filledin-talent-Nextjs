@@ -17,7 +17,7 @@ const SpecializedSourcingSection = () => {
         renewable: 'Renewable Energy: From Wind Turbine Technicians to Project Managers and R&D specialists driving the energy transition.'
       },
       fr: {
-        title: 'Sourcing Profondément Spécialisé, Pas Seulement de la Recherche',
+        title: 'Du sourcing hautement spécialisé, pas seulement de la recherche',
         intro: "Notre expertise est concentrée exclusivement sur les domaines clés de l'énergie. Nous parlons votre langue et comprenons les compétences techniques spécifiques et l'adéquation culturelle requises pour réussir dans :",
         upstream: 'Opérations en Amont : Des ingénieurs de réservoir et de forage aux contremaîtres de production et techniciens sur le terrain.',
         downstream: "Aval et Pétrochimie : Des ingénieurs de procédés et de maintenance aux gestionnaires TAR qualifiés et techniciens d'instrumentation.",
@@ -39,7 +39,7 @@ const SpecializedSourcingSection = () => {
   return (
     <div className="py-16 px-4" style={{ backgroundColor: '#f6f4ee' }} dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}>
       <div className="container mx-auto max-w-7xl">
-                  <h2 className="text-2xl font-bold mb-8 text-center" style={{ color: '#000' }}>{text.title}</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center" style={{ color: '#000' }}>{text.title}</h2>
 
         <div className="flex flex-col lg:flex-row gap-12 items-start">
           {/* Left Content */}

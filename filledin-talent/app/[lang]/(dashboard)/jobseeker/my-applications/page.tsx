@@ -7,6 +7,11 @@ import { redirect } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Building, MapPin } from 'lucide-react';
 import { getJobTranslation } from '@/lib/utils/getJobTranslation';
+import type { Application as ApplicationType, Job as JobType } from '@/lib/types/models';
+
+interface ApplicationWithJob extends Omit<ApplicationType, 'job'> {
+    job: JobType | null;
+}
 
 async function getMyApplications(userId: string) {
     await dbConnect();
@@ -18,7 +23,7 @@ async function getMyApplications(userId: string) {
         })
         .sort({ createdAt: -1 });
 
-    return applications;
+    return applications as ApplicationWithJob[];
 }
 
 export default async function MyApplicationsPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -44,7 +49,7 @@ export default async function MyApplicationsPage({ params }: { params: Promise<{
 
             <div className="grid grid-cols-1 gap-6">
                 {applications.length > 0 ? (
-                    applications.map((app: any) => {
+                    applications.map((app: ApplicationWithJob) => {
                         const job = app.job;
                         if (!job) return null; // Handle deleted jobs
 
@@ -92,7 +97,7 @@ export default async function MyApplicationsPage({ params }: { params: Promise<{
                                     <div className="mt-4 pt-4 border-t border-gray-100">
                                         <h3 className="text-sm font-semibold text-gray-900 mb-2">Status History</h3>
                                         <div className="space-y-2">
-                                            {app.statusHistory.map((history: any, idx: number) => (
+                                            {app.statusHistory.map((history, idx: number) => (
                                                 <div key={idx} className="text-sm text-gray-600 flex justify-between">
                                                     <span>{history.status}</span>
                                                     <span className="text-gray-400">{new Date(history.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>

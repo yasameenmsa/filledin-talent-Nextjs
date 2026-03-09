@@ -13,17 +13,17 @@ const InterviewTipsSection = () => {
         intro1: 'To master your interview , you must be prepared, execute and follow-up.',
         intro2: 'Approach it as a professional conversation not as an interrogation.',
         exampleTitle: 'Example of competency-based questions:',
-        question1: '1- Tell me about time you successfully led a team?',
+        question1: '1- Tell me about a time you successfully led a team?',
         question2: '2- Can you give an example of how you solved a difficult problem?',
         question3: '3- Describe a time when you had to resolve a conflict at work'
       },
       fr: {
-        title: 'Nos meilleurs conseils pour réussir votre prochain entretien !',
+        title: 'Nos meilleurs conseils pour réussir votre prochain entretien\u00A0!',
         intro1: 'Pour maîtriser votre entretien, vous devez être préparé, exécuter et faire le suivi.',
         intro2: 'Abordez-le comme une conversation professionnelle et non comme un interrogatoire.',
         exampleTitle: 'Exemple de questions basées sur les compétences :',
-        question1: '1- Parlez-moi d\'une fois où vous avez dirigé une équipe avec succès ?',
-        question2: '2- Pouvez-vous donner un exemple de la façon dont vous avez résolu un problème difficile ?',
+        question1: '1- Parlez-moi d\'une fois où vous avez dirigé une équipe avec succès\u00A0?',
+        question2: '2- Pouvez-vous donner un exemple de la façon dont vous avez résolu un problème difficile\u00A0?',
         question3: '3- Décrivez une situation où vous avez dû résoudre un conflit au travail'
       },
       ar: {
@@ -48,7 +48,7 @@ const InterviewTipsSection = () => {
       dir={currentLanguage === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col lg:flex-row gap-12 items-center">
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
           {/* Left Content */}
           <div className="flex-1">
             <h2 className="text-4xl font-bold mb-8" style={{ color: '#000' }}>

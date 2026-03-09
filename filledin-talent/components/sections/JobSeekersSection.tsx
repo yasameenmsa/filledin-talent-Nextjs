@@ -2,16 +2,15 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useRouter } from 'next/navigation';
 import { Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from "@/components/ui/select";
 import JobCard from '@/components/jobs/JobCard';
+import type { Job } from '@/lib/types/models';
 
 const JobSeekersSection = () => {
   const { currentLanguage } = useLanguage();
-  const router = useRouter();
 
   const [formData, setFormData] = useState({
     keywords: '',
@@ -21,7 +20,7 @@ const JobSeekersSection = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -193,7 +192,7 @@ const JobSeekersSection = () => {
     >
       {/* Main Content */}
       <main className="container mx-auto px-8">
-        <h1 className="text-5xl font-bold mb-16 text-gray-900">
+        <h1 className="text-3xl font-bold my-5 text-blue-900">
           {text.forJobSeekers}
         </h1>
 
@@ -291,7 +290,7 @@ const JobSeekersSection = () => {
           </div>
 
           {/* Right - Image */}
-          <div className="flex-shrink-0 w-full lg:w-[600px]">
+          <div className="flex-shrink-0 w-full lg:w-[400px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/home/RecruitmentandSelectionPolicy.png"

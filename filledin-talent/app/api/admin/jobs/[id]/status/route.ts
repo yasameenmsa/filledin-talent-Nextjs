@@ -44,7 +44,7 @@ export async function PUT(
     return NextResponse.json({
       message: 'Job status updated successfully',
       job: {
-        id: (job._id as any).toString(),
+        id: (job._id as { toString: () => string }).toString(),
         title: job.title,
         status: job.status,
       },

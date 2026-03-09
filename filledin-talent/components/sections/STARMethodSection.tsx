@@ -72,7 +72,7 @@ const STARMethodSection = () => {
         q1Task: '"Ma tâche était de diriger une équipe interfonctionnelle de six membres, en veillant à ce que nous restions sur la bonne voie tout en maintenant une haute qualité."',
         q1Action: '"J\'organise des réunions quotidiennes pour suivre les progrès, identifier les obstacles potentiels tôt et déléguer les tâches en fonction des forces des membres de l\'équipe. J\'ai également maintenu une communication ouverte avec le client pour gérer les attentes."',
         q1Result: '"Nous avons terminé le projet deux jours avant la date prévue, et le client a loué notre efficacité et notre qualité, ce qui a conduit à des opportunités commerciales supplémentaires pour l\'entreprise."',
-        q2: 'Pouvez-vous donner un exemple de la façon dont vous avez résolu un problème difficile ?',
+        q2: 'Pouvez-vous donner un exemple de la façon dont vous avez résolu un problème difficile\u00A0?',
         q2Situation: '"En tant que représentant du service client, j\'ai traité avec un client frustré dont la commande avait été retardée en raison d\'une erreur système."',
         q2Task: '"Ma tâche était de résoudre le problème rapidement tout en restaurant la confiance du client dans notre service."',
         q2Action: '"Je me suis excusé sincèrement et j\'ai enquêté sur le problème immédiatement. J\'ai accéléré leur commande, fourni une réduction en geste de bonne volonté et tenu le client informé tout au long du processus."',

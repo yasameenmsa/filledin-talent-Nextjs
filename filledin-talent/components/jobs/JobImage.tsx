@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 
 interface JobImageProps {
-    src: string;
+    src: string | undefined;
     alt: string;
     fallbackSrc?: string;
     className?: string;

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatDate } from '@/lib/utils/formatters';
 import {
@@ -477,10 +478,12 @@ export default function AdminApplicationsPage({ params }: { params: Promise<{ la
                                                     <div className="flex items-center">
                                                         <div className="flex-shrink-0 h-10 w-10">
                                                             {application?.applicant?.profile?.profileImage ? (
-                                                                <img
+                                                                <Image
                                                                     className="h-10 w-10 rounded-full object-cover"
                                                                     src={application.applicant.profile.profileImage}
                                                                     alt={getApplicantName(application.applicant)}
+                                                                    width={40}
+                                                                    height={40}
                                                                 />
                                                             ) : (
                                                                 <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">

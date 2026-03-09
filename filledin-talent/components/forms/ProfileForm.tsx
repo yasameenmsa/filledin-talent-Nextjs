@@ -238,7 +238,34 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
   onSuccess?: () => void;
-  initialData?: any;
+  initialData?: {
+    email?: string;
+    role?: string;
+    profile?: {
+      firstName?: string;
+      lastName?: string;
+      phone?: string;
+      location?: string;
+      bio?: string;
+      company?: string;
+      position?: string;
+      website?: string;
+      skills?: string[];
+      experience?: Array<{
+        company: string;
+        position: string;
+        startDate: string;
+        endDate?: string;
+        description?: string;
+      }>;
+      education?: Array<{
+        institution: string;
+        degree: string;
+        field: string;
+        year: string;
+      }>;
+    };
+  };
 }
 
 export default function ProfileForm({ onSuccess, initialData }: ProfileFormProps) {

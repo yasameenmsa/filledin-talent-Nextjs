@@ -3,7 +3,7 @@ export const imageBoxes = {
   subtitle: 'Explorez les dernières tendances et développements dans le secteur de l\'énergie',
   hrTrends: {
     title: 'Tendances RH',
-    description: 'En 2025, les dirigeants RH doivent redéfinir leurs stratégies en développant les managers, en créant une planification stratégique de la main-d\'œuvre et en optimisant la technologie RH et l\'analyse des données. Aller au-delà des séminaires de leadership traditionnels pour favoriser les connexions entre pairs et intégrer les opportunités d\'apprentissage dans le travail quotidien permet aux managers de développer des compétences de leadership plus solides et de se préparer aux exigences futures.'
+    description: 'En 2026, les dirigeants RH doivent redéfinir leurs stratégies en développant les managers, en créant une planification stratégique de la main-d\'œuvre et en optimisant la technologie RH et l\'analyse des données. Aller au-delà des séminaires de leadership traditionnels pour favoriser les connexions entre pairs et intégrer les opportunités d\'apprentissage dans le travail quotidien permet aux managers de développer des compétences de leadership plus solides et de se préparer aux exigences futures.'
   },
   aiTalent: {
     title: 'IA et Acquisition de Talents',
@@ -16,7 +16,7 @@ export const imageBoxes = {
   boxes: {
     hrTrends: {
       title: 'Tendances RH',
-      description: 'En 2025, les dirigeants RH doivent redéfinir leurs stratégies en développant les managers, en créant une planification stratégique de la main-d\'œuvre et en optimisant la technologie RH et l\'analyse des données. Aller au-delà des séminaires de leadership traditionnels pour favoriser les connexions entre pairs et intégrer les opportunités d\'apprentissage dans le travail quotidien permet aux managers de développer des compétences de leadership plus solides et de se préparer aux exigences futures.',
+      description: 'En 2026, les dirigeants RH doivent redéfinir leurs stratégies en développant les managers, en créant une planification stratégique de la main-d\'œuvre et en optimisant la technologie RH et l\'analyse des données. Aller au-delà des séminaires de leadership traditionnels pour favoriser les connexions entre pairs et intégrer les opportunités d\'apprentissage dans le travail quotidien permet aux managers de développer des compétences de leadership plus solides et de se préparer aux exigences futures.',
       category: 'Ressources Humaines'
     },
     aiTalent: {

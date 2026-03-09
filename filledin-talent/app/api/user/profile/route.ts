@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import dbConnect from '@/lib/db/mongodb';
 import User from '@/models/User';
+import type { User as UserType } from '@/lib/types/models';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const session = await auth();
 
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
 
     await dbConnect();
 
-    const user = await User.findById(session.user.id).lean() as any;
+    const user = await User.findById(session.user.id).lean() as UserType | null;
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -74,7 +75,7 @@ export async function PUT(req: NextRequest) {
     const name = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
 
     // Update object matching User model schema
-    const updates: any = {
+    const updates: Partial<UserType> = {
       name,
       phone: profile.phone,
       location: profile.location,
@@ -98,7 +99,7 @@ export async function PUT(req: NextRequest) {
       session.user.id,
       { $set: updates },
       { new: true, runValidators: true }
-    ).lean() as any;
+    ).lean() as UserType | null;
 
     if (!updatedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -132,9 +133,9 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json(responseData, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating profile:', error);
-    const status = error.name === 'ValidationError' ? 400 : 500;
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status });
+    const status = (error instanceof Error && error.name === 'ValidationError') ? 400 : 500;
+    return NextResponse.json({ error: (error instanceof Error ? error.message : 'Internal Server Error') || 'Internal Server Error' }, { status });
   }
 }

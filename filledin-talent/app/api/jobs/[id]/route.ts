@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db/mongodb';
 import Job from '@/models/Job';
 
+
 export async function GET(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -21,10 +22,12 @@ export async function GET(
         await job.save();
 
         return NextResponse.json(job);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching job:', error);
 
-        if (error.name === 'MongooseServerSelectionError' || error.name === 'MongoNetworkError') {
+        if (error instanceof Error && ('name' in error) && (
+            error.name === 'MongooseServerSelectionError' || error.name === 'MongoNetworkError'
+        )) {
             return NextResponse.json({ error: 'Database Connection Error. Please try again later.' }, { status: 503 });
         }
 

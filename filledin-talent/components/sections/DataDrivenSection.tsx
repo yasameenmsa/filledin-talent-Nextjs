@@ -25,26 +25,26 @@ const DataDrivenSection = () => {
         scorecards: 'Candidate Scorecards: Objective ratings and insights on every shortlisted candidate.',
         talentMapping: 'Talent Mapping: Gain a comprehensive overview of the available talent in your market.',
         efficiency: 'Efficiency Metrics: Benefit from a streamlined process with competitive times for selection and a faster time-to-hire, getting your people in place quicker.',
-        protectionTitle: 'Your Investment is Protected',
+        protectionTitle: 'Your investment is protected',
         protectionDesc: 'We stand behind our placements. Our service includes a 3-month replacement guarantee, giving you peace of mind that your investment is secure.',
         ctaTitle: 'Ready to Hire with Confidence?'
       },
       fr: {
-        mainTitle: 'Recrutement Axé sur les Données. Résultats Garantis',
+        mainTitle: 'Recrutement axé sur les données. Résultats garantis',
         intro: 'Nous donnons à votre entreprise les moyens d\'agir grâce à des solutions de recrutement stratégiques et des indicateurs transparents, en veillant à ce que vous obteniez les bons talents rapidement.',
         promiseTitle: 'Notre promesse envers vous',
-        globalSourcing: 'Sourcing Mondial',
+        globalSourcing: 'Source Mondiale',
         globalSourcingDesc: 'Nous exploitons de manière proactive les bassins de talents régionaux et internationaux pour trouver le candidat parfait pour vos besoins uniques, renforçant votre vision et votre stratégie.',
-        noSecondInterview: 'Pas de Deuxième Entretien, Pas de Frais',
+        noSecondInterview: 'Pas de deuxième entretien, pas de frais',
         noSecondInterviewDesc: 'Nous réduisons les risques de votre investissement. Vous n\'encourez un coût qu\'une fois qu\'un candidat atteint avec succès l\'étape du deuxième entretien avec le responsable du recrutement.',
-        keyMetrics: 'Indicateurs Clés de Recrutement',
+        keyMetrics: 'Indicateurs clés de recrutement',
         keyMetricsDesc: 'Nous offrons une transparence totale avec des données exploitables, afin que vous n\'ayez jamais à deviner votre processus de recrutement.',
-        advantageTitle: 'Votre Avantage : Transparence et Insights Axés sur les Données',
+        advantageTitle: 'Votre avantage : transparence et aperçu axés sur les données',
         advantageIntro: 'Nous fournissons des analyses claires qui vous donnent un avantage concurrentiel :',
-        scorecards: 'Fiches d\'Évaluation des Candidats : Évaluations objectives et informations sur chaque candidat présélectionné.',
-        talentMapping: 'Cartographie des Talents : Obtenez une vue d\'ensemble complète des talents disponibles sur votre marché.',
-        efficiency: 'Indicateurs d\'Efficacité : Bénéficiez d\'un processus rationalisé avec des délais compétitifs pour la sélection et un délai d\'embauche plus rapide, permettant de mettre vos collaborateurs en place plus rapidement.',
-        protectionTitle: 'Votre Investissement est Protégé',
+        scorecards: 'Fiches d\'évaluation des candidats : évaluations objectives et informations sur chaque candidat présélectionné.',
+        talentMapping: 'Cartographie des talents : obtenez une vue d\'ensemble complète des talents disponibles sur votre marché.',
+        efficiency: 'Indicateurs d\'efficacité : bénéficiez d\'un processus rationalisé avec des délais compétitifs pour la sélection et un délai d\'embauche plus rapide, permettant de mettre vos collaborateurs en place plus rapidement.',
+        protectionTitle: 'Votre investissement est protégé',
         protectionDesc: 'Nous soutenons nos placements. Notre service comprend une garantie de remplacement de 3 mois, vous offrant la tranquillité d\'esprit que votre investissement est sécurisé.',
         ctaTitle: 'Prêt à Recruter en Toute Confiance ?'
       },
@@ -190,36 +190,37 @@ const DataDrivenSection = () => {
       </div>
 
       {/* Your Advantage */}
-      <div className="text-center">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>
+      {/* Your Advantage */}
+      <div className="max-w-3xl mx-auto">
+        <h3 className="text-2xl font-bold mb-6 mt-6" style={{ color: '#000' }}>
           {text.advantageTitle}
         </h3>
 
-        <p className="text-base leading-relaxed mb-4 text-center" style={{ color: '#000' }}>
+        <p className="text-base leading-relaxed space-y-2 mb-3" style={{ color: '#000' }}>
           {text.advantageIntro}
         </p>
-      </div>
 
-      <ul className="space-y-3 mb-12 text-base max-w-3xl mx-auto" style={{ color: '#000' }}>
-        <li className="flex gap-3">
-          <span className="flex-shrink-0 mt-2">
-            <div className="w-2 h-2 rounded-full bg-black"></div>
-          </span>
-          <p>{text.scorecards}</p>
-        </li>
-        <li className="flex gap-3">
-          <span className="flex-shrink-0 mt-2">
-            <div className="w-2 h-2 rounded-full bg-black"></div>
-          </span>
-          <p>{text.talentMapping}</p>
-        </li>
-        <li className="flex gap-3">
-          <span className="flex-shrink-0 mt-2">
-            <div className="w-2 h-2 rounded-full bg-black"></div>
-          </span>
-          <p>{text.efficiency}</p>
-        </li>
-      </ul>
+        <ul className="space-y-3 mb-12 text-base" style={{ color: '#000' }}>
+          <li className="flex gap-3">
+            <span className="flex-shrink-0 mt-2">
+              <div className="w-2 h-2 rounded-full bg-black"></div>
+            </span>
+            <p>{text.scorecards}</p>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex-shrink-0 mt-2">
+              <div className="w-2 h-2 rounded-full bg-black"></div>
+            </span>
+            <p>{text.talentMapping}</p>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex-shrink-0 mt-2">
+              <div className="w-2 h-2 rounded-full bg-black"></div>
+            </span>
+            <p>{text.efficiency}</p>
+          </li>
+        </ul>
+      </div>
 
       {/* Investment Protection */}
       <div className="text-center max-w-4xl mx-auto">
@@ -227,11 +228,11 @@ const DataDrivenSection = () => {
           {text.protectionTitle}
         </h3>
 
-        <p className="text-base leading-relaxed" style={{ color: '#000' }}>
-          {text.protectionDesc}
-        </p>
-      </div>
 
+      </div>
+      <p className="text-center leading-relaxed mx-6 px-2" style={{ color: '#000' }}>
+        {text.protectionDesc}
+      </p>
     </div>
   );
 };

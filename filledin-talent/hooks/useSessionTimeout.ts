@@ -27,7 +27,7 @@ export function useSessionTimeout(options: UseSessionTimeoutOptions = {}) {
     onExtend
   } = options;
 
-  const { data: _session, status } = useSession();
+  const { status } = useSession();
   const [sessionStatus, setSessionStatus] = useState<SessionStatus | null>(null);
   const [showWarning, setShowWarning] = useState(false);
   const [lastActivity, setLastActivity] = useState(Date.now());

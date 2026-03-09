@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatDate } from '@/lib/utils/formatters';
 import {
   Briefcase,
   Search,
@@ -17,11 +16,9 @@ import {
   Plus,
   Download,
   RefreshCw,
-  Calendar,
   Building,
   MapPin,
   DollarSign,
-  Clock,
   AlertTriangle
 } from 'lucide-react';
 

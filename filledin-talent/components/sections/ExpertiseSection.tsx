@@ -48,7 +48,7 @@ const ExpertiseFooterSection = () => {
         operations: 'Opérations',
         cfo: 'Directeur financier',
         generalManager: 'Directeur général',
-        managingDirector: 'Directeur général',
+        managingDirector: 'Directeur général délégué',
         followUs: 'Suivez-nous',
         getInTouch: 'Contactez-nous'
       },

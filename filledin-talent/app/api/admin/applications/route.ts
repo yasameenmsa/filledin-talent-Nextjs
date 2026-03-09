@@ -1,11 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/auth';
+import { NextResponse } from 'next/server';
+
 import dbConnect from '@/lib/db/mongodb';
 import Application from '@/models/Application';
 import Job from '@/models/Job';
 import User from '@/models/User';
-
 import { withAdminAuth } from '@/lib/auth/nextauth-middleware';
+import type { ApplicationStatus } from '@/lib/types/models';
+
+interface ApplicationQuery {
+    status?: ApplicationStatus;
+    $or?: Array<{ job?: { $in: string[] }; applicant?: { $in: string[] } }>;
+}
 
 export const GET = withAdminAuth(async (req) => {
     try {
@@ -24,11 +29,10 @@ export const GET = withAdminAuth(async (req) => {
         const sortOrder = searchParams.get('sortOrder') || 'desc';
 
         // Build query
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const query: any = {};
+        const query: ApplicationQuery = {};
 
         if (status && status !== 'all') {
-            query.status = status;
+            query.status = status as ApplicationStatus;
         }
 
         // If search term provided, search in job titles and applicant names
@@ -86,8 +90,7 @@ export const GET = withAdminAuth(async (req) => {
         }
 
         // Build sort object
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const sort: any = {};
+        const sort: Record<string, 1 | -1> = {};
         sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
         // Execute query with population
