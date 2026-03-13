@@ -2,8 +2,7 @@
 FROM node:20-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci || npm install
-RUN npm install express@4 --save
+RUN npm ci
 
 # ---------- builder ----------
 FROM node:20-slim AS builder
