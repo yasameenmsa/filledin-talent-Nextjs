@@ -16,7 +16,7 @@ const CommitmentSection = () => {
         intro3: 'Our commitment is to save you time, reduce risk, and connect you with exceptional professionals who are ready to perform from day one.',
         partnershipTitle: 'A Risk-Averse, Partnership-Focused Model',
         partnershipIntro: 'We believe your satisfaction measures our success. Our transparent fee structure is designed to align with your goals and de-risk the hiring process:',
-        nonManagerial: 'For Non-Managerial Roles: A simple, competitive fixed fee. You incur no cost until we successfully present a candidate you choose to hire.',
+        nonManagerial: 'For Non-Managerial Roles and Executive Roles: Competitive fixed fee. No cost until candidate accepts your offer and starts work.',
         managerial: 'For Managerial & Executive Roles: A competitive fee with a limited initial engagement fee, demonstrating our mutual commitment to finding your next leader.'
       },
       fr: {
@@ -27,8 +27,8 @@ const CommitmentSection = () => {
         intro3: 'Notre engagement est de vous faire gagner du temps, de réduire les risques et de vous mettre en contact avec des professionnels exceptionnels prêts à performer dès le premier jour.',
         partnershipTitle: 'Un modèle axé sur le partenariat et une limitation des risques',
         partnershipIntro: 'Nous croyons que votre satisfaction mesure notre succès. Notre structure de frais transparente est conçue pour s\'aligner sur vos objectifs et réduire les risques du processus d\'embauche :',
-        nonManagerial: 'Pour les postes non-cadres : un forfait fixe simple et compétitif. Vous n\'encourez aucun coût tant que nous ne présentons pas avec succès un candidat que vous choisissez d\'embaucher.',
-        managerial: 'Pour les postes de cadres et de dirigeants : un tarif compétitif, avec des frais d\'engagement initiaux limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
+        nonManagerial: 'Pour les rôles non-cadres et cadres de direction : Forfait fixe compétitif. Aucun coût jusqu\'à ce que le candidat accepte votre offre et commence à travailler.',
+        managerial: 'Pour les rôles de direction et exécutifs : Des honoraires compétitifs avec des frais d\'engagement initial limités, démontrant notre engagement mutuel à trouver votre prochain leader.'
       },
       ar: {
         mainTitle: 'التزامنا تجاه خدمتك',
@@ -38,8 +38,8 @@ const CommitmentSection = () => {
         intro3: 'التزامنا هو توفير وقتك وتقليل المخاطر وربطك بمحترفين استثنائيين جاهزين للأداء من اليوم الأول.',
         partnershipTitle: 'نموذج يركز على الشراكة وتجنب المخاطر',
         partnershipIntro: 'نحن نؤمن بأن رضاك يقيس نجاحنا. هيكل الرسوم الشفاف لدينا مصمم للتوافق مع أهدافك وتقليل مخاطر عملية التوظيف:',
-        nonManagerial: 'للأدوار غير الإدارية: رسوم ثابتة بسيطة وتنافسية. لا تتحمل أي تكلفة حتى نقدم بنجاح مرشحاً تختار توظيفه.',
-        managerial: 'للأدوار الإدارية والتنفيذية: رسوم تنافسية مع رسوم مشاركة أولية محدودة، مما يثبت التزامنا المتبادل بإيجاد قائدك القادم.'
+        nonManagerial: 'للأدوار غير الإدارية والتنفيذية: رسوم ثابتة تنافسية. لا توجد تكلفة حتى يقبل المرشح عرضك ويبدأ العمل.',
+        managerial: 'للأدوار الإدارية والتنفيذية: رسوم تنافسية مع رسوم مشاركة أولية محدودة، مما يدل على التزامنا المتبادل بالعثور على قائدك التالي.'
       }
     };
     return translations[currentLanguage as keyof typeof translations] || translations.en;

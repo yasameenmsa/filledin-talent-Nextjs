@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, use } from 'react';
-import { Mail, Send, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, Send, Loader2, CheckCircle2, Phone, MapPin } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
@@ -24,7 +24,7 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
         },
         fr: {
             title: 'Contactez-nous',
-            subtitle: 'Nous aimerions avoir de vos nouvelles. Envoyez-nous un message et nous vous réponدرons dès que possible.',
+            subtitle: 'Nous aimerions avoir de vos nouvelles. Envoyez-nous un message et nous vous répondrons dès que possible.',
             emailLabel: 'Adresse E-mail',
             messageLabel: 'Votre Message',
             sendButton: 'Envoyer le Message',
@@ -44,7 +44,7 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
             errorMessage: 'فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.',
             sending: 'جاري الإرسال...',
             sendAnother: 'إرسال رسالة أخرى',
-            emailPlaceholder: 'الاسم@مثال.com'
+            emailPlaceholder: 'name@example.com'
         }
     };
 
@@ -108,6 +108,18 @@ export default function ContactPage({ params }: { params: Promise<{ lang: string
                                             <Mail className="h-5 w-5" />
                                         </div>
                                         <span>filledintalent@gmail.com</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-white/10 p-2 rounded-lg">
+                                            <Phone className="h-5 w-5" />
+                                        </div>
+                                        <span dir="ltr">+44 7900374520</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-white/10 p-2 rounded-lg">
+                                            <MapPin className="h-5 w-5" />
+                                        </div>
+                                        <span>London</span>
                                     </div>
                                 </div>
                             </div>
